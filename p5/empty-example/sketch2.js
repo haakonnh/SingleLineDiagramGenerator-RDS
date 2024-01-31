@@ -73,18 +73,16 @@ class Section {
       line(this.lowerX1, this.lowerY1, this.lowerX2, this.lowerY2);
     }
 }
-
 class SectionIsolator {
-      constructor(x1, x2, y1, y2) {
+      constructor(x1, y1, x2, y2) {
             this.lastX1 = x1;
             this.lastX2 = x2;
             this.lastY1 = y1;
             this.lastY2 = y2;
-  
             // Calculate the perpendicular line coordinates
             const angle = atan2(y2 - y1, x2 - x1);
-            const length = 50; // Set your desired length here
-            const parallelOffset = -20; // Set the desired offset for parallel lines
+            const length = myDist - 30; // Set your desired length here
+            const parallelOffset = -10; // Set the desired offset for parallel lines
   
             // Calculate coordinates for both ends of the perpendicular line
             [this.upperX1, this.upperY1] = [x2 + cos(angle + HALF_PI) * length, y2 + sin(angle + HALF_PI) * length];
@@ -103,7 +101,10 @@ class SectionIsolator {
             [this.lowerX2, this.lowerY2] = [x2 + cos(angle + PI) * length, y2 + sin(angle + PI) * length];
 
             // find connection point, which is halfway on the right line
-            this.connectionX1 = this.lowerX1;
+            this.connectionX1 = (this.lowerX1+this.lowerX2)/2;
+            this.connectionY1 = (this.lowerY1+this.lowerY2)/2 + 10;
+            this.connectionX2 = this.connectionX1;
+            this.connectionY2 = this.connectionY1;
       }
   
       draw() {
@@ -133,7 +134,7 @@ class lastElementCoordinates {
 const pattern = /[A-Za-z]+/;
 const extractedSections = [];
 
-let db = ["JE1", "KL1", "JE2", "KL2", "JE3", "KL3", "JE4"];
+let db = ["JE1", "KL1", "JE2", "KL2", "JE3", "KL3", "JE4", "KJ1", "JE5"];
 
 db.forEach(element => {
       const match = element.match(pattern);
