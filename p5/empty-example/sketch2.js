@@ -110,7 +110,7 @@ class SectionIsolator {
       draw() {
           line(this.upperX1, this.upperY1, this.upperX2, this.upperY2);
           line(this.parallelX1, this.parallelY1, this.parallelX2, this.parallelY2);
-          line(this.lowerX1, this.lowerY1, this.lowerX2, this.lowerY2);
+          //line(this.lowerX1, this.lowerY1, this.lowerX2, this.lowerY2);
       }
   }
 
