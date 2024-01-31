@@ -72,7 +72,7 @@ class Section {
     }
 }
 
-class Section_isolator {
+class SectionIsolator {
     constructor(x1, x2, y1, y2) {
         this.lastX1 = x1;
         this.lastX2 = x2;
@@ -99,6 +99,7 @@ class Section_isolator {
 
         [this.lowerX1, this.lowerY1] = [x2, y2];
         [this.lowerX2, this.lowerY2] = [x2 + cos(angle + PI) * length, y2 + sin(angle + PI) * length];
+        [mixX,midY] = [(this.lowerX1+this.lowerX2)/2, (this.lowerY1+this.lowerY2)/2]
     }
 
     draw() {
