@@ -52,6 +52,44 @@ class Section {
     }
 }
 
+class Section_isolator {
+    constructor(x1, x2, y1, y2) {
+        this.lastX1 = x1;
+        this.lastX2 = x2;
+        this.lastY1 = y1;
+        this.lastY2 = y2;
+
+        // Calculate the perpendicular line coordinates
+        const angle = atan2(y2 - y1, x2 - x1);
+        const length = 50; // Set your desired length here
+        const parallelOffset = -20; // Set the desired offset for parallel lines
+
+        // Calculate coordinates for both ends of the perpendicular line
+        [this.upperX1, this.upperY1] = [x2 + cos(angle + HALF_PI) * length, y2 + sin(angle + HALF_PI) * length];
+        [this.upperX2, this.upperY2] = [x2 + cos(angle - HALF_PI) * length, y2 + sin(angle - HALF_PI) * length];
+
+        // Calculate coordinates for both ends of the parallel line
+        const parallelLength = dist(this.upperX1, this.upperY1, this.upperX2, this.upperY2);
+        const parallelAngle = angle + PI; // Opposite direction
+
+        this.parallelX1 = this.upperX1 + cos(parallelAngle) * parallelOffset;
+        this.parallelY1 = this.upperY1 + sin(parallelAngle) * parallelOffset;
+        this.parallelX2 = this.upperX2 + cos(parallelAngle) * parallelOffset;
+        this.parallelY2 = this.upperY2 + sin(parallelAngle) * parallelOffset;
+
+        [this.lowerX1, this.lowerY1] = [x2, y2];
+        [this.lowerX2, this.lowerY2] = [x2 + cos(angle + PI) * length, y2 + sin(angle + PI) * length];
+    }
+
+    draw() {
+        line(this.upperX1, this.upperY1, this.upperX2, this.upperY2);
+        line(this.parallelX1, this.parallelY1, this.parallelX2, this.parallelY2);
+        line(this.lowerX1, this.lowerY1, this.lowerX2, this.lowerY2);
+    }
+}
+
+
+
 function drawOriginalLine(x1, y1, x2, y2) {
     line(x1, y1, x2, y2);
 }
@@ -88,7 +126,7 @@ function draw() {
     
       
     drawOriginalLine(x1, y1, x2, y2);
-    const sect = new Section(x1, x2, y1, y2);
+    const sect = new Section_isolator(x1, x2, y1, y2);
     sect.draw();
     drawOriginalLine(sect.lowerX1, sect.lowerY1, 
     sect.lowerX1 + cos(sect.angle) * sect.length * 2, sect.lowerY1 + sin(sect.angle) * sect.length * 2);
