@@ -101,8 +101,8 @@ class SectionIsolator {
             [this.lowerX2, this.lowerY2] = [x2 + cos(angle + PI) * length, y2 + sin(angle + PI) * length];
 
             // find connection point, which is halfway on the right line
-            this.connectionX1 = (this.lowerX1+this.lowerX2)/2;
-            this.connectionY1 = (this.lowerY1+this.lowerY2)/2 + 10;
+            this.connectionX1 = (this.parallelX1 + this.parallelX2) / 2;
+            this.connectionY1 = (this.parallelY1 + this.parallelY2) / 2;
             this.connectionX2 = this.connectionX1;
             this.connectionY2 = this.connectionY1;
       }
