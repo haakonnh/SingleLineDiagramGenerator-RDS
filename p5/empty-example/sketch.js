@@ -99,7 +99,7 @@ class SectionIsolator {
 
         [this.lowerX1, this.lowerY1] = [x2, y2];
         [this.lowerX2, this.lowerY2] = [x2 + cos(angle + PI) * length, y2 + sin(angle + PI) * length];
-        [mixX,midY] = [(this.lowerX1+this.lowerX2)/2, (this.lowerY1+this.lowerY2)/2]
+        [mixX,midY] = [((this.upperX2 + this.lowerX2)/2), (this.upperY2 + this.lowerY2) /2]
     }
 
     draw() {
