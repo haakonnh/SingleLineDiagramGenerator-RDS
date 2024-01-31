@@ -174,27 +174,3 @@ function draw() {
 
 
 
-
-
-
-
-
-      /* extractedSections.forEach(section => {
-        if (map.has(section)) {
-            if (section === "JE") {
-                const obj = new Line(lastElement.x1, lastElement.y1, lastElement.x2, lastElement.y2);
-                obj.draw();
-                elements.push(obj);
-                lastElement = new lastElementCoordinates(obj.connectionX1, obj.connectionY1, obj.connectionX2, obj.connectionY2);
-            }
-            if (section === "KL") {
-                const obj = new Section(lastElement.x1, lastElement.y1, lastElement.x2, lastElement.y2);
-                obj.draw();
-                elements.push(obj);
-                lastElement = new lastElementCoordinates(obj.connectionX1, obj.connectionY1, obj.lowerX2, obj.lowerY2);
-            }
-        }
-    });
-}
-
-
