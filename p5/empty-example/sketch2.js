@@ -7,10 +7,9 @@ function setup() {
     
 }
 
-
-
 const map = new Map();
-const myDist = 50;
+const myDistX = 50;
+const myDistY = 0;
 
 class Line {
     constructor(x1, y1, x2, y2) {
@@ -21,12 +20,12 @@ class Line {
 
       this.connectionX1 = this.x1;
       this.connectionY1 = this.y1;
-      this.connectionX2 = this.x1 + myDist;
-      this.connectionY2 = this.y1;
+      this.connectionX2 = this.x1 + myDistX;
+      this.connectionY2 = this.y1 + myDistY;
     }
     
     draw() {
-        line(this.x1, this.y1, this.x1 + myDist, this.y1); // temp dist. and y2
+        line(this.x1, this.y1, this.x1 + myDistX, this.y1 + myDistY); // temp dist. and y2
     }
 }
 
@@ -81,7 +80,7 @@ class SectionIsolator {
             this.lastY2 = y2;
             // Calculate the perpendicular line coordinates
             const angle = atan2(y2 - y1, x2 - x1);
-            const length = myDist - 30; // Set your desired length here
+            const length = 30; // Set your desired length here
             const parallelOffset = -10; // Set the desired offset for parallel lines
   
             // Calculate coordinates for both ends of the perpendicular line
@@ -101,8 +100,8 @@ class SectionIsolator {
             [this.lowerX2, this.lowerY2] = [x2 + cos(angle + PI) * length, y2 + sin(angle + PI) * length];
 
             // find connection point, which is halfway on the right line
-            this.connectionX1 = (this.lowerX1+this.lowerX2)/2;
-            this.connectionY1 = (this.lowerY1+this.lowerY2)/2 + 10;
+            this.connectionX1 = (this.parallelX1 + this.parallelX2) / 2;
+            this.connectionY1 = (this.parallelY1 + this.parallelY2) / 2;
             this.connectionX2 = this.connectionX1;
             this.connectionY2 = this.connectionY1;
       }
@@ -134,7 +133,7 @@ class lastElementCoordinates {
 const pattern = /[A-Za-z]+/;
 const extractedSections = [];
 
-let db = ["JE1", "KL1", "JE2", "KL2", "JE3", "KL3", "JE4", "KJ1", "JE5"];
+let db = ["JE1", "KL1", "JE2", "KL2", "JE3", "KL3", "JE4", "KJ1", "JE5", "KL4", "JE6", "KJ2", "JE7"];
 
 db.forEach(element => {
       const match = element.match(pattern);
@@ -154,7 +153,7 @@ function draw() {
     let x1 = 50;
     let y1 = 100;
     let x2 = 100;
-    let y2 = 100;
+    let y2 = 200;
 
     let lastElement = new lastElementCoordinates(x1, y1, x2, y2);
     extractedSections.forEach(section => {
