@@ -8,7 +8,7 @@ function setup() {
 }
 
 const map = new Map();
-const myDistX = 50;
+const myDistX = 100;
 const myDistY = 0;
 
 class Line {
@@ -27,6 +27,35 @@ class Line {
     draw() {
         line(this.x1, this.y1, this.x1 + myDistX, this.y1 + myDistY); // temp dist. and y2
     }
+}
+
+//prøver meg her
+class ParallelStasjonBane {
+    constructor(x1, y1, x2, y2, antallPralalle){
+        // coords for the last line
+        this.lastX1 = x1;
+        this.lastX2 = x2;
+        this.lastY1 = y1;
+        this.lastY2 = y2;
+
+        // vet ikke om paralelle linjer alltid kommer i planet, men hvis ikke så er det greit å ha med dette
+        this.lastSlope = (y2 - y1) / (x2 - x1);
+        this.angle = atan2(y2 - y1, x2 - x1);
+        this.length = dist(x1, y1, x2, y2) / 3;
+
+        // the desired angle of the upper line
+        this.newAngle = this.angle + radians(-30);
+
+        // calculated coords for the upper line
+        this.upperX = this.lastX1 + cos(this.newAngle) * this.length;
+        this.upperY = this.lastY1 + sin(this.newAngle) * this.length;
+    }
+    draw(){
+        line(this.lastX1, this.lastY1, this.upperX, this.upperY);
+        line(this.upperX, this.upperY, this.upperX + this.length, this.upperY);
+        line(this.upperX + this.length, this.upperY, this.lastX2, this.lastY2);
+    }
+
 }
 
 class Section {
@@ -117,6 +146,7 @@ class SectionIsolator {
 map.set("JE", Line);  
 map.set("KL", Section);
 map.set("KJ", SectionIsolator);
+map.set("JEparalell", ParallelStasjonBane);
 
 
 
@@ -133,7 +163,7 @@ class lastElementCoordinates {
 const pattern = /[A-Za-z]+/;
 const extractedSections = [];
 
-let db = ["JE1", "KL1", "JE2", "KL2", "JE3", "KL3", "JE4", "KJ1", "JE5", "KL4", "JE6", "KJ2", "JE7"];
+let db = ["JE1", "KL1", "JE2", "JEparalell"];// "KL2", "JE3", "KL3", "JE4", "KJ1", "JE5", "KL4", "JE6", "KJ2", "JE7"];
 
 db.forEach(element => {
       const match = element.match(pattern);
@@ -152,7 +182,7 @@ function draw() {
     let elements = [];
     let x1 = 50;
     let y1 = 100;
-    let x2 = 100;
+    let x2 = 500;
     let y2 = 200;
 
     let lastElement = new lastElementCoordinates(x1, y1, x2, y2);
