@@ -69,7 +69,7 @@ class Section {
       // slope, angle and length of the last line
       this.lastSlope = (y2 - y1) / (x2 - x1);
       this.angle = atan2(y2 - y1, x2 - x1);
-      this.length = dist(x1, y1, x2, y2) / 2;
+      this.length = dist(x1, y1, x2, y2) / 4;
 
       // the desired angle of the upper line
       this.newAngle = this.angle + radians(-60);
