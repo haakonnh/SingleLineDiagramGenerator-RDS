@@ -155,7 +155,7 @@ function draw() {
     
       
     drawOriginalLine(x1, y1, x2, y2);
-    const sect = new Section_isolator(x1, x2, y1, y2);
+    const sect = new SectionIsolator(x1, x2, y1, y2);
     sect.draw();
     drawOriginalLine(sect.lowerX1, sect.lowerY1, 
     sect.lowerX1 + cos(sect.angle) * sect.length * 2, sect.lowerY1 + sin(sect.angle) * sect.length * 2);
