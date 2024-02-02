@@ -165,7 +165,7 @@ class lastElementCoordinates {
 const pattern = /[A-Za-z]+/;
 const extractedSections = [];
 
-let db = ["JE1", "KL1", "JE2",  "KL2", "JE3", "KL3", "JE4", "KJ1", "JE5", "KL4", "JE6", "KJ2", "JE7","JEparalell",];
+let db = ["JE1", "KL1", "JE2",  "KL2", "JE3", "KL3", "JE4", "KJ1", "JE5", "KL4", "JE6", "KJ2", "JE7","JEparallelle",];
 
 db.forEach(element => {
       const match = element.match(pattern);
