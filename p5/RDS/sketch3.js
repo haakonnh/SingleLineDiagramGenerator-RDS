@@ -187,7 +187,7 @@ function draw() {
       let x2 = 500;
       let y2 = 200;
 
-}
+
 
 
       let lastElement = new lastElementCoordinates(x1, y1, x2, y2);
@@ -201,3 +201,4 @@ function draw() {
                   lastElement = new lastElementCoordinates(obj.connectionX1, obj.connectionY1, obj.connectionX2, obj.connectionY2);
             }
       });
+    }
