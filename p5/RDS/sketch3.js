@@ -17,7 +17,8 @@ class Line {
             this.y1 = y1;
             this.x2 = x2;
             this.y2 = y2;
-
+            // connectionX1 and connectionY1 are the starting coords for this element
+            // connectionX2 and connectionY2 are the ending coords for this element
             this.connectionX1 = this.x1;
             this.connectionY1 = this.y1;
             this.connectionX2 = this.x1 + myDistX;
@@ -30,7 +31,7 @@ class Line {
 }
 
 //prøver meg her
-class ParallelleStasjonBane {
+class ParallelStasjonBane {
       constructor(x1, y1, x2, y2, antallParallelle) {
             // coords for the last line
             this.lastX1 = x1;
@@ -49,6 +50,7 @@ class ParallelleStasjonBane {
             // calculated coords for the upper line
             this.upperX = this.lastX1 + cos(this.newAngle) * this.length;
             this.upperY = this.lastY1 + sin(this.newAngle) * this.length;
+            
       }
       draw() {
             line(this.lastX1, this.lastY1, this.upperX, this.upperY);
@@ -69,7 +71,7 @@ class Section {
             // slope, angle and length of the last line
             this.lastSlope = (y2 - y1) / (x2 - x1);
             this.angle = atan2(y2 - y1, x2 - x1);
-            this.length = dist(x1, y1, x2, y2) / 2;
+            this.length = dist(x1, y1, x2, y2) / 6;
 
             // the desired angle of the upper line
             this.newAngle = this.angle + radians(-60);
@@ -109,7 +111,7 @@ class SectionIsolator {
             this.lastY2 = y2;
             // Calculate the perpendicular line coordinates
             const angle = atan2(y2 - y1, x2 - x1);
-            const length = 30; // Set your desired length here
+            const length = 15; // Set your desired length here
             const parallelOffset = -10; // Set the desired offset for parallel lines
 
             // Calculate coordinates for both ends of the perpendicular line
@@ -163,7 +165,7 @@ class lastElementCoordinates {
 const pattern = /[A-Za-z]+/;
 const extractedSections = [];
 
-let db = ["JE1", "JE2", "JE3"]; // KL1", "JE2", "JEparallelle", "JE3"]; "KL2", "JE3", "KL3", "JE4", "KJ1", "JE5", "KL4", "JE6", "KJ2", "JE7"];
+let db = ["JE1", "KL1", "JE2",  "KL2", "JE3", "KL3", "JE4", "KJ1", "JE5", "KL4", "JE6", "KJ2", "JE7","JEparalell",];
 
 db.forEach(element => {
       const match = element.match(pattern);
@@ -185,18 +187,17 @@ function draw() {
       let x2 = 500;
       let y2 = 200;
 
+}
+
+
       let lastElement = new lastElementCoordinates(x1, y1, x2, y2);
       extractedSections.forEach(section => {
             if (map.has(section)) {
                   // map contains the class, so create an instance of it depenedent on element
                   const ClassType = map.get(section);
                   const obj = new ClassType(lastElement.x1, lastElement.y1, lastElement.x2, lastElement.y2);
-                  // noe logikk med last element som må tas hensyn til. men regner med at det blir lettere med litt ekstra data
                   obj.draw();
                   elements.push(obj);
                   lastElement = new lastElementCoordinates(obj.connectionX1, obj.connectionY1, obj.connectionX2, obj.connectionY2);
             }
       });
-}
-
-
