@@ -144,23 +144,34 @@ class lastElementCoordinates {
 
 function draw() {
       // put drawing code here
-      background(255, 255, 255);
-      let x = 200;
-      let y = 0;
-      let elements = [];
-      let x1 = 50;
-      let y1 = 100;
-      let x2 = 200;
-      let y2 = 200;
-
-
-      drawOriginalLine(x1, y1, x2, y2);
-      const sect = new Section_isolator(x1, x2, y1, y2);
-      sect.draw();
-      drawOriginalLine(sect.lowerX1, sect.lowerY1,
-            sect.lowerX1 + cos(sect.angle) * sect.length * 2, sect.lowerY1 + sin(sect.angle) * sect.length * 2);
-      //drawSteeperLine(x1, y1, x2, y2, -60);
-
-
-
+    background(255,255, 255);
+    let x = 200;
+    let y = 0;
+    let elements = [];
+    let x1 = 50;
+    let y1 = 100;
+    let x2 = 200;
+    let y2 = 200;
+    
+      
+    drawOriginalLine(x1, y1, x2, y2);
+    const sect = new SectionIsolator(x1, x2, y1, y2);
+    sect.draw();
+    drawOriginalLine(sect.lowerX1, sect.lowerY1, 
+    sect.lowerX1 + cos(sect.angle) * sect.length * 2, sect.lowerY1 + sin(sect.angle) * sect.length * 2);
+    //drawSteeperLine(x1, y1, x2, y2, -60);
+    
+  
+  
 }
+
+
+
+
+
+
+
+
+
+
+

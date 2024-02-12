@@ -32,7 +32,7 @@ class Line {
 
 //prøver meg her
 class ParallelStasjonBane {
-      constructor(x1, y1, x2, y2, antallPralalle) {
+      constructor(x1, y1, x2, y2, antallParallelle) {
             // coords for the last line
             this.lastX1 = x1;
             this.lastX2 = x2;
@@ -148,7 +148,7 @@ class SectionIsolator {
 map.set("JE", Line);
 map.set("KL", Section);
 map.set("KJ", SectionIsolator);
-map.set("JEparalell", ParallelStasjonBane);
+map.set("JEparallelle", ParallelStasjonBane);
 
 
 
@@ -165,7 +165,7 @@ class lastElementCoordinates {
 const pattern = /[A-Za-z]+/;
 const extractedSections = [];
 
-let db = ["JE1", "KL1", "JE2",  "KL2", "JE3", "KL3", "JE4", "KJ1", "JE5", "KL4", "JE6", "KJ2", "JE7","JEparalell",];
+let db = ["JE1", "KL1", "JE2",  "KL2", "JE3", "KL3", "JE4", "KJ1", "JE5", "KL4", "JE6", "KJ2", "JE7","JEparallelle",];
 
 db.forEach(element => {
       const match = element.match(pattern);
@@ -187,6 +187,9 @@ function draw() {
       let x2 = 500;
       let y2 = 200;
 
+
+
+
       let lastElement = new lastElementCoordinates(x1, y1, x2, y2);
       extractedSections.forEach(section => {
             if (map.has(section)) {
@@ -198,4 +201,4 @@ function draw() {
                   lastElement = new lastElementCoordinates(obj.connectionX1, obj.connectionY1, obj.connectionX2, obj.connectionY2);
             }
       });
-}
+    }
