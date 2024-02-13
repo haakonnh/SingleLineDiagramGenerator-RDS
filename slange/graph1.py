@@ -8,7 +8,7 @@ size = 1.4
 hdw_trafo = 276 / 210 # height/width because of cropping in Gimp
 
 A=pgv.AGraph(rankdir='LR', splines=False)
-A.add_node(1, shape='none', image='images/rook.png', fixedsize=True, imagescale=True, width=size, height=size)
+A.add_node(1, shape='none', image='images/queen.png', fixedsize=True, imagescale=True, width=size, height=size)
 A.add_node(2, shape='none', image='images/img_rotated.png', fixedsize=True, imagescale=True, width=size, height=size*hdw_trafo)
 A.add_node(3, shape='none', image='images/queen.png', fixedsize=True, imagescale=True, width=size, height=size)
 
