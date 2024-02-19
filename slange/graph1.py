@@ -4,6 +4,7 @@ from PIL import Image
 size = 1.4
 image1 = Image.open('images/trafo.png')
 image2 = Image.open('images/trafo_vertikal.png')
+
 #img_rotated = image1.rotate(90, expand=True)
 #img_rotated.save('images/trafo_vertikal.png')
 hdw_skillebryter = image1.height / image1.width # height/width because of cropping in Gim

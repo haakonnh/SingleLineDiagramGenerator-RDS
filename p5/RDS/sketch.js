@@ -4,6 +4,7 @@
 function setup() {
       // put setup code here
       createCanvas(1000, 400);
+      img = loadImage('images/trafo.png');
 
 }
 
