@@ -1,6 +1,7 @@
 {
       "type": "module",
-  "dependencies": {
-    "pg": "^8.11.3"
-  }
+      "dependencies": {
+            "dotenv": "^16.4.4",
+            "pg": "^8.11.3"
+      }
 }
