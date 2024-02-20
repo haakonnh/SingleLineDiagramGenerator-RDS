@@ -1,16 +1,29 @@
 /// <reference path="../p5.global-mode.d.ts" />
 /// <reference path="../p5.d.ts" />
+// import fs as es module
 
 let imgs = [];
 const size = 200;
 
-let components = [
+let data = {};
+
+let components = [];
+
+
+
+function preload() {
+      data = loadJSON('test.json');
+      
+};
+
+
+/* let components = [
       'KL1',
       'KL2',
       'KF3',
       'KF4',
       'JE',
-];
+]; */
 
 function toCoords(x, y) {
       return {x: x, y: y + size / 2};
@@ -18,7 +31,21 @@ function toCoords(x, y) {
 
 const pattern = /[A-Za-z]+/;
 
-function preload() {
+
+
+function setup() {
+      createCanvas(1425, 725);
+      background(255);
+      console.log(data);
+
+      Object.entries(data).forEach(([key, value]) => {
+            components.push(value.path.split('.').pop());
+      });
+      console.log(components);
+
+      /* data.forEach(element => {
+            components.push(element.path.split('.').pop());
+      }); */
       components.forEach(element => {
             const match = element.match(pattern);
             if (match && match[0] in componentToPath) {
@@ -29,11 +56,7 @@ function preload() {
                   // draw line between imgs
             }
       });
-};
-
-function setup() {
-      createCanvas(1425, 725);
-      background(255);
+      console.log(imgs);
       let lastCoords = {x: 50, y: 50};
       for (let i = 0; i < components.length; i++) {
             
@@ -54,6 +77,3 @@ function setup() {
 function draw() {
       noLoop()
 }
-
-
-
