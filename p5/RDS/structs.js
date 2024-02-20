@@ -10,5 +10,5 @@ class Component {
 const componentToPath = {
       'KL': 'Skillebryter.png',
       'KJ': 'SeksjonsIsolator.png',
-      'KF': 'Trafo.png',
+      'KF': 'trafo.png',
 };

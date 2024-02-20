@@ -9,11 +9,18 @@ let data = {};
 
 let components = [];
 
-
+let loadedImages = {
+      'KL': null,
+      'KF': null,
+      'KJ': null,
+};
 
 function preload() {
       data = loadJSON('test.json');
-      
+      Object.entries(loadedImages).forEach(([key, value]) => {
+            loadedImages[key] = loadImage('../images/' + componentToPath[key]);
+      });
+      console.log(loadedImages);
 };
 
 
@@ -32,7 +39,6 @@ function toCoords(x, y) {
 const pattern = /[A-Za-z]+/;
 
 
-
 function setup() {
       createCanvas(1425, 725);
       background(255);
@@ -43,37 +49,48 @@ function setup() {
       });
       console.log(components);
 
-      /* data.forEach(element => {
-            components.push(element.path.split('.').pop());
-      }); */
+      let newComponents = [];
+
       components.forEach(element => {
             const match = element.match(pattern);
             if (match && match[0] in componentToPath) {
                   element = match[0];
-                  imgs.push(loadImage('../images/' + componentToPath[element]));
+                  imgs.push(loadedImages[element]);
+                  newComponents.push(element); // regex match removes the number from the component
+                  console.log(imgs[0]);
             }
             else if (match[0] == "JE") {
                   // draw line between imgs
+                  newComponents.push(match[0]);
             }
       });
-      console.log(imgs);
       let lastCoords = {x: 50, y: 50};
-      for (let i = 0; i < components.length; i++) {
+      console.log(newComponents);
+      let imgIndex = 0;
+      for (let i = 0; i < newComponents.length; i++) {
             
-            if (components[i] == "JE") { 
+            if (newComponents[i] == "JE") { 
                   stroke(0);
                   strokeWeight(2);
                   lineCoords = toCoords(lastCoords.x, lastCoords.y);
-                  line(lineCoords.x, lineCoords.y, lineCoords.x, lineCoords.y + size / 2);
-                  lastCoords = {x: lastCoords.x, y: lastCoords.y + size / 2};
+                  line(lineCoords.x, lineCoords.y, lineCoords.x + size, lineCoords.y);
+                  lastCoords = {x: lastCoords.x + size, y: lastCoords.y};
+                  //line(lineCoords.x, lineCoords.y, lineCoords.x, lineCoords.y + size / 2);
+                  //lastCoords = {x: lastCoords.x, y: lastCoords.y + size / 2};
             } else {
-                  console.log(lastCoords, size, size)
-                  image(imgs[i], lastCoords.x, lastCoords.y, size, size);
+                  console.log(imgIndex, imgs[imgIndex], newComponents[i]);
+                  
+                  image(imgs[imgIndex], lastCoords.x, lastCoords.y, size, size);
+                  console.log(imgs[0]);
                   lastCoords = {x: lastCoords.x + size, y: lastCoords.y}; 
+                  imgIndex++;
             }
       }
+      
 }
 
 function draw() {
+      console.log("Draw:",imgs[0])
+      //image(imgs[0], 0,0, size, size);
       noLoop()
 }
