@@ -15,7 +15,33 @@ let loadedImages = {
       'KJ': null,
 };
 
+async function fetchAndProcessData() {
+      const apiUrl = 'http://localhost:8000'; // Replace with your endpoint
+      try {
+            const response = await fetch(apiUrl);
+            if (!response.ok) {
+                  throw new Error(`API request failed: ${response.status}`);
+            } 
+    
+            const data = await response.json(); 
+    
+            // Your data processing and diagram drawing logic here
+            console.log("Data from API:", data);
+    
+            // Example usage assuming your data looks like this:
+            // data = { message: "Greetings from the API!" }
+            const messageText = data.message;
+            text(messageText, 50, 50); // Display the fetched message
+      }     
+      catch (error) {
+            console.error("Error fetching data:", error);
+      }
+}
+
 function preload() {
+      apidata = fetchDiagramData();
+
+      console.log("API", apidata);
       data = loadJSON('test.json');
       Object.entries(loadedImages).forEach(([key, value]) => {
             loadedImages[key] = loadImage('../images/' + componentToPath[key]);
