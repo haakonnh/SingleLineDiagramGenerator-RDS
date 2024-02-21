@@ -1,15 +1,19 @@
 from typing import Union
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import psycopg
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 # API for p5.js to fetch PostgreSQL data
 
 app = FastAPI()
 
+
 origins = [
     "http://localhost",
-    "http://localhost:8080",
     "http://localhost:3000",  
     # Update with your p5.js development origins
     # ... add any other allowed origins
@@ -23,6 +27,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
@@ -31,3 +36,11 @@ def read_root():
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
+
+@app.get("/diagram_data")
+def get_diagram_data():
+      with psycopg.connect(dbname="dabase", user="postgres", password=os.environ['HAAKON_PASSORD']) as conn:
+            with conn.cursor() as cur:
+                  cur.execute('SELECT path FROM tree')
+                  data = cur.fetchall()
+                  return data
