@@ -18,7 +18,7 @@ let loadedImages = {
 };
 
 async function fetchAndProcessData() {
-      const apiUrl = 'http://localhost:8000'; // Replace with your endpoint
+      const apiUrl = 'http://localhost:8000/diagram_data'; // Replace with your endpoint
       try {
             const response = loadJSON(apiUrl);
             
