@@ -177,15 +177,15 @@ db.forEach(element => {
 
 
 function draw() {
-      // put drawing code here
-      background(255, 255, 255);
-      let x = 200;
-      let y = 0;
-      let elements = [];
-      let x1 = 50;
-      let y1 = 100;
-      let x2 = 500;
-      let y2 = 200;
+        // put drawing code here
+        background(255, 255, 255);
+        let x = 200;
+        let y = 0;
+        let elements = [];
+        let x1 = 50;
+        let y1 = 100;
+        let x2 = 500;
+        let y2 = 200;
 
 
 
@@ -193,12 +193,12 @@ function draw() {
       let lastElement = new lastElementCoordinates(x1, y1, x2, y2);
       extractedSections.forEach(section => {
             if (map.has(section)) {
-                  // map contains the class, so create an instance of it depenedent on element
-                  const ClassType = map.get(section);
-                  const obj = new ClassType(lastElement.x1, lastElement.y1, lastElement.x2, lastElement.y2);
-                  obj.draw();
-                  elements.push(obj);
-                  lastElement = new lastElementCoordinates(obj.connectionX1, obj.connectionY1, obj.connectionX2, obj.connectionY2);
+                    // map contains the class, so create an instance of it depenedent on element
+                    const ClassType = map.get(section);
+                    const obj = new ClassType(lastElement.x1, lastElement.y1, lastElement.x2, lastElement.y2);
+                    obj.draw();
+                    elements.push(obj);
+                    lastElement = new lastElementCoordinates(obj.connectionX1, obj.connectionY1, obj.connectionX2, obj.connectionY2);
             }
-      });
-    }
+        });
+}

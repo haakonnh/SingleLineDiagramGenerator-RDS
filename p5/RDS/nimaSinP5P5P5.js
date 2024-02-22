@@ -108,7 +108,14 @@ function setup() {
 
       let lastCoords = {x: 50, y: 50};
       let imgIndex = 0;
-      
+
+      for (let i = 0; i < newComponents.length; i++) {
+
+            if (newComponents[i] == "JE") { 
+
+            }
+      }
+                
       /* for (let i = 0; i < newComponents.length; i++) {
             
             if (newComponents[i] == "JE") { 
