@@ -89,6 +89,21 @@ class Trafo {
     }
 }
 
+class ConnectionDot {
+    constructor(x1, y1, x2, y2) {
+        // coords for the last line
+        this.x = x2;
+        this.y = y2;
+        this.d = 5; // Assuming we have a set value for the diameter (We can make it dependent later)
+
+    }
+
+    draw() {
+        fill('black');
+        circle(this.x, this.y, this.d)
+    }
+}
+
 
 class SectionIsolator {
       constructor(x1, x2, y1, y2) {
@@ -170,6 +185,8 @@ function draw() {
     drawOriginalLine(x1, y1, x2, y2);
     const trafo = new Trafo(x1, y1, x2, y2);
     trafo.draw();
+    const connectiondott = new ConnectionDot(x1, y1, x2, y2);
+    connectiondott.draw();
 }
 
 

@@ -33,9 +33,9 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.get("/items/{item_id}")
+''' @app.get("/items/{item_id}")
 def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+    return {"item_id": item_id, "q": q} '''
 
 @app.get("/diagram_data")
 def get_diagram_data():
@@ -44,3 +44,5 @@ def get_diagram_data():
                   cur.execute('SELECT path FROM tree')
                   data = cur.fetchall()
                   return data
+            
+            
