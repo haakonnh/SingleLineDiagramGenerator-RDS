@@ -12,6 +12,8 @@ const componentToPath = {
       'KJ': 'SeksjonsIsolator.png',
       'KF': 'trafo.png',
 };
+<<<<<<< HEAD
+=======
 
 
 // linje
@@ -151,3 +153,4 @@ class SectionIsolator {
           //line(this.lowerX1, this.lowerY1, this.lowerX2, this.lowerY2);
     }
 }
+>>>>>>> 6105b54a26830e457dd2d5100f01dd5d54fc561e
