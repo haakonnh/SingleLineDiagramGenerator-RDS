@@ -7,7 +7,9 @@ const size = 200;
 
 let data = {};
 
-let fetchedData = [];
+let fetchedData = {};
+
+let dataArray = [];
 
 let components = [];
 
@@ -18,7 +20,7 @@ let loadedImages = {
 };
 
 async function fetchAndProcessData() {
-      const apiUrl = 'http://localhost:8000/diagram_data'; // Replace with your endpoint
+      const apiUrl = 'http://localhost:8000/diagram_data_connections'; // Replace with your endpoint
       try {
             const response = loadJSON(apiUrl);
             
@@ -51,10 +53,17 @@ const pattern = /[A-Za-z]+/;
 
 
 function setup() {
-      Object.entries
+      Object.entries(fetchedData).forEach(([key, value]) => {
+            dataArray.push(value[0]);
+      });
+
+      dataArray.forEach(element => {
+        console.log(element);
+        });
+
       createCanvas(1425, 725);
       background(255);
-      console.log(data);
+      console.log("ARRAY!:", dataArray);
 
       Object.entries(data).forEach(([key, value]) => {
             components.push(value.path.split('.').pop());

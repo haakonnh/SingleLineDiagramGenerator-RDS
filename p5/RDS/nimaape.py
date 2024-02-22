@@ -41,6 +41,15 @@ def read_item(item_id: int, q: Union[str, None] = None):
 def get_diagram_data():
       with psycopg.connect(dbname="banenor.sorberg-nypan", user="postgres") as conn:
             with conn.cursor() as cur:
-                  cur.execute('SELECT path1 FROM tree')
+                  cur.execute('SELECT * FROM tree')
                   data = cur.fetchall()
                   return data
+            
+@app.get("/diagram_data_connections")
+def get_diagram_data_connections():
+      with psycopg.connect(dbname="banenor.sorberg-nypan", user="postgres") as conn:
+            with conn.cursor() as cur:
+                  cur.execute('SELECT * FROM connections')
+                  data = cur.fetchall()
+                  return data
+            
