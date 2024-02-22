@@ -1,6 +1,7 @@
 {
       "type": "module",
       "dependencies": {
+            "browser-sync": "^3.0.2",
             "dotenv": "^16.4.4",
             "pg": "^8.11.3"
       }
