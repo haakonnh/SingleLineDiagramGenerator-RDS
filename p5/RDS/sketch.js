@@ -73,6 +73,23 @@ class Section {
       }
 }
 
+class Trafo {
+    constructor(x1, y1, x2, y2) {
+        // coords for the last line
+        this.x = x2;
+        this.y = y2;
+        this.d = 50; // Assuming we have a set value for the diameter (We can make it dependent later)
+
+    }
+
+    draw() {
+        noFill();
+        circle(this.x, this.y-25, this.d)
+        circle(this.x, this.y-50, this.d)
+    }
+}
+
+
 class SectionIsolator {
       constructor(x1, x2, y1, y2) {
             this.lastX1 = x1;
@@ -144,26 +161,15 @@ class lastElementCoordinates {
 }
 
 function draw() {
-      // put drawing code here
-    background(255,255, 255);
-    let x = 200;
-    let y = 0;
-    let elements = [];
+    background(255, 255, 255);
     let x1 = 50;
-    let y1 = 100;
-    let x2 = 200;
+    let y1 = 200;
+    let x2 = 150;
     let y2 = 200;
-    
-      
+
     drawOriginalLine(x1, y1, x2, y2);
-    const sect = new SectionIsolator(x1, x2, y1, y2);
-    sect.draw();
-    drawOriginalLine(sect.lowerX1, sect.lowerY1, 
-    sect.lowerX1 + cos(sect.angle) * sect.length * 2, sect.lowerY1 + sin(sect.angle) * sect.length * 2);
-    //drawSteeperLine(x1, y1, x2, y2, -60);
-    
-  
-  
+    const trafo = new Trafo(x1, y1, x2, y2);
+    trafo.draw();
 }
 
 

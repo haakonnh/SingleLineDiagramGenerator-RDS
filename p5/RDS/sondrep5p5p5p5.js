@@ -102,3 +102,4 @@ function draw() {
       //image(imgs[0], 0,0, size, size);
       noLoop()
 }
+
