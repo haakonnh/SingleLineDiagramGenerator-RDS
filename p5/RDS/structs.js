@@ -153,7 +153,7 @@ class SectionIsolator {
 }
 
 
-//last element coordinate
+/* //last element coordinate
 class lastElementCoordinates {
     constructor(x1, y1, x2, y2) {
         this.x1 = x1;
@@ -161,23 +161,21 @@ class lastElementCoordinates {
         this.x2 = x2;
         this.y2 = y2;
     }
-}
+} */
 
-// Regex pattern to extract the section
-const pattern = /[A-Za-z]+/;
-const extractedSections = [];
 
-db.forEach(element => {
+
+/* db.forEach(element => {
     const match = element.match(pattern);
     if (match) {
         extractedSections.push(match[0]);
     }
-});
+}); */
 
 
 //tegne ?
 
-function draw() {
+/* function draw() {
     // put drawing code here
     background(255, 255, 255);
     let x = 200;
@@ -203,3 +201,4 @@ function draw() {
         }
     });
 }
+ */

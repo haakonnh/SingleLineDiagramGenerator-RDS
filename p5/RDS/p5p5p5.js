@@ -57,17 +57,20 @@ function setup() {
             dataArray.push(value[0]);
       });
 
-      dataArray.forEach(element => {
+      /* dataArray.forEach(element => {
         console.log(element);
-        });
+        }); */
 
       createCanvas(1425, 725);
       background(255);
       console.log("ARRAY!:", dataArray);
 
-      Object.entries(data).forEach(([key, value]) => {
-            components.push(value.path.split('.').pop());
+
+      dataArray.forEach((value) => {
+            components.push(value.split('.').pop());
       });
+
+      console.log(components)
 
       let newComponents = [];
 
