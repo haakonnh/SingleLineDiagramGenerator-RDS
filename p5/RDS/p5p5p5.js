@@ -106,7 +106,7 @@ function setup() {
                   imgIndex++;
             }
       }
-      
+      // TODO: REFACTOR MOTHER FUCKERS
 }
 
 function draw() {
