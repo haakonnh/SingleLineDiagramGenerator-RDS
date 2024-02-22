@@ -41,7 +41,7 @@ def read_item(item_id: int, q: Union[str, None] = None):
 def get_diagram_data():
       with psycopg.connect(dbname="dabase", user="postgres", password=os.environ['HAAKON_PASSORD']) as conn:
             with conn.cursor() as cur:
-                  cur.execute('SELECT path FROM tree')
+                  cur.execute('SELECT path1 FROM tree')
                   data = cur.fetchall()
                   return data
             
