@@ -32,7 +32,7 @@ app.add_middleware(
 def read_root():
     return {"Hello": "World"}
 
-
+# TODO: DADASD
 ''' @app.get("/items/{item_id}")
 def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q} '''
@@ -43,6 +43,7 @@ def get_diagram_data():
             with conn.cursor() as cur:
                   cur.execute('SELECT path1 FROM tree')
                   data = cur.fetchall()
+                  # loop through each component fetched and fetch connections
                   return data
             
             
