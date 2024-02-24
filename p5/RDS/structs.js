@@ -13,6 +13,9 @@ const componentToPath = {
     'KF': 'trafo.png',
 };
 
+let myDistX = 50;
+let myDistY = 50;
+
 
 // linje
 class Line {
