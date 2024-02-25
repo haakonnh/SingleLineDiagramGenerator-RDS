@@ -6,6 +6,11 @@ class Component {
     return this.path
   }
 }
+
+let myDistX = 50
+let myDistY = 50
+
+
 // linje
 class Line {
   constructor(x1, y1, x2, y2) {

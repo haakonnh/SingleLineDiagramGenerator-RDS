@@ -45,15 +45,15 @@ async function fetchAndProcessData() {
     }
 }
 
-/* function preload() {
+function preload() {
     fetchAndProcessData();
 
     data = loadJSON('test.json');
-    Object.entries(loadedImages).forEach(([key, value]) => {
+   /*  Object.entries(loadedImages).forEach(([key, value]) => {
         loadedImages[key] = loadImage('../images/' + componentToPath[key]);
     });
-    console.log(loadedImages);
-}; */
+    console.log(loadedImages);*/
+}; 
 
 
 function toCoords(x, y) {
@@ -72,13 +72,13 @@ function setup() {
         dataArray1.push(value);
     });
 
-    /*       dataArray.forEach(element => {
+           dataArray.forEach(element => {
             console.log(element);
             });
     
             dataArray1.forEach(element => {
                 console.log(element);
-                }); */
+                }); 
 
     createCanvas(1425, 725);
     background(255);
