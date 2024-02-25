@@ -6,20 +6,6 @@ class Component {
     return this.path
   }
 }
-<<<<<<< HEAD
-
-const componentToPath = {
-    'KL': 'Skillebryter.png',
-    'KJ': 'SeksjonsIsolator.png',
-    'KF': 'trafo.png',
-};
-
-let myDistX = 50;
-let myDistY = 50;
-
-
-=======
->>>>>>> aa8890d455d4eb91e697749d0721643c1ba20412
 // linje
 class Line {
   constructor(x1, y1, x2, y2) {

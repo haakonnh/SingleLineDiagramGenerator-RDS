@@ -45,7 +45,7 @@ async function fetchAndProcessData() {
     }
 }
 
-function preload() {
+/* function preload() {
     fetchAndProcessData();
 
     data = loadJSON('test.json');
@@ -53,7 +53,7 @@ function preload() {
         loadedImages[key] = loadImage('../images/' + componentToPath[key]);
     });
     console.log(loadedImages);
-};
+}; */
 
 
 function toCoords(x, y) {
