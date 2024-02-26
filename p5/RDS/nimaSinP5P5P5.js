@@ -45,10 +45,12 @@ async function fetchAndProcessData() {
     }
 }
 
+
+
 function preload() {
     fetchAndProcessData();
 
-    data = loadJSON('test.json');
+    data = loadJSON('./test.json');
    /*  Object.entries(loadedImages).forEach(([key, value]) => {
         loadedImages[key] = loadImage('../images/' + componentToPath[key]);
     });
@@ -62,6 +64,17 @@ function toCoords(x, y) {
 
 const pattern = /[A-Za-z]+/;
 
+function keepLastLetters(string) {
+    // Split into segments
+    const segments = string.split(".");
+  
+    // Process each segment to keep the last letter
+    const lastLetters = segments.map(segment => segment[segment.length - 1]);
+  
+    // Join the last letters
+    return lastLetters.join(""); 
+  }
+
 
 function setup() {
     Object.entries(fetchedData).forEach(([key, value]) => {
@@ -73,29 +86,31 @@ function setup() {
     });
 
            dataArray.forEach(element => {
-            console.log(element);
+            console.log("hallo", element);
             });
     
             dataArray1.forEach(element => {
-                console.log(element);
+                console.log("hei", element);
                 }); 
 
     createCanvas(1425, 725);
     background(255);
-    console.log("ARRAY!:", dataArray);
-    console.log("ARRAY!:", dataArray1);
+    console.log("DataARRAY!:", dataArray);
+    console.log("DataARRAY!:", dataArray1);
 
-    Object.entries(data).forEach(([key, value]) => {
-        components.push(value.path.split('.').pop());
+    Object.entries(dataArray).forEach(([key, value]) => {
+        //components.push(value.path.split('.').pop())
+;
     });
 
     let newComponents = [];
 
     components.forEach(element => {
         const match = element.match(pattern);
+        console.log("Match:", element);
         if (match && match[0] in componentToPath) {
             element = match[0];
-            imgs.push(loadedImages[element]);
+            //imgs.push(loadedImages[element]);
             newComponents.push(element); // regex match removes the number from the component
         }
         else if (match[0] == "JE") {
