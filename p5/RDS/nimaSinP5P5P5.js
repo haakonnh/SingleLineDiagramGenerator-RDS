@@ -68,11 +68,11 @@ function keepLastLetters(string) {
     // Split into segments
     const segments = string.split(".");
   
-    // Process each segment to keep the last letter
-    const lastLetters = segments.map(segment => segment[segment.length - 1]);
+    // Get the last segment
+    const lastSegment = segments.pop();  // Or segments[segments.length - 1]
   
-    // Join the last letters
-    return lastLetters.join(""); 
+    // Return the letters as a string (you can join them if desired)
+    return lastSegment;  
   }
 
 
@@ -98,46 +98,19 @@ function setup() {
     console.log("DataARRAY!:", dataArray);
     console.log("DataARRAY!:", dataArray1);
 
-    Object.entries(dataArray).forEach(([key, value]) => {
-        //components.push(value.path.split('.').pop())
-;
-    });
-
-    let newComponents = [];
-
-    components.forEach(element => {
-        const match = element.match(pattern);
-        console.log("Match:", element);
-        if (match && match[0] in componentToPath) {
-            element = match[0];
-            //imgs.push(loadedImages[element]);
-            newComponents.push(element); // regex match removes the number from the component
-        }
-        else if (match[0] == "JE") {
-            // draw line between imgs
-            newComponents.push(match[0]);
-        }
+    Object.entries(dataArray1).forEach(([key, value]) => {
+        components.push(keepLastLetters(value[0]));
 
     });
-    console.log("Element:", newComponents);
 
-    let lastCoords = { x: 50, y: 50 };
-    let imgIndex = 0;
-
-    for (let i = 0; i < newComponents.length; i++) {
-
-        if (newComponents[i] == "JE") {
-        }
-    }
-
-    for (let i = 0; i < newComponents.length; i++) {
+    /* for (let i = 0; i < newComponents.length; i++) {
     if (newComponents[i] == "JE") {
         stroke(0);
         strokeWeight(2);
         lineCoords = toCoords(lastCoords.x, lastCoords.y);
         new Line(lineCoords.x, lineCoords.y, lineCoords.x, lineCoords.y).draw();
         }
-    }
+    } */
     /* for (let i = 0; i < newComponents.length; i++) {
           
           if (newComponents[i] == "JE") { 
