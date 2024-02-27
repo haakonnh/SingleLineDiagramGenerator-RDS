@@ -109,11 +109,37 @@ function setup() {
                 x: lastCoords.x + size,
                 y: lastCoords.y,
             }
+      });
+      let lastCoords = {x: 50, y: 50};
+      let imgIndex = 0;
+      for (let i = 0; i < newComponents.length; i++) {
+            
+            if (newComponents[i] == "JE") { 
+                  stroke(0);
+                  strokeWeight(2);
+                  lineCoords = toCoords(lastCoords.x, lastCoords.y);
+                  line(lineCoords.x, lineCoords.y, lineCoords.x + size, lineCoords.y);
+                  lastCoords = {x: lastCoords.x + size, y: lastCoords.y};
+                  //line(lineCoords.x, lineCoords.y, lineCoords.x, lineCoords.y + size / 2);
+                  //lastCoords = {x: lastCoords.x, y: lastCoords.y + size / 2};
+            } else {
+                  console.log(imgIndex, imgs[imgIndex], newComponents[i]);
+                  
+                  image(imgs[imgIndex], lastCoords.x, lastCoords.y, size, size);
+                  lastCoords = {x: lastCoords.x + size, y: lastCoords.y}; 
+                  imgIndex++;
+            }
+      }
+      // TODO: REFACTOR MOTHER FUCKERS
+      // TODO: RESPEKTER KONGEN
+}
+
+function draw() {
+      noLoop()
             imgIndex++
         }
     }
     // TODO: REFACTOR MOTHER FUCKERS
-}
 
 function draw() {
     console.log('Draw:', imgs[0])
