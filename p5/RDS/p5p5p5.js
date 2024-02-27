@@ -107,10 +107,9 @@ function setup() {
             }
       }
       // TODO: REFACTOR MOTHER FUCKERS
+      // TODO: RESPEKTER KONGEN
 }
 
 function draw() {
-      console.log("Draw:",imgs[0])
-      //image(imgs[0], 0,0, size, size);
       noLoop()
 }
