@@ -34,7 +34,7 @@ class Section {
       constructor(x1, y1, x2, y2) {
             // coords for the last line
             this.lastX1 = x1
-            this.lastX2 = x1 + myDistX
+            this.lastX2 = x2
             this.lastY1 = y1 
             this.lastY2 = y2
 
@@ -159,8 +159,20 @@ class SectionIsolator {
 }
 
 class Skillebryter {
-      constructor(x1, y1, x2, y2, avEllerPå = 0) {}
-      draw() {}
+      constructor(x1, y1, x2, y2, avEllerPå = 0) {
+            this.x1 = x1
+            this.y1 = y1
+            this.x2 = x2
+            this.y2 = y2
+            this.w = 30
+            this.h = 30
+            this.connectionX1 = this.x1 + this.w
+            this.connectionY1 = this.y1
+      }
+      draw() { // draw rectangle 
+            rect(this.x1, this.y1 - this.h / 2, this.w, this.h)
+            fill('black')
+      }
 }
 
 
@@ -230,9 +242,10 @@ const componentToPath = {
 }
 
 class componentState {
-      constructor(x, y, id) {
-            this.x = y
+      constructor(x, y, id, type = "component") {
+            this.x = x
             this.y = y
             this.id = id
+            this.type = type
       }
 }

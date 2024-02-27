@@ -56,7 +56,7 @@ function preload() {
 
 function setup() {
 
-      let drawnComponents = []; // components that have been drawn
+      
 
       let connections = [];
       
@@ -82,47 +82,56 @@ function setup() {
       createCanvas(1425, 725);
       background(255); 
 
+      let drawnComponents = []; // components that have been drawn
+
+      // loop through the connections and draw them
       connections.forEach((value) => {
             let from = value.from;
             let to = value.to;
 
             let fromElement = null;
+            if (drawnComponents.length > 0) {
+                  drawnComponents.forEach((value) => {
+                        console.log('VALUE:', value, from.id)
+                        if (value.id == from.id) {
+                              fromElement = value;
+                              console.log('FROM ELEMENT:', fromElement)
+                        }
+                  });
+            };
+            fromMatch = from.path.match(/[A-Za-z]+/)[0];
 
-            drawnComponents.forEach((value) => {
-                  console.log('VALUE:', value, from.id)
-                  if (value.id == from.id) {
-                        fromElement = value;
-                        console.log('FROM ELEMENT:', fromElement)
-                  }
-            });
-
-            match = from.path.match(/[A-Za-z]+/)[0];
-
-            if (!(match.length > 2) || !(match != "BaneNOR")) { // exit if the element is not a component
+            if (!(fromMatch.length > 2) || !(fromMatch != "BaneNOR")) { // exit if the element is not a component
                   return;
             }
             toMatch = to.path.match(/[A-Za-z]+/)[0];
+            
             if (!fromElement){
-                  let instance = new componentToPath[toMatch](150, 150, 0, 0);
-                  console.log('Drawing:', instance)
-                  let drawnComponent = new componentState(150, 150, to.id);
+                  let instance = new componentToPath[fromMatch](150, 150, 0, 0);
+                  let drawnComponent = new componentState(150, 150, from.id, fromMatch);
                   drawnComponents.push(drawnComponent);
                   instance.draw()
+                  
+
+                  let newInstance = new componentToPath[toMatch](150, 150, 150 + myDistX, 150);
+                  drawnComponent = new componentState(instance.connectionX1, instance.connectionY1, to.id, toMatch);
+                  drawnComponents.push(drawnComponent);
+                  newInstance.draw()
+                  console.log("WE DRAW: ", instance, newInstance)
             }
             else if (fromElement) {
                   let x = fromElement.x;
                   let y = fromElement.y;
                   
                   let instance = new componentToPath[toMatch](x, y, x + myDistX, y);
-                  console.log('Drawing:', instance)
-                  let drawnComponent = new componentState(x, y, to.id);
+                  let drawnComponent = new componentState(instance.connectionX1, instance.connectionY1, to.id, toMatch);
                   drawnComponents.push(drawnComponent);
-                  console.log('Drawing from:', fromElement, 'to:', instance)
                   instance.draw()
+                  console.log("WE DRAW: ", instance)
+                  
             }
       });
-
-      //console.log(components);
+      console.log("Drawn components: ", drawnComponents)
 
       const pattern = /[A-Za-z]+/
 
