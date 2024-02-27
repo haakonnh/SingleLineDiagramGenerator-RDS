@@ -70,9 +70,10 @@ function keepLastLetters(string) {
   
     // Get the last segment
     const lastSegment = segments.pop();  // Or segments[segments.length - 1]
+    const lettersOnly = lastSegment.replace(/[0-9]/g, '');
   
     // Return the letters as a string (you can join them if desired)
-    return lastSegment;  
+    return lettersOnly;  
   }
 
 
@@ -85,13 +86,13 @@ function setup() {
         dataArray1.push(value);
     });
 
-           dataArray.forEach(element => {
-            console.log("hallo", element);
-            });
+/*     dataArray.forEach(element => {
+        console.log("hallo", element);
+    });
     
-            dataArray1.forEach(element => {
-                console.log("hei", element);
-                }); 
+    dataArray1.forEach(element => {
+        console.log("hei", element);
+    });  */
 
     createCanvas(1425, 725);
     background(255);
@@ -102,6 +103,15 @@ function setup() {
         components.push(keepLastLetters(value[0]));
 
     });
+
+    console.log(components);
+
+    for (let i = 0; i < components.length; i++) {
+        if (components[i] in componentToPath) {
+            line(toCoords(50, 50).x, toCoords(50, 50).y, toCoords(50, 50).x + size, toCoords(50, 50).y);
+            //componentToPath[components[i]].draw();
+        }
+    }
 
     /* for (let i = 0; i < newComponents.length; i++) {
     if (newComponents[i] == "JE") {

@@ -6,7 +6,6 @@ class Component {
     return this.path
   }
 }
-
 let myDistX = 50
 let myDistY = 50
 
