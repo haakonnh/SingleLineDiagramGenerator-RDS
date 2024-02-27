@@ -107,14 +107,14 @@ function setup() {
             toMatch = to.path.match(/[A-Za-z]+/)[0];
             
             if (!fromElement){
-                  let instance = new componentToPath[fromMatch](150, 150, 0, 0);
-                  let drawnComponent = new componentState(150, 150, from.id, fromMatch);
+                  let instance = new componentToPath[fromMatch](50, 150, 0, 0);
+                  let drawnComponent = new componentState(instance.connectionX1, instance.conne, from.id, fromMatch);
                   drawnComponents.push(drawnComponent);
                   instance.draw()
                   
 
-                  let newInstance = new componentToPath[toMatch](150, 150, 150 + myDistX, 150);
-                  drawnComponent = new componentState(instance.connectionX1, instance.connectionY1, to.id, toMatch);
+                  let newInstance = new componentToPath[toMatch](instance.connectionX1, instance.connectionY1, 150 + myDistX, 150);
+                  drawnComponent = new componentState(newInstance.connectionX1, newInstance.connectionY1, to.id, toMatch);
                   drawnComponents.push(drawnComponent);
                   newInstance.draw()
                   console.log("WE DRAW: ", instance, newInstance)
@@ -123,7 +123,11 @@ function setup() {
                   let x = fromElement.x;
                   let y = fromElement.y;
                   
-                  let instance = new componentToPath[toMatch](x, y, x + myDistX, y);
+                  let instance = new componentToPath[toMatch](x, y, x, y); // CHANGE?
+                  if (toMatch == "UAA") {
+                        instance = new componentToPath[toMatch](x - myDistX, y, x, y);
+                        // TODO: FIX SECTION LOGIC, IT DRAWS WEIRDLY
+                  }
                   let drawnComponent = new componentState(instance.connectionX1, instance.connectionY1, to.id, toMatch);
                   drawnComponents.push(drawnComponent);
                   instance.draw()

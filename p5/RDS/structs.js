@@ -18,9 +18,9 @@ class Line {
             this.y2 = y2
             // connectionX1 and connectionY1 are the starting coords for this element
             // connectionX2 and connectionY2 are the ending coords for this element
-            this.connectionX1 = this.x1
+            this.connectionX1 = this.x1+ myDistX
             this.connectionY1 = this.y1
-            this.connectionX2 = this.x1 + myDistX
+            this.connectionX2 = this.x1 
             this.connectionY2 = this.y1 
       }
 
