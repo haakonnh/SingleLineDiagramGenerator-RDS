@@ -65,5 +65,4 @@ def get_relation_data():
                         }
                         for result in results
                   ]
-                  # loop through each component fetched and fetch connections
                   return data

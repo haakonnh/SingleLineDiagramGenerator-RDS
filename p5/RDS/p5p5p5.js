@@ -56,6 +56,8 @@ function preload() {
 
 function setup() {
 
+      let drawnComponents = []; // components that have been drawn
+
       let connections = [];
       
       Object.entries(fetchedRelationships).forEach(([key, value]) => {
@@ -64,21 +66,61 @@ function setup() {
             let from, to = null;
             Object.entries(fetchedData).forEach(([key, value]) => {
                   if (value.id == id1) {
-                        from = value.path.split('.').pop();
+                        from = {id: value.id, path: value.path.split('.').pop()};
                   }
                   else if (value.id == id2) {
-                        to = value.path.split('.').pop();   
+                        to = {id: value.id, path: value.path.split('.').pop()};
                   }
                   if (from && to) {
                         connections.push({from, to})
                         from, to = null;
                   }
-            })
+            });
       });
       console.log('CONNECTIONS:', connections)
-      createCanvas(1425, 725);
-      background(255);
 
+      createCanvas(1425, 725);
+      background(255); 
+
+      connections.forEach((value) => {
+            let from = value.from;
+            let to = value.to;
+
+            let fromElement = null;
+
+            drawnComponents.forEach((value) => {
+                  console.log('VALUE:', value, from.id)
+                  if (value.id == from.id) {
+                        fromElement = value;
+                        console.log('FROM ELEMENT:', fromElement)
+                  }
+            });
+
+            match = from.path.match(/[A-Za-z]+/)[0];
+
+            if (!(match.length > 2) || !(match != "BaneNOR")) { // exit if the element is not a component
+                  return;
+            }
+            toMatch = to.path.match(/[A-Za-z]+/)[0];
+            if (!fromElement){
+                  let instance = new componentToPath[toMatch](150, 150, 0, 0);
+                  console.log('Drawing:', instance)
+                  let drawnComponent = new componentState(150, 150, to.id);
+                  drawnComponents.push(drawnComponent);
+                  instance.draw()
+            }
+            else if (fromElement) {
+                  let x = fromElement.x;
+                  let y = fromElement.y;
+                  
+                  let instance = new componentToPath[toMatch](x, y, x + myDistX, y);
+                  console.log('Drawing:', instance)
+                  let drawnComponent = new componentState(x, y, to.id);
+                  drawnComponents.push(drawnComponent);
+                  console.log('Drawing from:', fromElement, 'to:', instance)
+                  instance.draw()
+            }
+      });
 
       //console.log(components);
 
