@@ -112,36 +112,6 @@ function setup() {
             //componentToPath[components[i]].draw();
         }
     }
-
-    /* for (let i = 0; i < newComponents.length; i++) {
-    if (newComponents[i] == "JE") {
-        stroke(0);
-        strokeWeight(2);
-        lineCoords = toCoords(lastCoords.x, lastCoords.y);
-        new Line(lineCoords.x, lineCoords.y, lineCoords.x, lineCoords.y).draw();
-        }
-    } */
-    /* for (let i = 0; i < newComponents.length; i++) {
-          
-          if (newComponents[i] == "JE") { 
-                stroke(0);
-                strokeWeight(2);
-                //lineCoords = toCoords(lastCoords.x, lastCoords.y);
-                //line(lineCoords.x, lineCoords.y, lineCoords.x + size, lineCoords.y);
-                lastCoords = {x: lastCoords.x + size, y: lastCoords.y};
-                //line(lineCoords.x, lineCoords.y, lineCoords.x, lineCoords.y + size / 2);
-                //lastCoords = {x: lastCoords.x, y: lastCoords.y + size / 2};
-          } else {
-                //console.log(imgIndex, imgs[imgIndex], newComponents[i]);
-                
-                //image(imgs[imgIndex], lastCoords.x, lastCoords.y, size, size);
-                lastCoords = {x: lastCoords.x + size, y: lastCoords.y}; 
-                imgIndex++;
-          }
-    } */
-
-
-
 }
 
 function draw() {
