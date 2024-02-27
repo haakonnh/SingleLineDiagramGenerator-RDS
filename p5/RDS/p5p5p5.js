@@ -2,16 +2,16 @@
 /// <reference path="../p5.d.ts" />
 // import fs as es module
 
-let imgs = []
-const size = 200
+let imgs = [];
+const size = 200;
 
-let data = {}
+let data = {};
 
-let fetchedData = {}
+let fetchedData = {};
 
-let dataArray = []
+let dataArray = [];
 
-let components = []
+let components = [];
 
 let loadedImages = {
     KL: null,
@@ -61,75 +61,22 @@ function setup() {
               console.log(element);
               }); */
 
-    createCanvas(1425, 725)
-    background(255)
-    console.log('ARRAY!:', dataArray)
+    createCanvas(1425, 725);
+    background(255);
+    console.log('ARRAY!:', dataArray);
 
     dataArray.forEach((value) => {
         components.push(value.split('.').pop())
     })
 
-    console.log(components)
+    console.log(components);
 
-    let newComponents = []
-
-    components.forEach((element) => {
-        const match = element.match(pattern)
-        if (match && match[0] in componentToPath) {
-            element = match[0]
-            imgs.push(loadedImages[element])
-            newComponents.push(element) // regex match removes the number from the component
-        } else if (match[0] == 'JE') {
-            // draw line between imgs
-            newComponents.push(match[0])
-        }
-    })
+    let newComponents = [];
     let lastCoords = {
         x: 50,
         y: 50,
     }
-    let imgIndex = 0
-    for (let i = 0; i < newComponents.length; i++) {
-        if (newComponents[i] == 'JE') {
-            stroke(0)
-            strokeWeight(2)
-            lineCoords = toCoords(lastCoords.x, lastCoords.y)
-            line(lineCoords.x, lineCoords.y, lineCoords.x + size, lineCoords.y)
-            lastCoords = {
-                x: lastCoords.x + size,
-                y: lastCoords.y,
-            }
-            //line(lineCoords.x, lineCoords.y, lineCoords.x, lineCoords.y + size / 2);
-            //lastCoords = {x: lastCoords.x, y: lastCoords.y + size / 2};
-        } else {
-            console.log(imgIndex, imgs[imgIndex], newComponents[i])
-
-            image(imgs[imgIndex], lastCoords.x, lastCoords.y, size, size)
-            lastCoords = {
-                x: lastCoords.x + size,
-                y: lastCoords.y,
-            }
-      });
-      let lastCoords = {x: 50, y: 50};
-      let imgIndex = 0;
-      for (let i = 0; i < newComponents.length; i++) {
-            
-            if (newComponents[i] == "JE") { 
-                  stroke(0);
-                  strokeWeight(2);
-                  lineCoords = toCoords(lastCoords.x, lastCoords.y);
-                  line(lineCoords.x, lineCoords.y, lineCoords.x + size, lineCoords.y);
-                  lastCoords = {x: lastCoords.x + size, y: lastCoords.y};
-                  //line(lineCoords.x, lineCoords.y, lineCoords.x, lineCoords.y + size / 2);
-                  //lastCoords = {x: lastCoords.x, y: lastCoords.y + size / 2};
-            } else {
-                  console.log(imgIndex, imgs[imgIndex], newComponents[i]);
-                  
-                  image(imgs[imgIndex], lastCoords.x, lastCoords.y, size, size);
-                  lastCoords = {x: lastCoords.x + size, y: lastCoords.y}; 
-                  imgIndex++;
-            }
-      }
+    
       // TODO: REFACTOR MOTHER FUCKERS
       // TODO: RESPEKTER KONGEN
 }
