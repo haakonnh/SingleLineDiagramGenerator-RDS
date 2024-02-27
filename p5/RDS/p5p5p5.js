@@ -38,7 +38,7 @@ function preload() {
 
 }
 
-const pattern = /[A-Za-z]+/
+
 
 function setup() {
       Object.entries(fetchedData).forEach(([key, value]) => {
@@ -59,14 +59,16 @@ function setup() {
 
       console.log(components);
 
-      components = ['UAA', 'UAA','TAA']
+      const pattern = /[A-Za-z]+/
+
 
       let newComponents = [];
 
       components.forEach((value) => {
             let match = value.match(pattern);
-            let element = match[0];
-            if (match) {
+            let element = "";
+            element = match[0];
+            if (match && element.length > 2 && element != "BaneNOR") {
                   let instance = new componentToPath[element](0, 0, 0, 0);
                   newComponents.push(instance);
             }
