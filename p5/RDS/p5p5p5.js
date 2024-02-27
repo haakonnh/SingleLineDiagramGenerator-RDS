@@ -54,28 +54,48 @@ function preload() {
       fetchAndProcessRelationships()
 }
 
-
-
 function setup() {
       Object.entries(fetchedData).forEach(([key, value]) => {
-            dataArray.push(value[0])
+            //console.log(value.path)
       })
 
+      let connections = [];
+      
+      Object.entries(fetchedRelationships).forEach(([key, value]) => {
+            let id1 = value.node1
+            let id2 = value.node2
+            let from, to = null;
+            Object.entries(fetchedData).forEach(([key, value]) => {
+                  if (value.id == id1) {
+                        console.log('NODE1:', value.path)
+                        from = value.path.split('.').pop();
+                  }
+                  else if (value.id == id2) {
+                        console.log('NODE2:', value.path)
+                        to = value.path.split('.').pop();   
+                  }
+                  if (from && to) {
+                        connections.push({from, to})
+                        from, to = null;
+                  }
+            })
+      });
+      console.log('CONNECTIONS:', connections)
       createCanvas(1425, 725);
       background(255);
-      console.log('ARRAY!:', dataArray);
 
-      dataArray.forEach((value) => {
-            components.push(value.split('.').pop())
-      })
 
-      console.log(components);
+      //console.log(components);
 
       const pattern = /[A-Za-z]+/
 
-      let newComponents = [];
+      
 
-      components.forEach((value) => {
+      /* Object.entries(fetchedRelationships).forEach(([key, value]) => {
+            newComponents.push(value)
+      }); */
+
+      /* components.forEach((value) => {
             let match = value.match(pattern);
             let element = "";
             element = match[0];
@@ -83,14 +103,10 @@ function setup() {
                   let instance = new componentToPath[element](0, 0, 0, 0);
                   newComponents.push(instance);
             }
-      });
-
-      console.log(newComponents);
+      }); */
 
 }
 
 function draw() {
-      console.log('Draw:', imgs[0])
-      //image(imgs[0], 0,0, size, size);
       noLoop()
 }

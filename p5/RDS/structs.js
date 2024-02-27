@@ -9,7 +9,6 @@ class Component {
 let myDistX = 50
 let myDistY = 50
 
-
 // linje
 class Line {
       constructor(x1, y1, x2, y2) {
@@ -77,6 +76,7 @@ class Section {
 //paralell stasjon, denne må endres
 class ParallelStasjonBane {
       constructor(x1, y1, x2, y2, antallParallelle) {
+            
             // coords for the last line
             this.lastX1 = x1
             this.lastX2 = x2
