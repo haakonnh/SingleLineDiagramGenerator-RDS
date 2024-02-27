@@ -14,82 +14,70 @@ let dataArray = [];
 let components = [];
 
 let loadedImages = {
-    KL: null,
-    KF: null,
-    KJ: null,
+      KL: null,
+      KF: null,
+      KJ: null,
 }
 
 async function fetchAndProcessData() {
-    const apiUrl = 'http://localhost:8000/diagram_data' // Replace with your endpoint
-    try {
-        const response = loadJSON(apiUrl)
+      const apiUrl = 'http://localhost:8000/diagram_data' // Replace with your endpoint
+      try {
+            const response = loadJSON(apiUrl)
 
-        const data = response
-        console.log('Data from API:', data)
+            const data = response
+            console.log('Data from API:', data)
 
-        fetchedData = data
-    } catch (error) {
-        console.error('Error fetching data:', error)
-    }
+            fetchedData = data
+      } catch (error) {
+            console.error('Error fetching data:', error)
+      }
 }
 
 function preload() {
-    fetchAndProcessData()
+      fetchAndProcessData()
 
-    data = loadJSON('test.json')
-    /* Object.entries(loadedImages).forEach(([key, value]) => {
-                  loadedImages[key] = loadImage('../images/' + componentToPath[key]);
-            });
-            console.log(loadedImages); */
-}
-
-function toCoords(x, y) {
-    return {
-        x: x,
-        y: y + size / 2,
-    }
 }
 
 const pattern = /[A-Za-z]+/
 
 function setup() {
-    Object.entries(fetchedData).forEach(([key, value]) => {
-        dataArray.push(value[0])
-    })
+      Object.entries(fetchedData).forEach(([key, value]) => {
+            dataArray.push(value[0])
+      })
 
-    /* dataArray.forEach(element => {
-              console.log(element);
-              }); */
+      /* dataArray.forEach(element => {
+                console.log(element);
+                }); */
 
-    createCanvas(1425, 725);
-    background(255);
-    console.log('ARRAY!:', dataArray);
+      createCanvas(1425, 725);
+      background(255);
+      console.log('ARRAY!:', dataArray);
 
-    dataArray.forEach((value) => {
-        components.push(value.split('.').pop())
-    })
+      dataArray.forEach((value) => {
+            components.push(value.split('.').pop())
+      })
 
-    console.log(components);
+      console.log(components);
 
-    let newComponents = [];
-    let lastCoords = {
-        x: 50,
-        y: 50,
-    }
-    
-      // TODO: REFACTOR MOTHER FUCKERS
-      // TODO: RESPEKTER KONGEN
+      components = ['UAA', 'UAA','TAA']
+
+      let newComponents = [];
+
+      components.forEach((value) => {
+            let match = value.match(pattern);
+            let element = match[0];
+            if (match) {
+                  let instance = new componentToPath[element](0, 0, 0, 0);
+                  newComponents.push(instance);
+            }
+      });
+
+      console.log(newComponents);
+
 }
 
 function draw() {
+      console.log('Draw:', imgs[0])
+      //image(imgs[0], 0,0, size, size);
       noLoop()
-            imgIndex++
-        }
-    }
-    // TODO: REFACTOR MOTHER FUCKERS
-
-function draw() {
-    console.log('Draw:', imgs[0])
-    //image(imgs[0], 0,0, size, size);
-    noLoop()
 }

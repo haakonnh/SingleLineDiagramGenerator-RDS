@@ -195,10 +195,10 @@ class ConnectionDot {
 }
 
 const componentToPath = {
-  UAA: Section,
+  "UAA": Section,
   //'QBA': Skillebryter,
-  TAA: Trafo,
-  WBC: Line,
+  "TAA": Trafo,
+  "WBC": Line,
   // 'FCA': Sikring,
   // 'XBA': Trafosamling,
   // TODO: MAKE THESE CLASSES
