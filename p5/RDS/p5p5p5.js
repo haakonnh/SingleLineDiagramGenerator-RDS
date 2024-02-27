@@ -55,9 +55,6 @@ function preload() {
 }
 
 function setup() {
-      Object.entries(fetchedData).forEach(([key, value]) => {
-            //console.log(value.path)
-      })
 
       let connections = [];
       
@@ -67,11 +64,9 @@ function setup() {
             let from, to = null;
             Object.entries(fetchedData).forEach(([key, value]) => {
                   if (value.id == id1) {
-                        console.log('NODE1:', value.path)
                         from = value.path.split('.').pop();
                   }
                   else if (value.id == id2) {
-                        console.log('NODE2:', value.path)
                         to = value.path.split('.').pop();   
                   }
                   if (from && to) {
