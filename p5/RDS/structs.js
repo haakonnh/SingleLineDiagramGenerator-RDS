@@ -157,6 +157,14 @@ class SectionIsolator {
   }
 }
 
+class Skillebryter {
+    constructor(x1, y1, x2, y2, avEllerPå = 0) {
+    }
+    draw() {
+    } 
+}
+
+
 class Trafo {
   constructor(x1, y1, x2, y2) {
     // coords for the last line
