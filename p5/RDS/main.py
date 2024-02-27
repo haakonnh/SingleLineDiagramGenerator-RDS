@@ -32,16 +32,22 @@ app.add_middleware(
 def read_root():
     return {"Hello": "World"}
 
-# TODO: DADASD
-''' @app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q} '''
+# TODO: Suck data from PostgreSQL and return it to p5.js
 
 @app.get("/diagram_data")
 def get_diagram_data():
       with psycopg.connect(dbname="dabase", user="postgres", password=os.environ['HAAKON_PASSORD']) as conn:
             with conn.cursor() as cur:
-                  cur.execute('SELECT path1 FROM tree')
+                  cur.execute('SELECT * FROM tree')
+                  data = cur.fetchall()
+                  # loop through each component fetched and fetch connections
+                  return data
+            
+@app.get("/relation_data")
+def get_relation_data():
+      with psycopg.connect(dbname="dabase", user="postgres", password=os.environ['HAAKON_PASSORD']) as conn:
+            with conn.cursor() as cur:
+                  cur.execute('SELECT * FROM connections')
                   data = cur.fetchall()
                   # loop through each component fetched and fetch connections
                   return data

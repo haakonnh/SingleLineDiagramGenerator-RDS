@@ -9,6 +9,8 @@ let data = {};
 
 let fetchedData = {};
 
+let fetchedRelationships = {};
+
 let dataArray = [];
 
 let components = [];
@@ -19,13 +21,13 @@ let loadedImages = {
       KJ: null,
 }
 
-async function fetchAndProcessData() {
+async function fetchAndProcessComponents() {
       const apiUrl = 'http://localhost:8000/diagram_data' // Replace with your endpoint
       try {
             const response = loadJSON(apiUrl)
 
             const data = response
-            console.log('Data from API:', data)
+            console.log('Components from API:', data)
 
             fetchedData = data
       } catch (error) {
@@ -33,9 +35,23 @@ async function fetchAndProcessData() {
       }
 }
 
-function preload() {
-      fetchAndProcessData()
+async function fetchAndProcessRelationships() {
+      const apiUrl = 'http://localhost:8000/relation_data' // Replace with your endpoint
+      try {
+            const response = loadJSON(apiUrl)
 
+            const data = response
+            console.log('Relations from API:', data)
+
+            fetchedRelationships = data
+      } catch (error) {
+            console.error('Error fetching data:', error)
+      }
+}
+
+function preload() {
+      fetchAndProcessComponents()
+      fetchAndProcessRelationships()
 }
 
 
@@ -44,10 +60,6 @@ function setup() {
       Object.entries(fetchedData).forEach(([key, value]) => {
             dataArray.push(value[0])
       })
-
-      /* dataArray.forEach(element => {
-                console.log(element);
-                }); */
 
       createCanvas(1425, 725);
       background(255);
@@ -60,7 +72,6 @@ function setup() {
       console.log(components);
 
       const pattern = /[A-Za-z]+/
-
 
       let newComponents = [];
 
