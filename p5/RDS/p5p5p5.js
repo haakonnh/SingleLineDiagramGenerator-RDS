@@ -3,6 +3,7 @@
 // import fs as es module
 
 let imgs = [];
+
 const size = 200;
 
 let data = {};
