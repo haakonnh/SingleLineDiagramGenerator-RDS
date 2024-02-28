@@ -158,21 +158,72 @@ class SectionIsolator {
       }
 }
 
-class Skillebryter {
-      constructor(x1, y1, x2, y2, avEllerPå = 0) {
-            this.x1 = x1
-            this.y1 = y1
-            this.x2 = x2
-            this.y2 = y2
-            this.w = 30
-            this.h = 30
-            this.connectionX1 = this.x1 + this.w
-            this.connectionY1 = this.y1
-      }
-      draw() { // draw rectangle 
-            rect(this.x1, this.y1 - this.h / 2, this.w, this.h)
-            fill('black')
-      }
+class SkillebryterOgSeksjon {
+    constructor(x1, y1, x2, y2, avEllerPå = 0) {
+        // coords for the last line
+        this.lastX1 = x1
+        this.lastX2 = x2
+        this.lastY1 = y1
+        this.lastY2 = y2
+
+        // slope, angle and length of the last line
+        this.lastSlope = (y2 - y1) / (x2 - x1)
+        this.angle = atan2(y2 - y1, x2 - x1)
+        this.length = dist(x1, y1, x2, y2) / 6
+
+        // the desired angle of the upper line
+        this.newAngle = this.angle + radians(-60)
+
+        // calculated coords for the upper line
+        this.upperX = this.lastX2 + cos(this.newAngle) * this.length
+        this.upperY = this.lastY2 + sin(this.newAngle) * this.length
+
+        // pytahgorean theorem to calculate the coords for the lower line
+        this.mot = sin(radians(-60)) * this.length
+        this.hos = sqrt(this.length * this.length - this.mot * this.mot)
+        this.lowerX1 = x2 + cos(this.angle) * this.hos
+        this.lowerY1 = y2 + sin(this.angle) * this.hos
+        this.lowerAngle = this.newAngle + radians(180) // angle flipped by 180 degrees for lower line
+        this.lowerX2 = this.lowerX1 + cos(this.lowerAngle) * this.length
+        this.lowerY2 = this.lowerY1 + sin(this.lowerAngle) * this.length
+
+        // output coords for "last element", connection points essentially
+        this.connectionX1 = this.lowerX1
+        this.connectionY1 = this.lowerY1
+        this.connectionX2 = this.lowerX2
+        this.connectionY2 = this.lowerY2
+
+
+        // for skillebryter
+        this.skillebryterOppX1 = this.lastX2 - myDistX/5;
+        this.skillebryterOppY1 = this.lastY2;
+        this.skillebryterOppX2 = this.lowerX1 + myDistX/5;
+
+        this.skillebryterTopp = this.skillebryterOppY1 - 1.5*this.length;
+
+        this.skillebryterStartX = this.skillebryterOppX1 + myDistX/7;
+
+        this.skillebryterSluttX = this.skillebryterOppX2 - myDistX/7;
+
+    }
+
+  draw() {
+        // draw upper and lower line
+
+        strokeWeight(1)
+        line(this.lastX2, this.lastY2, this.upperX, this.upperY)
+        line(this.lowerX1, this.lowerY1, this.lowerX2, this.lowerY2)
+
+        line(this.skillebryterOppX1, this.skillebryterOppY1, this.skillebryterOppX1, this.skillebryterTopp)
+        line(this.skillebryterOppX2, this.lowerY1, this.skillebryterOppX2, this.skillebryterTopp)
+
+        line(this.skillebryterOppX1, this.skillebryterTopp, this.skillebryterStartX, this.skillebryterTopp)
+        line(this.skillebryterSluttX, this.skillebryterTopp, this.skillebryterOppX2, this.skillebryterTopp)
+
+       strokeWeight(2)
+        line(this.skillebryterSluttX, this.lastY2 - 1.5*this.length + myDistY/8, this.skillebryterSluttX, this.lowerY1 - 1.5*this.length - myDistY/8)
+        line(this.skillebryterStartX, this.skillebryterTopp, this.skillebryterSluttX, this.skillebryterTopp);
+    }
 }
 
 
@@ -233,7 +284,7 @@ class Trafosamling {
 
 const componentToPath = {
       "UAA": Section,
-      "QBA": Skillebryter,
+      "QBA": SkillebryterOgSeksjon, //Endrer denne til SkillebryterOgSeksjon, men må finne en bedre løsning
       "TAA": Trafo,
       "WBC": Line,
       "FCA": Sikring,
