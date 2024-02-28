@@ -57,8 +57,6 @@ function preload() {
 
 function setup() {
 
-      
-
       let connections = [];
       
       Object.entries(fetchedRelationships).forEach(([key, value]) => {
@@ -84,6 +82,14 @@ function setup() {
       background(255); 
 
       let drawnComponents = []; // components that have been drawn
+      for (let i = 0; i < connections.length; i++) {
+            if (connections[i].from.path.match(/[A-Za-z]+/)[0] == "UAA" && connections[i].to.path.match(/[A-Za-z]+/)[0] == "QBA") {
+                  // delete the element
+                  connections.splice(i, 1);
+                  i--;
+            }
+      }
+      console.log("Edited connections: ", connections)
 
       // loop through the connections and draw them
       connections.forEach((value) => {
@@ -108,12 +114,17 @@ function setup() {
             // if the from element has not been drawn, draw it
             if (!fromElement){
                   let instance = new componentToPath[fromMatch](50, 150, 0, 0);
-                  let drawnComponent = new componentState(instance.connectionX1, instance.conne, from.id, fromMatch);
+                  let drawnComponent = new componentState(instance.connectionX1, instance.connectionY1, from.id, fromMatch);
                   drawnComponents.push(drawnComponent);
                   instance.draw()
                   
                   // draw the to element based on the newly drawn component
-                  let secondInstance = new componentToPath[toMatch](instance.connectionX1, instance.connectionY1, 150 + myDistX, 150);
+                  
+                  let secondInstance = new componentToPath[toMatch](instance.connectionX1, instance.connectionY1, 50 + myDistX, 150);
+                  if (toMatch == "UAA") {
+                        secondInstance = new componentToPath[toMatch](instance.connectionX1 - myDistX, instance.connectionY1, 50 + myDistX, 150);
+                        // TODO: FIX SECTION LOGIC, IT DRAWS WEIRDLY
+                  }
                   drawnComponent = new componentState(secondInstance.connectionX1, secondInstance.connectionY1, to.id, toMatch);
                   drawnComponents.push(drawnComponent);
                   secondInstance.draw()
