@@ -61,6 +61,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import psycopg
 import os
 import json
+from collections import defaultdict
 
 
 # API for p5.js to fetch PostgreSQL data
@@ -82,6 +83,31 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 );
+
+def topological_sort(data):
+      graph = defaultdict(list)
+      in_degrees = defaultdict(int)  # Keep track of how many incoming edges each node has
+
+      for edge in data:
+            graph[edge['node1']].append(edge['node2'])
+            in_degrees[edge['node2']] += 1
+      # Build the initial queue correctly:
+      queue = []  # Empty to start
+      for node in graph:  # Consider every node in the graph
+            if node not in in_degrees:  # If it has no recorded incoming edge
+                  queue.append(node)    
+      sorted_order = []
+      while queue:
+            node = queue.pop(0)
+            
+            for neighbor in graph[node]:
+                  sorted_order.append((node, neighbor))
+                  in_degrees[neighbor] -= 1
+                  if in_degrees[neighbor] == 0:
+                        queue.append(neighbor)
+
+      return sorted_order 
+
 
 
 @app.get("/")
@@ -121,4 +147,4 @@ def get_relation_data():
                         for result in results
                   ]
                   # loop through each component fetched and fetch connections
-                  return data
+                  return topological_sort(data)
