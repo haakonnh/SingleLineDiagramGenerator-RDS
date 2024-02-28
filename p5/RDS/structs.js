@@ -218,7 +218,7 @@ class SkillebryterOgSeksjon {
       
 
         // output coords for "last element", connection points essentially
-        this.connectionX1 = this.skillebryterOppx2
+        this.connectionX1 = this.skillebryterOppX2
         this.connectionY1 = this.lowerY1
         this.connectionX2 = this.lowerX2
         this.connectionY2 = this.lowerY2
