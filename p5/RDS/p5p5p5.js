@@ -93,10 +93,8 @@ function setup() {
             let fromElement = null;
             if (drawnComponents.length > 0) {
                   drawnComponents.forEach((value) => {
-                        console.log('VALUE:', value, from.id)
                         if (value.id == from.id) {
                               fromElement = value;
-                              console.log('FROM ELEMENT:', fromElement)
                         }
                   });
             };
@@ -119,7 +117,6 @@ function setup() {
                   drawnComponent = new componentState(secondInstance.connectionX1, secondInstance.connectionY1, to.id, toMatch);
                   drawnComponents.push(drawnComponent);
                   secondInstance.draw()
-                  console.log("WE DRAW: ", instance, secondInstance)
             }
             else if (fromElement) {
                   let x = fromElement.x;
@@ -133,7 +130,6 @@ function setup() {
                   let drawnComponent = new componentState(instance.connectionX1, instance.connectionY1, to.id, toMatch);
                   drawnComponents.push(drawnComponent);
                   instance.draw()
-                  console.log("WE DRAW: ", instance)
                   
             }
       });

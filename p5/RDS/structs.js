@@ -158,6 +158,24 @@ class SectionIsolator {
       }
 }
 
+//skillebryter, draw rectangle
+class Skillebryter {
+      constructor(x1, y1, x2, y2) {
+            this.x1 = x1
+            this.y1 = y1
+            this.x2 = x2
+            this.y2 = y2
+            this.connectionX1 = this.x1 + 30
+            this.connectionY1 = this.y1
+            this.connectionX2 = this.x1
+            this.connectionY2 = this.y1
+      }
+
+      draw() {
+            rect(this.x1, this.y1 - 15, 30, 30)
+      }
+}
+
 class SkillebryterOgSeksjon {
     constructor(x1, y1, x2, y2, avEllerPå = 0) {
         // coords for the last line
@@ -284,7 +302,7 @@ class Trafosamling {
 
 const componentToPath = {
       "UAA": Section,
-      "QBA": SkillebryterOgSeksjon, //Endrer denne til SkillebryterOgSeksjon, men må finne en bedre løsning
+      "QBA": Skillebryter, //Endrer denne til SkillebryterOgSeksjon, men må finne en bedre løsning
       "TAA": Trafo,
       "WBC": Line,
       "FCA": Sikring,

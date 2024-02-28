@@ -16,9 +16,7 @@ app = FastAPI()
 
 origins = [
     "http://localhost",
-    "http://localhost:3000",  
-    # Update with your p5.js development origins
-    # ... add any other allowed origins
+    "http://localhost:3000", # p5.js client can now access the server
 ]
 
 app.add_middleware(
@@ -46,12 +44,16 @@ def topological_sort(data):
             node = queue.pop(0)
             
             for neighbor in graph[node]:
-                  sorted_order.append((node, neighbor))
+                  edge_object = {
+                        "node1": node,
+                        "node2": neighbor
+                  }
+                  sorted_order.append(edge_object)
                   in_degrees[neighbor] -= 1
                   if in_degrees[neighbor] == 0:
                         queue.append(neighbor)
-
       return sorted_order 
+
 
 
 @app.get("/")
@@ -90,6 +92,7 @@ def get_relation_data():
                         }
                         for result in results
                   ] 
+                  print(data)
                   
                   
                   return (topological_sort(data))
