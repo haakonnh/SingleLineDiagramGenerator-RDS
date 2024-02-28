@@ -5,7 +5,7 @@ import psycopg
 from dotenv import load_dotenv
 import os
 import json
-import collections
+from collections import defaultdict
 
 load_dotenv()
 
@@ -28,6 +28,30 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 );
+
+def topological_sort(data):
+      graph = defaultdict(list)
+      in_degrees = defaultdict(int)  # Keep track of how many incoming edges each node has
+
+      for edge in data:
+            graph[edge['node1']].append(edge['node2'])
+            in_degrees[edge['node2']] += 1
+      # Build the initial queue correctly:
+      queue = []  # Empty to start
+      for node in graph:  # Consider every node in the graph
+            if node not in in_degrees:  # If it has no recorded incoming edge
+                  queue.append(node)    
+      sorted_order = []
+      while queue:
+            node = queue.pop(0)
+            
+            for neighbor in graph[node]:
+                  sorted_order.append((node, neighbor))
+                  in_degrees[neighbor] -= 1
+                  if in_degrees[neighbor] == 0:
+                        queue.append(neighbor)
+
+      return sorted_order 
 
 
 @app.get("/")
@@ -67,22 +91,5 @@ def get_relation_data():
                         for result in results
                   ] 
                   
-                  # Building the temporary dictionary
-                  node_connections = collections.defaultdict(list)
-                  for item in data:
-                        node_connections[item['node1']].append(item['node2'])
-
-                  # Finding the starting node   
-                  all_nodes = set(item['node1'] for item in data) # Collect all 'node1' values
-                  all_node2 = set(item['node2'] for item in data)  # Collect all 'node2' values
-                  start_node = (all_nodes - all_node2).pop()
-
-                  # Reconstructing the sorted path
-                  sorted_path = []
-                  current_node = start_node
-                  while current_node in node_connections:
-                        sorted_path.append(current_node)
-                        current_node = node_connections[current_node].pop()
-                  sorted_path.append(current_node) 
-                  print(sorted_path) 
-                  return data
+                  
+                  return (topological_sort(data))
