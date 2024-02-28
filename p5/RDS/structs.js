@@ -195,19 +195,34 @@ class SkillebryterOgSeksjon {
 
 
         // for skillebryter
-        this.skillebryterX1 = this.lastX2
+        this.skillebryterOppX1 = this.lastX2 - myDistX/5;
+        this.skillebryterOppY1 = this.lastY2;
+        this.skillebryterOppX2 = this.lowerX1 + myDistX/5;
+
+        this.skillebryterTopp = this.skillebryterOppY1 - 1.5*this.length;
+
+        this.skillebryterStartX = this.skillebryterOppX1 + myDistX/7;
+
+        this.skillebryterSluttX = this.skillebryterOppX2 - myDistX/7;
+
     }
 
   draw() {
         // draw upper and lower line
+
+        strokeWeight(1)
         line(this.lastX2, this.lastY2, this.upperX, this.upperY)
         line(this.lowerX1, this.lowerY1, this.lowerX2, this.lowerY2)
 
-        line(this.lastX2 - myDistX/5, this.lastY2, this.lastX2 - myDistX/5, this.lastY2 - 1.5*this.length)
-        line(this.lowerX1 + myDistX/5, this.lowerY1, this.lowerX1 + myDistX/5, this.lowerY1 - 1.5*this.length)
+        line(this.skillebryterOppX1, this.skillebryterOppY1, this.skillebryterOppX1, this.skillebryterTopp)
+        line(this.skillebryterOppX2, this.lowerY1, this.skillebryterOppX2, this.skillebryterTopp)
 
-        line(this.lastX2-myDistX/5, this.lastY2 - 1.5*this.length, this.lowerX1+myDistX/5, this.lowerY1 - 1.5*this.length)
-        line(this.lastX2 + myDistX/7, this.lastY2 - 1.5*this.length + myDistY/7, this.lastX2 + myDistX/7 , this.lowerY1 - 1.5*this.length - myDistY/7)
+        line(this.skillebryterOppX1, this.skillebryterTopp, this.skillebryterStartX, this.skillebryterTopp)
+        line(this.skillebryterSluttX, this.skillebryterTopp, this.skillebryterOppX2, this.skillebryterTopp)
+
+       strokeWeight(2)
+        line(this.skillebryterSluttX, this.lastY2 - 1.5*this.length + myDistY/8, this.skillebryterSluttX, this.lowerY1 - 1.5*this.length - myDistY/8)
+        line(this.skillebryterStartX, this.skillebryterTopp, this.skillebryterSluttX, this.skillebryterTopp);
     }
 }
 

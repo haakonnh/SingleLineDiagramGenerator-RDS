@@ -107,9 +107,6 @@ function setup() {
             //toInstance.draw();
 
             new SkillebryterOgSeksjon(100,100,200,100).draw();
-
-            console.log("from:", from); 
-            console.log("to:", to); 
         }
     });
 
