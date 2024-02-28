@@ -6,7 +6,7 @@ class Component {
             return this.path
       }
 }
-let myDistX = 50
+let myDistX = 150
 let myDistY = 50
 
 // linje
@@ -18,14 +18,14 @@ class Line {
             this.y2 = y2
             // connectionX1 and connectionY1 are the starting coords for this element
             // connectionX2 and connectionY2 are the ending coords for this element
-            this.connectionX1 = this.x1
+            this.connectionX1 = this.x1+ myDistX
             this.connectionY1 = this.y1
-            this.connectionX2 = this.x1 + myDistX
-            this.connectionY2 = this.y1 + myDistY
+            this.connectionX2 = this.x1 
+            this.connectionY2 = this.y1 
       }
 
       draw() {
-            line(this.x1, this.y1, this.x1 + myDistX, this.y1 + myDistY) // temp dist. and y2
+            line(this.x1, this.y1, this.x1 + myDistX, this.y1 ) // temp dist. and y2
       }
 }
 
@@ -35,16 +35,16 @@ class Section {
             // coords for the last line
             this.lastX1 = x1
             this.lastX2 = x2
-            this.lastY1 = y1
+            this.lastY1 = y1 
             this.lastY2 = y2
 
             // slope, angle and length of the last line
-            this.lastSlope = (y2 - y1) / (x2 - x1)
+            //this.lastSlope = (y2 - y1) / (x2 - x1) 
             this.angle = atan2(y2 - y1, x2 - x1)
             this.length = dist(x1, y1, x2, y2) / 6
 
             // the desired angle of the upper line
-            this.newAngle = this.angle + radians(-60)
+            this.newAngle = this.angle + radians(-60) 
 
             // calculated coords for the upper line
             this.upperX = this.lastX2 + cos(this.newAngle) * this.length
@@ -275,4 +275,13 @@ const componentToPath = {
       "FCA": Sikring,
       "XBA": Trafosamling,
       // TODO: MAKE THESE CLASSES
+}
+
+class componentState {
+      constructor(x, y, id, type = "component") {
+            this.x = x
+            this.y = y
+            this.id = id
+            this.type = type
+      }
 }

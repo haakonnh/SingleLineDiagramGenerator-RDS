@@ -5,6 +5,7 @@ import psycopg
 from dotenv import load_dotenv
 import os
 import json
+import collections
 
 load_dotenv()
 
@@ -64,6 +65,24 @@ def get_relation_data():
                               "node2": result[2],
                         }
                         for result in results
-                  ]
-                  # loop through each component fetched and fetch connections
+                  ] 
+                  
+                  # Building the temporary dictionary
+                  node_connections = collections.defaultdict(list)
+                  for item in data:
+                        node_connections[item['node1']].append(item['node2'])
+
+                  # Finding the starting node   
+                  all_nodes = set(item['node1'] for item in data) # Collect all 'node1' values
+                  all_node2 = set(item['node2'] for item in data)  # Collect all 'node2' values
+                  start_node = (all_nodes - all_node2).pop()
+
+                  # Reconstructing the sorted path
+                  sorted_path = []
+                  current_node = start_node
+                  while current_node in node_connections:
+                        sorted_path.append(current_node)
+                        current_node = node_connections[current_node].pop()
+                  sorted_path.append(current_node) 
+                  print(sorted_path) 
                   return data
