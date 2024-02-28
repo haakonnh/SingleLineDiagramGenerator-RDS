@@ -80,6 +80,8 @@ function setup() {
     createCanvas(1425, 725);
     background(255);
     
+    new SkillebryterOgSeksjon(100, 100, 150, 100).draw();
+
     console.log("Fetched data:", fetchedDataRelations[1]['node1']);
 };
 

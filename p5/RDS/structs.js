@@ -206,7 +206,7 @@ class SkillebryterOgSeksjon {
         this.lowerY2 = this.lowerY1 + sin(this.lowerAngle) * this.length
 
         // output coords for "last element", connection points essentially
-        this.connectionX1 = this.lowerX1
+        this.connectionX1 = this.skillebryterOppx2
         this.connectionY1 = this.lowerY1
         this.connectionX2 = this.lowerX2
         this.connectionY2 = this.lowerY2
@@ -231,6 +231,8 @@ class SkillebryterOgSeksjon {
         strokeWeight(1)
         line(this.lastX2, this.lastY2, this.upperX, this.upperY)
         line(this.lowerX1, this.lowerY1, this.lowerX2, this.lowerY2)
+        line(this.skillebryterOppX1, this.lastY2, this.lastX2, this.lastY2)
+        line(this.skillebryterOppX2, this.lowerY1, this.lowerX1, this.lowerY1)
 
         line(this.skillebryterOppX1, this.skillebryterOppY1, this.skillebryterOppX1, this.skillebryterTopp)
         line(this.skillebryterOppX2, this.lowerY1, this.skillebryterOppX2, this.skillebryterTopp)
@@ -238,7 +240,7 @@ class SkillebryterOgSeksjon {
         line(this.skillebryterOppX1, this.skillebryterTopp, this.skillebryterStartX, this.skillebryterTopp)
         line(this.skillebryterSluttX, this.skillebryterTopp, this.skillebryterOppX2, this.skillebryterTopp)
 
-       strokeWeight(2)
+        strokeWeight(2)
         line(this.skillebryterSluttX, this.lastY2 - 1.5*this.length + myDistY/8, this.skillebryterSluttX, this.lowerY1 - 1.5*this.length - myDistY/8)
         line(this.skillebryterStartX, this.skillebryterTopp, this.skillebryterSluttX, this.skillebryterTopp);
 
