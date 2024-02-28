@@ -48,7 +48,16 @@ function preload() {
 }; 
 
 function checkNext(){
-
+    Object.entries(fetchedDataRelations).forEach(([key, value]) => {
+        let currentIndex = 0;
+        let doesItContinue = false;
+        for(let i = 0; i < 2; i++){
+            if(value[2] == fetchedDataRelations[currentIndex][1]){
+                doesItContinue = true;
+            }
+        };
+        currentIndex++;
+    });
 };
 
 function toCoords(x, y) {
@@ -71,8 +80,7 @@ function setup() {
     createCanvas(1425, 725);
     background(255);
     
-    
-
+    console.log("Fetched data:", fetchedDataRelations[1]['node1']);
 };
 
 function draw() {

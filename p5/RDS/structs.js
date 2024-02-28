@@ -241,6 +241,8 @@ class SkillebryterOgSeksjon {
        strokeWeight(2)
         line(this.skillebryterSluttX, this.lastY2 - 1.5*this.length + myDistY/8, this.skillebryterSluttX, this.lowerY1 - 1.5*this.length - myDistY/8)
         line(this.skillebryterStartX, this.skillebryterTopp, this.skillebryterSluttX, this.skillebryterTopp);
+
+        strokeWeight(1)
     }
 }
 
