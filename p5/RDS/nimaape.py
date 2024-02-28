@@ -99,9 +99,13 @@ def topological_sort(data):
       sorted_order = []
       while queue:
             node = queue.pop(0)
-            
+
             for neighbor in graph[node]:
-                  sorted_order.append((node, neighbor))
+                  edge_object = {
+                        "node1": node,
+                        "node2": neighbor
+                  }
+                  sorted_order.append(edge_object)
                   in_degrees[neighbor] -= 1
                   if in_degrees[neighbor] == 0:
                         queue.append(neighbor)
