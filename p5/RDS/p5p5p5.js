@@ -106,18 +106,19 @@ function setup() {
             }
             toMatch = to.path.match(/[A-Za-z]+/)[0];
             
+            // if the from element has not been drawn, draw it
             if (!fromElement){
                   let instance = new componentToPath[fromMatch](50, 150, 0, 0);
                   let drawnComponent = new componentState(instance.connectionX1, instance.conne, from.id, fromMatch);
                   drawnComponents.push(drawnComponent);
                   instance.draw()
                   
-
-                  let newInstance = new componentToPath[toMatch](instance.connectionX1, instance.connectionY1, 150 + myDistX, 150);
-                  drawnComponent = new componentState(newInstance.connectionX1, newInstance.connectionY1, to.id, toMatch);
+                  // draw the to element based on the newly drawn component
+                  let secondInstance = new componentToPath[toMatch](instance.connectionX1, instance.connectionY1, 150 + myDistX, 150);
+                  drawnComponent = new componentState(secondInstance.connectionX1, secondInstance.connectionY1, to.id, toMatch);
                   drawnComponents.push(drawnComponent);
-                  newInstance.draw()
-                  console.log("WE DRAW: ", instance, newInstance)
+                  secondInstance.draw()
+                  console.log("WE DRAW: ", instance, secondInstance)
             }
             else if (fromElement) {
                   let x = fromElement.x;

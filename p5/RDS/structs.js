@@ -44,7 +44,7 @@ class Section {
             this.length = dist(x1, y1, x2, y2) / 6
 
             // the desired angle of the upper line
-            this.newAngle = this.angle + radians(-60)
+            this.newAngle = this.angle + radians(-60) 
 
             // calculated coords for the upper line
             this.upperX = this.lastX2 + cos(this.newAngle) * this.length
