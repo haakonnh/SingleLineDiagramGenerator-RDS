@@ -305,7 +305,7 @@ class Trafosamling {
 }
 
 const componentToPath = {
-      "UAA": Section,
+      "UAA": SkillebryterOgSeksjon,
       "QBA": Skillebryter, //Endrer denne til SkillebryterOgSeksjon, men må finne en bedre løsning
       "TAA": Trafo,
       "WBC": Line,
