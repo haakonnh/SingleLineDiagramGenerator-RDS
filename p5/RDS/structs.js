@@ -205,6 +205,18 @@ class SkillebryterOgSeksjon {
         this.lowerX2 = this.lowerX1 + cos(this.lowerAngle) * this.length
         this.lowerY2 = this.lowerY1 + sin(this.lowerAngle) * this.length
 
+              // for skillebryter
+              this.skillebryterOppX1 = this.lastX2 - myDistX/5;
+              this.skillebryterOppY1 = this.lastY2;
+              this.skillebryterOppX2 = this.lowerX1 + myDistX/5;
+      
+              this.skillebryterTopp = this.skillebryterOppY1 - 1.5*this.length;
+      
+              this.skillebryterStartX = this.skillebryterOppX1 + myDistX/7;
+      
+              this.skillebryterSluttX = this.skillebryterOppX2 - myDistX/7;
+      
+
         // output coords for "last element", connection points essentially
         this.connectionX1 = this.skillebryterOppx2
         this.connectionY1 = this.lowerY1
@@ -212,16 +224,6 @@ class SkillebryterOgSeksjon {
         this.connectionY2 = this.lowerY2
 
 
-        // for skillebryter
-        this.skillebryterOppX1 = this.lastX2 - myDistX/5;
-        this.skillebryterOppY1 = this.lastY2;
-        this.skillebryterOppX2 = this.lowerX1 + myDistX/5;
-
-        this.skillebryterTopp = this.skillebryterOppY1 - 1.5*this.length;
-
-        this.skillebryterStartX = this.skillebryterOppX1 + myDistX/7;
-
-        this.skillebryterSluttX = this.skillebryterOppX2 - myDistX/7;
 
     }
 
