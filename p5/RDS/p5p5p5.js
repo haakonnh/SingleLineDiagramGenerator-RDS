@@ -84,11 +84,12 @@ function setup() {
       let drawnComponents = []; // components that have been drawn
       for (let i = 0; i < connections.length; i++) {
             if (connections[i].from.path.match(/[A-Za-z]+/)[0] == "UAA" && connections[i].to.path.match(/[A-Za-z]+/)[0] == "QBA") {
-                  // delete the element
+                  // delete the element, this
                   connections.splice(i, 1);
                   i--;
             }
       }
+
       console.log("Edited connections: ", connections)
 
       // loop through the connections and draw them
