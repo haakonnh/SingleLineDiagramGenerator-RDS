@@ -42,21 +42,22 @@ async function fetchAndProcessData() {
 };
 
 
-
 function preload() {
     fetchAndProcessData();
 }; 
 
 function checkNext(){
+    let currentIndex = 1;
     Object.entries(fetchedDataRelations).forEach(([key, value]) => {
-        let currentIndex = 0;
         let doesItContinue = false;
         for(let i = 0; i < 2; i++){
-            if(value[2] == fetchedDataRelations[currentIndex][1]){
+            if(value[2] == fetchedDataRelations[currentIndex - 1][1]){
                 doesItContinue = true;
+                console.log(value[2], fetchedDataRelations[1][1]);
             }
         };
         currentIndex++;
+        console.log(currentIndex);
     });
 };
 
@@ -82,7 +83,7 @@ function setup() {
     
     new SkillebryterOgSeksjon(100, 100, 150, 100).draw();
 
-    console.log("Fetched data:", fetchedDataRelations[1]['node1']);
+    checkNext();
 };
 
 function draw() {
