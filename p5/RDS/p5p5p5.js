@@ -84,7 +84,7 @@ function setup() {
       let drawnComponents = []; // components that have been drawn
       for (let i = 0; i < connections.length; i++) {
             if (connections[i].from.path.match(/[A-Za-z]+/)[0] == "UAA" && connections[i].to.path.match(/[A-Za-z]+/)[0] == "QBA") {
-                  // delete the element, this
+                  // delete the element with slice
                   connections.splice(i, 1);
                   i--;
             }
