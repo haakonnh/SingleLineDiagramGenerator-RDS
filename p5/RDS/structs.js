@@ -305,6 +305,7 @@ class Trafosamling {
       draw() {
             fill('black')
             circle(this.x, this.y, this.d)
+            line(this.x, this.y, this.x, this.y + myDistX)
       }
 }
 
