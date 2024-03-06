@@ -39,8 +39,8 @@ def read_item(item_id: int, q: Union[str, None] = None):
 
 @app.get("/diagram_data")
 def get_diagram_data():
-      with psycopg.connect(dbname="postgres", user="postgres", password="Passord") as conn:
+      with psycopg.connect(dbname="test", user="postgres", password="Passord") as conn:
             with conn.cursor() as cur:
-                  cur.execute('SELECT * from product')
+                  cur.execute('SELECT * from nimatre')
                   data = cur.fetchall()
                   return data
