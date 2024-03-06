@@ -41,9 +41,10 @@ def topological_sort(data):
                   queue.append(node)    
       sorted_order = []
       while queue:
+            # Pop the first node from the queue
             node = queue.pop(0)
-            
-            for neighbor in graph[node]:
+            for neighbor in graph[node]: # For every neighbor of the node
+                  # Create an edge object
                   edge_object = {
                         "node1": node,
                         "node2": neighbor

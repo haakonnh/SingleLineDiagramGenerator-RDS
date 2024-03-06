@@ -18,14 +18,37 @@ class Line {
             this.y2 = y2
             // connectionX1 and connectionY1 are the starting coords for this element
             // connectionX2 and connectionY2 are the ending coords for this element
-            this.connectionX1 = this.x1 + myDistX / 2
+            this.connectionX1 = this.x1 + myDistX 
             this.connectionY1 = this.y1
             this.connectionX2 = this.x1
             this.connectionY2 = this.y1
       }
 
       draw() {
-            line(this.x1, this.y1, this.x1 + myDistX / 2, this.y1) // temp dist. and y2
+            line(this.x1, this.y1, this.x1 + myDistX, this.y1) // temp dist. and y2
+      }
+}
+
+// linje
+class StationLine {
+      constructor(x1, y1, x2, y2) {
+            this.x1 = x1
+            this.y1 = y1
+            this.x2 = x2
+            this.y2 = y2
+            // connectionX1 and connectionY1 are the starting coords for this element
+            // connectionX2 and connectionY2 are the ending coords for this element
+            this.connectionX1 = this.x1 
+            this.connectionY1 = this.y1
+            this.connectionX2 = this.x1
+            this.connectionY2 = this.y1 - myDistY / 2
+      }
+
+      draw() {
+            stroke('blue')
+            line(this.x1 - myDistX / 6 , this.y1, this.x1 - myDistX / 2, this.connectionY2) // temp dist. and y2
+            line(this.x1 - myDistX / 2, this.connectionY2, this.x1 - (myDistX - myDistX / 6), this.y1)
+            stroke('black')
       }
 }
 
@@ -298,6 +321,7 @@ class Trafosamling {
             this.x = x2
             this.y = y2
             this.d = 5
+            this.d2 = 30
             this.connectionX1 = this.x + this.d
             this.connectionY1 = this.y
       }
@@ -306,6 +330,11 @@ class Trafosamling {
             fill('black')
             circle(this.x, this.y, this.d)
             line(this.x, this.y, this.x, this.y + myDistX)
+            noFill()
+            circle(this.x, this.y +myDistX - 25, this.d2)
+            circle(this.x, this.y +myDistX - 50, this.d2)
+
+            stroke('black')
       }
 }
 
