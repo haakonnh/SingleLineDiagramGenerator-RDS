@@ -1,5 +1,5 @@
-/// <reference path="../p5.global-mode.d.ts" />
-/// <reference path="../p5.d.ts" />
+/// <reference path="p5files/p5.global-mode.d.ts" />
+/// <reference path="p5files/p5.d.ts" />
 // import fs as es module
 
 let imgs = [];
@@ -99,25 +99,22 @@ function whatShouldIDraw() {
         if(from == "UAA" && to == "QBA") {
             let tegnet = new SkillebryterOgSeksjon(currentCords.x1, currentCords.y1, currentCords.x2, currentCords.y2).draw();
             drawnComponents.push(tegnet);
-            currentCords = {x1: tegnet.connectionX1, y1: tegnet.connectionY1, x2: tegnet.connectionX2, y2: tegnet.connectionY2};
+            //currentCords = {x1: tegnet.connectionX1, y1: tegnet.connectionY1, x2: tegnet.connectionX2, y2: tegnet.connectionY2};
         }
         if(from == "WBC" && to == "XBA") {
             let tegnet = new Trafosamling(currentCords.x1, currentCords.y1, currentCords.x2, currentCords.y2).draw();
             drawnComponents.push(tegnet);
-            currentCords = {x1: tegnet.connectionX1, y1: tegnet.connectionY1, x2: tegnet.connectionX2, y2: tegnet.connectionY2};
+            
         }
         if(from == "WBC" && to == "WBC") {
             //let tegnet = new Line(100, 300, 100, 500).draw();
             let tegnet = new ParallelStasjonBane(currentCords.x1, currentCords.y1, currentCords.x2, currentCords.y2).draw();
             drawnComponents.push(tegnet);
-            currentCords = {x1: tegnet.connectionX1, y1: tegnet.connectionY1, x2: tegnet.connectionX2, y2: tegnet.connectionY2};
         }
         else {
             tegnet = new componentToPath[from](currentCords.x1, currentCords.y1, currentCords.x2, currentCords.y2).draw();
             drawnComponents.push(tegnet);
-            currentCords = {x1: tegnet.connectionX1, y1: tegnet.connectionY1, x2: tegnet.connectionX2, y2: tegnet.connectionY2};
-
-            console.log("Tegnet:", tegnet.connectionX2);
+            
         }
     });
     return connections;

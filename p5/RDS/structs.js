@@ -206,9 +206,9 @@ class SkillebryterOgSeksjon {
             this.lowerY2 = this.lowerY1 + sin(this.lowerAngle) * this.length
 
             // for skillebryter
-            this.skillebryterOppX1 = this.lastX2 - myDistX / 5;
+            this.skillebryterOppX1 = this.lastX2;
             this.skillebryterOppY1 = this.lastY2;
-            this.skillebryterOppX2 = this.lowerX1 + myDistX / 5;
+            this.skillebryterOppX2 = this.lowerX1 + 2* myDistX / 5;
 
             this.skillebryterTopp = this.skillebryterOppY1 - 1.5 * this.length;
 
@@ -231,10 +231,10 @@ class SkillebryterOgSeksjon {
             // draw upper and lower line
 
             strokeWeight(1)
-            line(this.lastX2, this.lastY2, this.upperX, this.upperY)
-            line(this.lowerX1, this.lowerY1, this.lowerX2, this.lowerY2)
-            line(this.skillebryterOppX1, this.lastY2, this.lastX2, this.lastY2)
-            line(this.skillebryterOppX2, this.lowerY1, this.lowerX1, this.lowerY1)
+            line(this.lastX2 + myDistX / 5, this.lastY2, this.upperX + myDistX / 5, this.upperY)
+            line(this.lowerX1 + myDistX / 5, this.lowerY1, this.lowerX2 + myDistX / 5, this.lowerY2)
+            line(this.skillebryterOppX1, this.lastY2, this.lastX2 + myDistX/5, this.lastY2)
+            line(this.skillebryterOppX2, this.lowerY1, this.lowerX1+ myDistX / 5, this.lowerY1)
 
             line(this.skillebryterOppX1, this.skillebryterOppY1, this.skillebryterOppX1, this.skillebryterTopp)
             line(this.skillebryterOppX2, this.lowerY1, this.skillebryterOppX2, this.skillebryterTopp)
