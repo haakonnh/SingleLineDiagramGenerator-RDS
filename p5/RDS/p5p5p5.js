@@ -1,5 +1,5 @@
-/// <reference path="../p5.global-mode.d.ts" />
-/// <reference path="../p5.d.ts" />
+/// <reference path="p5files/p5.global-mode.d.ts" />
+/// <reference path="p5files/p5.d.ts" />
 // import fs as es module
 
 let imgs = [];
@@ -15,12 +15,6 @@ let fetchedRelationships = {};
 let dataArray = [];
 
 let components = [];
-
-let loadedImages = {
-      KL: null,
-      KF: null,
-      KJ: null,
-}
 
 async function fetchAndProcessComponents() {
       const apiUrl = 'http://localhost:8000/diagram_data' // Replace with your endpoint
@@ -114,7 +108,7 @@ function setup() {
             
             // if the from element has not been drawn, draw it
             if (!fromElement){
-                  let instance = new componentToPath[fromMatch](50, 150, 0, 0);
+                  let instance = new componentToPath[fromMatch](50, 150, 50, 150);
                   let drawnComponent = new componentState(instance.connectionX1, instance.connectionY1, from.id, fromMatch);
                   drawnComponents.push(drawnComponent);
                   instance.draw()
@@ -123,7 +117,7 @@ function setup() {
                   
                   let secondInstance = new componentToPath[toMatch](instance.connectionX1, instance.connectionY1, 50 + myDistX, 150);
                   if (toMatch == "UAA") {
-                        secondInstance = new componentToPath[toMatch](instance.connectionX1 - myDistX, instance.connectionY1, 50 + myDistX, 150);
+                        secondInstance = new componentToPath[toMatch](instance.connectionX1 - myDistX / 2, instance.connectionY1, , 150);
                         // TODO: FIX SECTION LOGIC, IT DRAWS WEIRDLY
                   }
                   drawnComponent = new componentState(secondInstance.connectionX1, secondInstance.connectionY1, to.id, toMatch);
