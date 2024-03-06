@@ -117,7 +117,8 @@ function setup() {
                   
                   let secondInstance = new componentToPath[toMatch](instance.connectionX1, instance.connectionY1, 50 + myDistX, 150);
                   if (toMatch == "UAA") {
-                        secondInstance = new componentToPath[toMatch](instance.connectionX1 - myDistX / 2, instance.connectionY1, , 150);
+                        secondInstance = new componentToPath[toMatch](instance.connectionX1 - myDistX, 
+                        instance.connectionY1, instance.connectionX1, 150);
                         // TODO: FIX SECTION LOGIC, IT DRAWS WEIRDLY
                   }
                   drawnComponent = new componentState(secondInstance.connectionX1, secondInstance.connectionY1, to.id, toMatch);
