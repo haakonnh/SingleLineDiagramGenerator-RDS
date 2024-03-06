@@ -1,5 +1,5 @@
-/// <reference path="../p5.global-mode.d.ts" />
-/// <reference path="../p5.d.ts" />
+/// <reference path="p5files/p5.global-mode.d.ts" />
+/// <reference path="p5files/p5.d.ts" />
 // import fs as es module
 
 let imgs = [];
@@ -18,6 +18,10 @@ let dataArray1 = [];
 let dataArray1Copy = [];
 
 let components = [];
+
+let connections = [];
+
+let drawnComponents = [];
 
 async function fetchAndProcessData() {
     const apiUrl = 'http://localhost:8000/relation_data'; // Replace with your endpoint
@@ -41,25 +45,9 @@ async function fetchAndProcessData() {
     };
 };
 
-
 function preload() {
     fetchAndProcessData();
 }; 
-
-function checkNext(){
-    let currentIndex = 1;
-    Object.entries(fetchedDataRelations).forEach(([key, value]) => {
-        let doesItContinue = false;
-        for(let i = 0; i < 2; i++){
-            if(value[2] == fetchedDataRelations[currentIndex - 1][1]){
-                doesItContinue = true;
-                console.log(value[2], fetchedDataRelations[1][1]);
-            }
-        };
-        currentIndex++;
-        console.log(currentIndex);
-    });
-};
 
 function toCoords(x, y) {
     return { x: x, y: y + size / 2 };
@@ -76,14 +64,73 @@ function keepLastLetters(string) {
     return lettersOnly;  
 };
 
+function getReadyForConnections() {
+    Object.entries(fetchedDataRelations).forEach(([key, value]) => {
+        let id1 = value.node1;
+        let id2 = value.node2;
+        let from, to = null;
+        let finalFrom, finalTo = null;
+        Object.entries(fetchedData).forEach(([key, value]) => {
+            if (value.id == id1) {
+                finalFrom = value.path.split('.').pop();
+                from = finalFrom.replace(/[0-9]/g, '');
+            }
+            else if (value.id == id2) {
+                finalTo = value.path.split('.').pop();
+                to = finalTo.replace(/[0-9]/g, '');
+            }
+            if (from && to) {
+                connections.push({ from, to });
+                from, to = null;
+            };
+        });
+    });
+};
+
+function whatShouldIDraw() {
+    let currentCords = {x1: 100, y1: 100, x2: 200, y2: 100};
+
+    connections.forEach((value) => {
+    
+        let tegnet = null;
+        let from = value.from;
+        let to = value.to;
+
+        if(from == "UAA" && to == "QBA") {
+            let tegnet = new SkillebryterOgSeksjon(currentCords.x1, currentCords.y1, currentCords.x2, currentCords.y2).draw();
+            drawnComponents.push(tegnet);
+            //currentCords = {x1: tegnet.connectionX1, y1: tegnet.connectionY1, x2: tegnet.connectionX2, y2: tegnet.connectionY2};
+        }
+        if(from == "WBC" && to == "XBA") {
+            let tegnet = new Trafosamling(currentCords.x1, currentCords.y1, currentCords.x2, currentCords.y2).draw();
+            drawnComponents.push(tegnet);
+            
+        }
+        if(from == "WBC" && to == "WBC") {
+            //let tegnet = new Line(100, 300, 100, 500).draw();
+            let tegnet = new ParallelStasjonBane(currentCords.x1, currentCords.y1, currentCords.x2, currentCords.y2).draw();
+            drawnComponents.push(tegnet);
+        }
+        else {
+            tegnet = new componentToPath[from](currentCords.x1, currentCords.y1, currentCords.x2, currentCords.y2).draw();
+            drawnComponents.push(tegnet);
+            
+        }
+    });
+    return connections;
+};
 
 function setup() {
     createCanvas(1425, 725);
     background(255);
-    
-    new SkillebryterOgSeksjon(100, 100, 150, 100).draw();
+    getReadyForConnections();
 
-    checkNext();
+    console.log("CONNECTIONS:", connections);
+    console.log("COMPONENTS:", drawnComponents);
+
+    whatShouldIDraw();
+
+    noLoop();
 };
 
 function draw() {

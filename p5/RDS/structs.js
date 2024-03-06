@@ -18,14 +18,14 @@ class Line {
             this.y2 = y2
             // connectionX1 and connectionY1 are the starting coords for this element
             // connectionX2 and connectionY2 are the ending coords for this element
-            this.connectionX1 = this.x1 + myDistX
+            this.connectionX1 = this.x1 + myDistX / 2
             this.connectionY1 = this.y1
             this.connectionX2 = this.x1
             this.connectionY2 = this.y1
       }
 
       draw() {
-            line(this.x1, this.y1, this.x1 + myDistX, this.y1) // temp dist. and y2
+            line(this.x1, this.y1, this.x1 + myDistX / 2, this.y1) // temp dist. and y2
       }
 }
 
@@ -206,9 +206,9 @@ class SkillebryterOgSeksjon {
             this.lowerY2 = this.lowerY1 + sin(this.lowerAngle) * this.length
 
             // for skillebryter
-            this.skillebryterOppX1 = this.lastX2 - myDistX / 5;
+            this.skillebryterOppX1 = this.lastX2;
             this.skillebryterOppY1 = this.lastY2;
-            this.skillebryterOppX2 = this.lowerX1 + myDistX / 5;
+            this.skillebryterOppX2 = this.lowerX1 + 2* myDistX / 5;
 
             this.skillebryterTopp = this.skillebryterOppY1 - 1.5 * this.length;
 
@@ -231,10 +231,10 @@ class SkillebryterOgSeksjon {
             // draw upper and lower line
 
             strokeWeight(1)
-            line(this.lastX2, this.lastY2, this.upperX, this.upperY)
-            line(this.lowerX1, this.lowerY1, this.lowerX2, this.lowerY2)
-            line(this.skillebryterOppX1, this.lastY2, this.lastX2, this.lastY2)
-            line(this.skillebryterOppX2, this.lowerY1, this.lowerX1, this.lowerY1)
+            line(this.lastX2 + myDistX / 5, this.lastY2, this.upperX + myDistX / 5, this.upperY)
+            line(this.lowerX1 + myDistX / 5, this.lowerY1, this.lowerX2 + myDistX / 5, this.lowerY2)
+            line(this.skillebryterOppX1, this.lastY2, this.lastX2 + myDistX/5, this.lastY2)
+            line(this.skillebryterOppX2, this.lowerY1, this.lowerX1+ myDistX / 5, this.lowerY1)
 
             line(this.skillebryterOppX1, this.skillebryterOppY1, this.skillebryterOppX1, this.skillebryterTopp)
             line(this.skillebryterOppX2, this.lowerY1, this.skillebryterOppX2, this.skillebryterTopp)
@@ -305,6 +305,7 @@ class Trafosamling {
       draw() {
             fill('black')
             circle(this.x, this.y, this.d)
+            line(this.x, this.y, this.x, this.y + myDistX)
       }
 }
 
