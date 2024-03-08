@@ -6,8 +6,10 @@ class Component {
             return this.path
       }
 }
-let myDistX = 150
-let myDistY = 50
+let canvasHeight = 725
+let canvasWidth = 1425
+let myDistX = canvasWidth / 10
+let myDistY = canvasHeight / 10
 
 // linje
 class Line {
@@ -23,7 +25,6 @@ class Line {
             this.connectionX2 = this.x1
             this.connectionY2 = this.y1
       }
-
       draw() {
             line(this.x1, this.y1, this.x1 + myDistX, this.y1) // temp dist. and y2
       }
@@ -43,7 +44,7 @@ class StationLine {
             this.connectionX2 = this.x1
             this.connectionY2 = this.y1 - myDistY / 2
       }
-
+      
       draw() {
             stroke('blue')
             line(this.x1 - myDistX / 6 , this.y1, this.x1 - myDistX / 2, this.connectionY2) // temp dist. and y2
