@@ -47,8 +47,9 @@ class StationLine {
       
       draw() {
             stroke('blue')
-            line(this.x1 - myDistX / 6 , this.y1, this.x1 - myDistX / 2, this.connectionY2) // temp dist. and y2
-            line(this.x1 - myDistX / 2, this.connectionY2, this.x1 - (myDistX - myDistX / 6), this.y1)
+            line(this.x1 - (myDistX - myDistX / 3), this.connectionY2, this.x1 - (myDistX - myDistX / 6), this.y1) // temp dist. and y2
+            line(this.x1 - myDistX / 3, this.connectionY2, this.x1 - (myDistX - myDistX / 3), this.connectionY2)
+            line(this.x1 - myDistX / 6 , this.y1, this.x1 - myDistX / 3, this.connectionY2)
             stroke('black')
       }
 }
@@ -325,12 +326,15 @@ class Trafosamling {
             this.d2 = 30
             this.connectionX1 = this.x + this.d
             this.connectionY1 = this.y
+
+            //endepunkt for linje
+            this.endepunktY = this.y + myDistX - 65;
       }
 
       draw() {
             fill('black')
             circle(this.x, this.y, this.d)
-            line(this.x, this.y, this.x, this.y + myDistX)
+            line(this.x, this.y, this.x, this.endepunktY)
             noFill()
             circle(this.x, this.y +myDistX - 25, this.d2)
             circle(this.x, this.y +myDistX - 50, this.d2)
