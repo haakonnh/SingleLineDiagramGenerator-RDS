@@ -103,7 +103,7 @@ function whatShouldIDraw() {
         }
         if(from == "WBC" && to == "XBA") {
             let tegnet = new Trafosamling(currentCords.x1, currentCords.y1, currentCords.x2, currentCords.y2).draw();
-            drawnComponents.push(tegnet);
+            drawnComponents.push(tegnet);w
 
         }
         if(from == "WBC" && to == "WBC") {

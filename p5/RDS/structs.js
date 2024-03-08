@@ -46,9 +46,9 @@ class StationLine {
 
       draw() {
             stroke('blue')
-            line(this.x1 - myDistX / 6 , this.y1, this.x1 - myDistX / 3, this.connectionY2) // temp dist. and y2
+            line(this.x1 - (myDistX - myDistX / 3), this.connectionY2, this.x1 - (myDistX - myDistX / 6), this.y1) // temp dist. and y2
             line(this.x1 - myDistX / 3, this.connectionY2, this.x1 - (myDistX - myDistX / 3), this.connectionY2)
-            line(this.x1 - (myDistX - myDistX / 3), this.connectionY2, this.x1 - (myDistX - myDistX / 6), this.y1)
+            line(this.x1 - myDistX / 6 , this.y1, this.x1 - myDistX / 3, this.connectionY2)
             stroke('black')
       }
 }

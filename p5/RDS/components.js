@@ -64,3 +64,26 @@ class Section extends Component {
     }
 }
 
+class StationLine extends Component {
+    constructor(x1, y1, x2, y2) {
+        super(x1, y1, x2, y2)
+
+        this.startX = this.lastX1
+        this.startY = this.lastY1
+        this.endX = this.lastX2
+        this.endY = this.lastY2
+
+        this.upperY = this.startY - myDistY / 2
+
+        this.lengthOfLine = myDistX / 3
+    }
+
+    draw() {
+        stroke('blue')
+        line(this.startX, this.startY, this.startX + this.lengthOfLine, this.upperY) // temp dist. and y2
+        line(this.startX + this.lengthOfLine, this.upperY, this.startX + 2*this.lengthOfLine, this.upperY)
+        line(this.x1 - myDistX / 6 , this.upperY, this.endX, this.endY)
+        stroke('black')
+    }
+}
+
