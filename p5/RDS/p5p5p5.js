@@ -17,7 +17,7 @@ let dataArray = [];
 let components = [];
 
 async function fetchAndProcessComponents() {
-      const apiUrl = 'http://localhost:8000/diagram_data' // Replace with your endpoint
+      const apiUrl = 'http://localhost:9090/nodes' // Replace with your endpoint
       try {
             const response = loadJSON(apiUrl)
 
@@ -31,7 +31,7 @@ async function fetchAndProcessComponents() {
 }
 
 async function fetchAndProcessRelationships() {
-      const apiUrl = 'http://localhost:8000/relation_data' // Replace with your endpoint
+      const apiUrl = 'http://localhost:9090/relations' // Replace with your endpoint
       try {
             const response = loadJSON(apiUrl)
 
@@ -107,20 +107,7 @@ function drawFirstConnection(fromMatch, toMatch, from, to, drawnComponents) {
       secondInstance.draw()
 }
 
-function setup() {
-      createCanvas(1425, 725);
-      background(255); // white background
-      // regex pattern to match the first word in a string
-      const pattern = /[A-Za-z]+/;
-
-      // connection array
-      let connections = populateConnections();
-
-      console.log("Tuned connections: ", connections)
-
-      let drawnComponents = []; // components that have been drawn
-
-      // loop through the connections and draw them
+function drawConnections(pattern, connections, drawnComponents) {
       connections.forEach((value) => {
             // get the from and to elements from the connection object
             let from = value.from;
@@ -168,6 +155,25 @@ function setup() {
                   instance.draw()
             }
       });
+}
+
+function setup() {
+      createCanvas(1425, 725);
+      background(255); // white background
+      // regex pattern to match the first word in a string
+      const pattern = /[A-Za-z]+/;
+
+      // connection array
+      let connections = populateConnections();
+
+      console.log("Tuned connections: ", connections)
+
+      let drawnComponents = []; // components that have been drawn
+
+      // loop through the connections and draw them
+      drawConnections(pattern, connections, drawnComponents)
+
+      
       console.log("Drawn components: ", drawnComponents)
 }
 
