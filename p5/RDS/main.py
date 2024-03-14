@@ -77,6 +77,7 @@ def get_diagram_data():
                         }
                         for result in results
                   ]
+                  
                   return data
 
 @app.get("/relation_data")
@@ -97,3 +98,4 @@ def get_relation_data():
                   
                   
                   return (topological_sort(data))
+            

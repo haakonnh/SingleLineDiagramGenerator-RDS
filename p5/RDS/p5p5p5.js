@@ -17,7 +17,8 @@ let dataArray = [];
 let components = [];
 
 async function fetchAndProcessComponents() {
-      const apiUrl = 'http://localhost:9090/nodes' // Replace with your endpoint
+      //const apiUrl = 'http://localhost:9090/nodes' // Replace with your endpoint
+      const apiUrl = 'http://localhost:8000/diagram_data' // Replace with your endpoint
       try {
             const response = loadJSON(apiUrl)
 
@@ -31,7 +32,7 @@ async function fetchAndProcessComponents() {
 }
 
 async function fetchAndProcessRelationships() {
-      const apiUrl = 'http://localhost:9090/relations' // Replace with your endpoint
+      const apiUrl = 'http://localhost:8000/relation_data' // Replace with your endpoint
       try {
             const response = loadJSON(apiUrl)
 
