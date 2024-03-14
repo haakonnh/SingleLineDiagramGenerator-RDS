@@ -80,9 +80,11 @@ class StationLine extends Component {
 
     draw() {
         stroke('blue')
+        // these 3 lines draw from right to left, first drawing a shot diagonal line, then a horizontal line, then another diagonal line
         line(this.startX, this.startY, this.startX + this.lengthOfLine, this.upperY) // temp dist. and y2
         line(this.startX + this.lengthOfLine, this.upperY, this.startX + 2*this.lengthOfLine, this.upperY)
         line(this.x1 - myDistX / 6 , this.upperY, this.endX, this.endY)
+        // the line is drawn in blue to signify station line, so the color is reset to black
         stroke('black')
     }
 }
