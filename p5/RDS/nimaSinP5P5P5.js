@@ -23,19 +23,27 @@ let connections = [];
 
 let drawnComponents = [];
 
+let testList = [];
+
+
 async function fetchAndProcessData() {
     const apiUrl = 'http://localhost:8000/relation_data'; // Replace with your endpoint
 
     const apiUrl1 = 'http://localhost:8000/diagram_data'; // Replace with your endpoint
+
+    const treedata = 'http://localhost:8000/tree_data';
     try {
         const response = loadJSON(apiUrl);
         const response1 = loadJSON(apiUrl1);
+        const treeData = loadJSON(treedata);
 
         const data = response;
         const data1 = response1;
+        const data2 = treeData;
 
         console.log("Data from API:", data1);
         console.log("relations from API:", data);
+        console.log("tree data:", data2);
 
         fetchedData = data1;
         fetchedDataRelations = data;
@@ -103,7 +111,7 @@ function whatShouldIDraw() {
         }
         if(from == "WBC" && to == "XBA") {
             let tegnet = new Trafosamling(currentCords.x1, currentCords.y1, currentCords.x2, currentCords.y2).draw();
-            drawnComponents.push(tegnet);w
+            drawnComponents.push(tegnet);
 
         }
         if(from == "WBC" && to == "WBC") {
@@ -120,6 +128,35 @@ function whatShouldIDraw() {
     return connections;
 };
 
+
+let testArray = [];
+
+let herSkjerDetSykeTing = {};
+
+function hei() {
+    Object.entries(fetchedData).forEach((key, value) => {
+        testArray.push(key[1].path);
+    });
+
+    function sortArrayByPeriods(testArray) {
+        return testArray.sort((a, b) => {
+          // Count the number of periods (".") in each string
+          const countPeriods = (str) => str.split(".").length - 1;
+      
+          return countPeriods(a) - countPeriods(b);
+        });
+      };
+      
+
+
+      const sortedData = sortArrayByPeriods(testArray);
+};
+
+function makingTheTree() {  
+
+};
+
+
 function setup() {
     createCanvas(1425, 725);
     background(255);
@@ -127,9 +164,10 @@ function setup() {
 
     console.log("CONNECTIONS:", connections);
     console.log("COMPONENTS:", drawnComponents);
-
+    
+    hei();
     whatShouldIDraw();
-
+    console.log("TESTARRAY:", testArray);
     noLoop();
 };
 

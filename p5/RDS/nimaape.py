@@ -152,3 +152,69 @@ def get_relation_data():
                   ]
                   # loop through each component fetched and fetch connections
                   return topological_sort(data)
+            
+
+
+def get_second_to_last_part(text):
+    parts = text.split(".")
+    if len(parts) < 3:
+        return text
+    return parts[-2]
+
+def get_last_part(text):
+    parts = text.split(".")
+    if not parts:
+          return text
+    return parts[-1]
+
+def get_parent_name(node_name):
+    """Extracts the parent's name from a node's full path 
+       (assuming dot-separated hierarchy).
+    """
+    parts = node_name.split(".")
+    if len(parts) > 1:
+        return ".".join(parts[:-1])  # Everything except the last part
+    else:
+        return None  # Node has no parent (it's likely a root)
+
+
+def has_parent(node, nodes):
+    """Checks if a node's potential parent exists in the 'nodes' dictionary."""
+    parent_name = get_parent_name(node["name"])
+    return parent_name in nodes
+
+def sort_by_hierarchy(data):
+    """Sorts a list of (id, path1) tuples based on number of "." in path1."""
+    def count_periods(item):
+        return item[1].count(".")  # Count occurrences of "."
+
+    return sorted(data, key=count_periods)
+
+
+@app.get("/tree_data")
+def get_tree_data():
+    with psycopg.connect(dbname="banenor.sorberg-nypan", user="postgres") as conn:
+        with conn.cursor() as cur:
+            cur.execute('SELECT id, path1 FROM tree')
+            results = cur.fetchall()
+
+    results = sort_by_hierarchy(results)
+
+    nodes = {}  # Dictionary to store nodes by their path1
+    for result in results:
+        node_name = result[1]
+        nodes[node_name] = {"name": node_name, "children": []}
+
+        parent_name = get_parent_name(node_name)  # You'll need this function
+        if parent_name in nodes:
+            nodes[parent_name]["children"].append(nodes[node_name]) 
+
+    # Find the root node(s) and assemble the tree (assuming single root)
+    root_node = None
+    for node in nodes.values():
+        if not has_parent(node, nodes):  # You might need to define this check
+            root_node = node
+            break  
+
+    return root_node  # Or a list of roots, depending on your structure
+
