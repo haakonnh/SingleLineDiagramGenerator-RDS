@@ -11,6 +11,8 @@ let fetchedData = {};
 
 let fetchedDataRelations = {};
 
+let treeDataf = {};
+
 let dataArray = [];
 
 let dataArray1 = [];
@@ -24,6 +26,12 @@ let connections = [];
 let drawnComponents = [];
 
 let testList = [];
+
+// Dimensions
+const width = 800; 
+const height = 600;
+
+
 
 
 async function fetchAndProcessData() {
@@ -47,15 +55,68 @@ async function fetchAndProcessData() {
 
         fetchedData = data1;
         fetchedDataRelations = data;
+        treeDataf = data2;
     }
     catch (error) {
         console.error("Error fetching data:", error);
     };
 };
 
+
+
 function preload() {
     fetchAndProcessData();
 }; 
+
+const svg = d3.select("#tree-container")
+              .append("svg")
+              .attr("width", width)
+              .attr("height", height);
+
+// Get data
+d3.json('http://localhost:8000/tree_data')
+  .then(data => {
+
+    // Create hierarchy
+    const root = d3.hierarchy(data);
+
+    // Tree layout 
+    const treeLayout = d3.tree().size([width - 100, height - 100]); 
+    treeLayout(root); 
+
+    // Links
+    const linkGenerator = d3.linkHorizontal()
+                            .x(d => d.y)
+                            .y(d => d.x);
+
+    svg.selectAll("path")
+       .data(root.links())
+       .enter()
+       .append("path")
+       .attr("d", linkGenerator)
+       .attr("stroke", "white")
+       .attr("fill", "none");
+
+   // Nodes
+   svg.selectAll("circle")
+      .data(root.descendants()) 
+      .enter()
+      .append("circle")
+      .attr("cx", d => d.y)
+      .attr("cy", d => d.x)
+      .attr("r", 8) 
+      .attr("fill", "lightblue");
+
+    // Add labels
+    svg.selectAll("text")
+      .data(root.descendants())
+      .enter()
+      .append("text")
+      .attr("x", d => d.y + 15) // Offset to the right of the circle
+      .attr("y", d => d.x + 5)  // Center vertically
+      .text(d => d.data.name);
+
+});
 
 function toCoords(x, y) {
     return { x: x, y: y + size / 2 };

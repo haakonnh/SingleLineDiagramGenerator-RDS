@@ -203,7 +203,8 @@ def get_tree_data():
     nodes = {}  # Dictionary to store nodes by their path1
     for result in results:
         node_name = result[1]
-        nodes[node_name] = {"name": node_name, "children": []}
+        node_value = get_last_part(result[1])
+        nodes[node_name] = {"name": node_name, "value": node_value, "children": []}
 
         parent_name = get_parent_name(node_name)  # You'll need this function
         if parent_name in nodes:
