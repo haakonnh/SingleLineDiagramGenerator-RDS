@@ -353,7 +353,7 @@ const componentToPath = {
       // TODO: MAKE THESE CLASSES
 }
 
-class componentState {
+class ComponentState {
       constructor(x, y, id, type = "component") {
             this.x = x
             this.y = y

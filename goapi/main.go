@@ -59,8 +59,6 @@ func topologicalSort(relations []Relation) []Relation {
 	for len(queue) > 0 {
 		node := queue[0]
 		queue = queue[1:]
-		fmt.Println(node)
-
 		for _, neighbor := range graph[node] {
 			edge := Relation{node, neighbor}
 			sorted = append(sorted, edge)
@@ -127,6 +125,7 @@ func nodeHandjobber(w http.ResponseWriter, r *http.Request) {
 
 	// Write the json to the response
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*") // allow cross-origin requests
 	w.Write(b)
 }
 
@@ -184,6 +183,7 @@ func relationHandjobber(w http.ResponseWriter, r *http.Request) {
 
 	// Write the json to the response
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*") // allow cross-origin requests
 	w.Write(b)
 
 }

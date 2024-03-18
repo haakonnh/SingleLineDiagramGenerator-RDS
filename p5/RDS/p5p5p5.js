@@ -2,8 +2,6 @@
 /// <reference path="p5files/p5.d.ts" />
 // import fs as es module
 
-let imgs = [];
-
 const size = 200;
 
 let data = {};
@@ -17,8 +15,8 @@ let dataArray = [];
 let components = [];
 
 async function fetchAndProcessComponents() {
-      //const apiUrl = 'http://localhost:9090/nodes' // Replace with your endpoint
-      const apiUrl = 'http://localhost:8000/diagram_data' // Replace with your endpoint
+      const apiUrl = 'http://localhost:9090/nodes' // Replace with your endpoint
+      //const apiUrl = 'http://localhost:8000/diagram_data' // Replace with your endpoint
       try {
             const response = loadJSON(apiUrl)
 
@@ -32,7 +30,7 @@ async function fetchAndProcessComponents() {
 }
 
 async function fetchAndProcessRelationships() {
-      const apiUrl = 'http://localhost:8000/relation_data' // Replace with your endpoint
+      const apiUrl = 'http://localhost:9090/relations' // Replace with your endpoint
       try {
             const response = loadJSON(apiUrl)
 
@@ -54,19 +52,19 @@ function populateConnections() {
       // populate connections array with the fetched relationships from the python api
       let connections = []
       Object.entries(fetchedRelationships).forEach(([key, value]) => {
-            let id1 = value.node1
-            let id2 = value.node2
+            let id1 = value.Node1
+            let id2 = value.Node2
             let from, to = null;
             Object.entries(fetchedData).forEach(([key, value]) => {
-                  if (value.id == id1) {
+                  if (value.ID == id1) {
                         from = {
-                              id: value.id,
-                              path: value.path.split('.').pop()
+                              id: value.ID,
+                              path: value.Path.split('.').pop()
                         };
-                  } else if (value.id == id2) {
+                  } else if (value.ID == id2) {
                         to = {
-                              id: value.id,
-                              path: value.path.split('.').pop()
+                              id: value.ID,
+                              path: value.Path.split('.').pop()
                         };
                   }
                   if (from && to) {
@@ -82,7 +80,7 @@ function populateConnections() {
       for (let i = 0; i < connections.length; i++) {
             if (connections[i].from.path.match(/[A-Za-z]+/)[0] == "UAA" && connections[i].to.path.match(/[A-Za-z]+/)[0] == "QBA") {
                   // delete the element with slice
-                  connections.splice(i, 1);
+                  connections.splice(i, 1);     
                   i--;
             }
       }
@@ -92,7 +90,7 @@ function populateConnections() {
 
 function drawFirstConnection(fromMatch, toMatch, from, to, drawnComponents) {
       let instance = new componentToPath[fromMatch](50, 150, 50, 150);
-      let drawnComponent = new componentState(instance.connectionX1, instance.connectionY1, from.id, fromMatch);
+      let drawnComponent = new ComponentState(instance.connectionX1, instance.connectionY1, from.id, fromMatch);
       drawnComponents.push(drawnComponent);
       instance.draw()
 
@@ -103,7 +101,7 @@ function drawFirstConnection(fromMatch, toMatch, from, to, drawnComponents) {
                   instance.connectionY1, instance.connectionX1, 150);
             // TODO: FIX SECTION LOGIC, IT DRAWS WEIRDLY
       }
-      drawnComponent = new componentState(secondInstance.connectionX1, secondInstance.connectionY1, to.id, toMatch);
+      drawnComponent = new ComponentState(secondInstance.connectionX1, secondInstance.connectionY1, to.id, toMatch);
       drawnComponents.push(drawnComponent);
       secondInstance.draw()
 }
@@ -151,7 +149,7 @@ function drawConnections(pattern, connections, drawnComponents) {
                         instance = new StationLine(x, y, x, y + myDistY);
                   }
 
-                  let drawnComponent = new componentState(instance.connectionX1, instance.connectionY1, to.id, toMatch);
+                  let drawnComponent = new ComponentState(instance.connectionX1, instance.connectionY1, to.id, toMatch);
                   drawnComponents.push(drawnComponent);
                   instance.draw()
             }
@@ -176,6 +174,8 @@ function setup() {
 
       
       console.log("Drawn components: ", drawnComponents)
+
+      //updateTransform()
 }
 
 function draw() {
