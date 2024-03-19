@@ -8,6 +8,8 @@ function setup() {
 
 }
 
+
+
 let db = ["JE1", "KL1", "JE2", "KL2", "JE3", "KL3", "JE4"];
 
 const map = new Map();
@@ -79,7 +81,13 @@ class Trafo {
         this.x = x2;
         this.y = y2;
         this.d = 50; // Assuming we have a set value for the diameter (We can make it dependent later)
+        this.lasty = y2-75;
+        this.lastx = x2;
 
+        this.connectionX1 = this.lastx;
+        this.connectionY1 = this.lasty;
+        this.connectionX2 = this.lastx;
+        this.connectionY2 = this.lasty;
     }
 
     draw() {
@@ -187,15 +195,15 @@ function draw() {
     trafo.draw();
     const connectiondott = new ConnectionDot(x1, y1, x2, y2);
     connectiondott.draw();
+    const seksjon = new Section(x1, y1, x2, y2);
+    drawOriginalLine(x1, y1, x2, y2);
 }
 
 
 
 
 
-
-
-
+//TODO: Make some adjustments to the code to make it work with the new classes
 
 
 

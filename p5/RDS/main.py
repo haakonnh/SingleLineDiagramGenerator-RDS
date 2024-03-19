@@ -5,6 +5,7 @@ import psycopg
 from dotenv import load_dotenv
 import os
 import json
+from collections import defaultdict
 
 load_dotenv()
 
@@ -15,9 +16,7 @@ app = FastAPI()
 
 origins = [
     "http://localhost",
-    "http://localhost:3000",  
-    # Update with your p5.js development origins
-    # ... add any other allowed origins
+    "http://localhost:3000", # p5.js client can now access the server
 ]
 
 app.add_middleware(
@@ -27,6 +26,35 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 );
+
+def topological_sort(data):
+      graph = defaultdict(list)
+      in_degrees = defaultdict(int)  # Keep track of how many incoming edges each node has
+
+      for edge in data:
+            graph[edge['node1']].append(edge['node2'])
+            in_degrees[edge['node2']] += 1
+      # Build the initial queue correctly:
+      queue = []  # Empty to start
+      for node in graph:  # Consider every node in the graph
+            if node not in in_degrees:  # If it has no recorded incoming edge
+                  queue.append(node)    
+      sorted_order = []
+      while queue:
+            # Pop the first node from the queue
+            node = queue.pop(0)
+            for neighbor in graph[node]: # For every neighbor of the node
+                  # Create an edge object
+                  edge_object = {
+                        "node1": node,
+                        "node2": neighbor
+                  }
+                  sorted_order.append(edge_object)
+                  in_degrees[neighbor] -= 1
+                  if in_degrees[neighbor] == 0:
+                        queue.append(neighbor)
+      return sorted_order 
+
 
 
 @app.get("/")
@@ -49,6 +77,7 @@ def get_diagram_data():
                         }
                         for result in results
                   ]
+                  
                   return data
 
 @app.get("/relation_data")
@@ -64,5 +93,9 @@ def get_relation_data():
                               "node2": result[2],
                         }
                         for result in results
-                  ]
-                  return data
+                  ] 
+                  print(data)
+                  
+                  
+                  return (topological_sort(data))
+            
