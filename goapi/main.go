@@ -119,7 +119,7 @@ func fetchNodes(conn *pgx.Conn) ([]Node, error) {
 	return nodes, rows.Err()
 }
 
-func nodeHandjobber(w http.ResponseWriter, r *http.Request) {
+func nodeHandler(w http.ResponseWriter, r *http.Request) {
 	// Connect to the database
 	conn, err := connectToDB()
 
@@ -149,7 +149,7 @@ func nodeHandjobber(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
-func relationHandjobber(w http.ResponseWriter, r *http.Request) {
+func relationHandler(w http.ResponseWriter, r *http.Request) {
 	// Connect to the database
 	conn, err := connectToDB()
 
@@ -206,8 +206,8 @@ func relationHandjobber(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/nodes", nodeHandjobber)
-	http.HandleFunc("/relations", relationHandjobber)
+	http.HandleFunc("/nodes", nodeHandler)
+	http.HandleFunc("/relations", relationHandler)
 	fmt.Println("Server is running on port 9090")
 	log.Fatal(http.ListenAndServe(":9090", nil))
 
