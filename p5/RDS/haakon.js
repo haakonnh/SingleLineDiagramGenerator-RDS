@@ -129,10 +129,10 @@ function drawConnections(pattern, connections, drawnComponents) {
             toMatch = to.path.match(pattern)[0];
 
             // if the from element is not a component, exit the loop
-            if (!(fromMatch.length > 2) || !(fromMatch != "BaneNOR")) { // exit if the element is not a component
+            if (!(fromMatch.length > 2) || (fromMatch == "BaneNOR")) { // exit if the element is not a component
                   return;
             }
-
+            console.log("From: ", fromMatch, "To: ", toMatch)
             // if the from element has not been drawn, draw it
             if (!fromElement) {
                   drawFirstConnection(fromMatch, toMatch, from, to, drawnComponents)
@@ -151,6 +151,7 @@ function drawConnections(pattern, connections, drawnComponents) {
 
                   let drawnComponent = new ComponentState(instance.connectionX1, instance.connectionY1, to.id, toMatch);
                   drawnComponents.push(drawnComponent);
+                  console
                   instance.draw()
             }
       });

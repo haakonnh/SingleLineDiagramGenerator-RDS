@@ -74,30 +74,33 @@ func topologicalSort(relations []Relation) []Relation {
 
 }
 
-func nodeHandjobber(w http.ResponseWriter, r *http.Request) {
+// connectToDB connects to the database and returns the connection, or an error if the connection failed
+func connectToDB() (*pgx.Conn, error) {
 	err := godotenv.Load() // load db url from .env file
 	if err != nil {
-		fmt.Println("Error loading .env file")
+		return nil, fmt.Errorf("error loading .env file: %w", err)
 	}
 
 	// Connect to the database
 	conn, err := pgx.Connect(context.Background(), os.Getenv("DB_URL"))
 	if err != nil { // if connection failed
-		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
-		os.Exit(1)
+		return nil, fmt.Errorf("unable to connect to database: %w", err)
 	}
 
-	// Close the connection pool
-	defer conn.Close(context.Background())
+	return conn, nil
+}
 
-	nodes := []Node{} // initialize the nodes array
-
+// fetchNodes fetches the nodes from the database and returns them
+func fetchNodes(conn *pgx.Conn) ([]Node, error) {
 	// Query for nodes from the tree table
 	rows, err := conn.Query(context.Background(), "select id, path1 from tree")
 	if err != nil { // if query failed
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
 		os.Exit(1)
 	}
+
+	nodes := []Node{} // initialize the nodes array
+
 	defer rows.Close() // close the rows
 
 	// Iterate over the rows, adding them to the nodes array
@@ -111,8 +114,25 @@ func nodeHandjobber(w http.ResponseWriter, r *http.Request) {
 		}
 		nodes = append(nodes, Node{id, path})
 	}
-	if rows.Err() != nil { // if row iteration failed
-		fmt.Fprintf(os.Stderr, "Row iteration failed: %v\n", rows.Err())
+
+	// Return the nodes array and the error
+	return nodes, rows.Err()
+}
+
+func nodeHandjobber(w http.ResponseWriter, r *http.Request) {
+	// Connect to the database
+	conn, err := connectToDB()
+
+	if err != nil { // if connection failed
+		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
+		os.Exit(1)
+	}
+
+	// Fetch the nodes from the database
+	nodes, err := fetchNodes(conn)
+
+	if err != nil { // if row iteration failed in fetchNodes
+		fmt.Fprintf(os.Stderr, "Row iteration failed: %v\n", err)
 		os.Exit(1)
 	}
 
@@ -130,13 +150,9 @@ func nodeHandjobber(w http.ResponseWriter, r *http.Request) {
 }
 
 func relationHandjobber(w http.ResponseWriter, r *http.Request) {
-	err := godotenv.Load() // load db url from .env file
-	if err != nil {
-		fmt.Println("Error loading .env file")
-	}
-
 	// Connect to the database
-	conn, err := pgx.Connect(context.Background(), os.Getenv("DB_URL"))
+	conn, err := connectToDB()
+
 	if err != nil { // if connection failed
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)
@@ -148,6 +164,7 @@ func relationHandjobber(w http.ResponseWriter, r *http.Request) {
 	relations := []Relation{} // initialize the relations array
 
 	// Query for relations from the tree table
+	//rows, err := conn.Query(context.Background(), "select node_1, node_2 from connections3") //newtree
 	rows, err := conn.Query(context.Background(), "select node1_id, node2_id from connections")
 	if err != nil { // if query failed
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
