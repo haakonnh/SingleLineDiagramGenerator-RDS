@@ -1,7 +1,3 @@
-/// <reference path="p5files/p5.global-mode.d.ts" />
-/// <reference path="p5files/p5.d.ts" />
-// import fs as es module
-
 let imgs = [];
 const size = 200;
 
@@ -68,13 +64,13 @@ function preload() {
     fetchAndProcessData();
 }; 
 
-const svg = d3.select("#tree-container")
+/* const svg = d3.select("#tree-container")
               .append("svg")
               .attr("width", width)
               .attr("height", height);
-
+ */
 // Get data
-d3.json('http://localhost:8000/tree_data')
+/* d3.json('http://localhost:8000/tree_data')
   .then(data => {
 
     // Create hierarchy
@@ -117,7 +113,7 @@ d3.json('http://localhost:8000/tree_data')
       .text(d => d.data.name);
 
 });
-
+ */
 function toCoords(x, y) {
     return { x: x, y: y + size / 2 };
 };
@@ -156,7 +152,7 @@ function getReadyForConnections() {
     });
 };
 
-function whatShouldIDraw() {
+/* function whatShouldIDraw() {
     let currentCords = {x1: 100, y1: 100, x2: 200, y2: 100};
 
     connections.forEach((value) => {
@@ -188,7 +184,7 @@ function whatShouldIDraw() {
     });
     return connections;
 };
-
+ */
 
 let testArray = [];
 
@@ -212,11 +208,36 @@ function hei() {
 
       const sortedData = sortArrayByPeriods(testArray);
 };
+/* 
+var treeLayout = d3.tree()
+	.size([400, 200]) */
 
-function makingTheTree() {  
+/* var root = d3.hierarchy(treeDataf)
 
-};
+treeLayout(root) */
 
+// Nodes
+/* d3.select('svg g.nodes')
+	.selectAll('circle.node')
+	.data(root.descendants())
+	.join('circle')
+	.classed('node', true)
+	.attr('cx', function(d) {return d.x;})
+	.attr('cy', function(d) {return d.y;})
+	.attr('r', 4);
+
+// Links
+d3.select('svg g.links')
+	.selectAll('line.link')
+	.data(root.links())
+	.join('line')
+	.classed('link', true)
+	.attr('x1', function(d) {return d.source.x;})
+	.attr('y1', function(d) {return d.source.y;})
+	.attr('x2', function(d) {return d.target.x;})
+	.attr('y2', function(d) {return d.target.y;});
+
+ */
 
 function setup() {
     createCanvas(1425, 725);
@@ -227,34 +248,12 @@ function setup() {
     console.log("COMPONENTS:", drawnComponents);
     
     hei();
-    whatShouldIDraw();
+    /* whatShouldIDraw(); */
     console.log("TESTARRAY:", testArray);
+    console.log("TREE:", treeDataf);
     noLoop();
 };
 
 function draw() {
     noLoop();
 };
-
-
-// noe drit fra før
-/* Object.entries(fetchedDataRelations).forEach(([key, value]) => {
-    let id1 = value.node1
-    let id2 = value.node2
-    let from, to = null;
-    let finalFrom, finalTo = null;
-    Object.entries(fetchedData).forEach(([key, value]) => {
-          if (value.id == id1) {
-                from = value.path.split('.').pop();
-                finalFrom = from.replace(/[0-9]/g, '');
-            }
-          else if (value.id == id2) {
-                to = value.path.split('.').pop(); 
-                finalTo = to.replace(/[0-9]/g, '');
-            }
-          if (from && to) {
-                connections.push({finalFrom, finalTo})
-                from, to = null;
-            }
-    })
-}); */

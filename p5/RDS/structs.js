@@ -8,8 +8,8 @@ class Component {
 }
 let canvasHeight = 725
 let canvasWidth = 1425
-let myDistX = canvasWidth / 10
-let myDistY = canvasHeight / 10
+let myDistX = canvasWidth / 20
+let myDistY = canvasHeight / 20
 
 // linje
 class Line {
@@ -334,6 +334,32 @@ class Trafosamling {
       draw() {
             fill('black')
             circle(this.x, this.y, this.d)
+            line(this.x, this.y, this.x, this.endepunktY + myDistX - 35)
+            noFill()
+            circle(this.x, this.y +myDistX*1.5 - 25, this.d2)
+            circle(this.x, this.y +myDistX*1.5 - 50, this.d2)
+
+            stroke('black')
+      }
+}
+
+class Motor {
+      constructor(x1, y1, x2, y2) {
+            this.x = x2
+            this.y = y2
+            this.d = 5
+            this.d2 = 30
+            this.connectionX1 = this.x + this.d
+            this.connectionY1 = this.y
+
+            //endepunkt for linje
+            this.endepunktY = this.y + myDistX - 65;
+      }
+
+      draw() {
+            fill('red')
+            stroke('red')
+            circle(this.x, this.y, this.d)
             line(this.x, this.y, this.x, this.endepunktY)
             noFill()
             circle(this.x, this.y +myDistX - 25, this.d2)
@@ -350,10 +376,11 @@ const componentToPath = {
       "WBC": Line,
       "FCA": Sikring,
       "XBA": Trafosamling,
+      "MAA": Motor,
       // TODO: MAKE THESE CLASSES
 }
 
-class componentState {
+class ComponentState {
       constructor(x, y, id, type = "component") {
             this.x = x
             this.y = y
