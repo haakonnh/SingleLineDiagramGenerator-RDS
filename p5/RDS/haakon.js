@@ -124,7 +124,7 @@ function drawConnections(pattern, connections, drawnComponents) {
 
             // get the component name from the path
             fromMatch = from.path.match(pattern)[0]; // this is regex that matches the first word in the path
-
+            
             // get the to-component name from the path
             toMatch = to.path.match(pattern)[0];
 
