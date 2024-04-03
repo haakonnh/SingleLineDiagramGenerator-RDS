@@ -69,7 +69,7 @@ def read_root():
 def get_diagram_data():
       with psycopg.connect(dbname="banenor.sorberg-nypan", user="postgres") as conn:
             with conn.cursor() as cur:
-                  cur.execute('SELECT id, path FROM treny')
+                  cur.execute('SELECT id, path FROM mittTre')
                   results = cur.fetchall()
                   
                   data = [
@@ -140,7 +140,7 @@ def sort_by_hierarchy(data):
 def get_tree_data():
     with psycopg.connect(dbname="banenor.sorberg-nypan", user="postgres") as conn:
         with conn.cursor() as cur:
-            cur.execute('SELECT id, path1 FROM treny')
+            cur.execute('SELECT id, path1 FROM mittTre')
             results = cur.fetchall()
 
     results = sort_by_hierarchy(results)

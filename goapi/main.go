@@ -93,7 +93,7 @@ func connectToDB() (*pgx.Conn, error) {
 // fetchNodes fetches the nodes from the database and returns them
 func fetchNodes(conn *pgx.Conn) ([]Node, error) {
 	// Query for nodes from the tree table
-	rows, err := conn.Query(context.Background(), "select id, path1 from tree")
+	rows, err := conn.Query(context.Background(), "select ID, path from mittTre")
 	if err != nil { // if query failed
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
 		os.Exit(1)
