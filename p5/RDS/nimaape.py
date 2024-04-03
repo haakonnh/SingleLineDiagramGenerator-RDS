@@ -14,8 +14,7 @@ app = FastAPI()
 
 origins = [
     "http://localhost",
-    "http://localhost:3000",
-    "http://localhost:8000"
+    "http://localhost:3000"
     # Update with your p5.js development origins
     # ... add any other allowed origins
 ]
@@ -70,7 +69,7 @@ def read_root():
 def get_diagram_data():
       with psycopg.connect(dbname="banenor.sorberg-nypan", user="postgres") as conn:
             with conn.cursor() as cur:
-                  cur.execute('SELECT id, path1 FROM treny')
+                  cur.execute('SELECT id, path FROM treny')
                   results = cur.fetchall()
                   
                   data = [

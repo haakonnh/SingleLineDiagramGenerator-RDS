@@ -25,7 +25,7 @@ function parentFunction(jsondata) {
   var updateTextLinks;
 
   let dim = {
-    width: window.screen.width,
+    width: window.screen.width* 2 ,
     height: window.screen.height * 3.7,
     margin: 40,
   };
