@@ -153,7 +153,7 @@ function parentFunction(jsondata) {
           })
           .transition()
           .duration(100)
-          .attr("r", 16);
+          .attr("r", 12);
       })
       .on("mouseout", function (d) {
         d3.select(this)
@@ -165,7 +165,7 @@ function parentFunction(jsondata) {
           })
           .transition()
           .duration(100)
-          .attr("r", 12);
+          .attr("r", 16);
       })
       .on("click", async function (d) {
         let buttonId = d3.select(this)["_groups"][0][0]["attributes"].id.value;
