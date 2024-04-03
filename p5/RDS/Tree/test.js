@@ -27,7 +27,7 @@ function parentFunction(jsondata) {
   let dim = {
     width: window.screen.width* 2 ,
     height: window.screen.height * 3.7,
-    margin: 40,
+    margin: 50,
   };
 
   let svg = d3

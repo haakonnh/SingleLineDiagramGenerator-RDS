@@ -164,8 +164,8 @@ func relationHandler(w http.ResponseWriter, r *http.Request) {
 	relations := []Relation{} // initialize the relations array
 
 	// Query for relations from the tree table
-	//rows, err := conn.Query(context.Background(), "select node_1, node_2 from connections3") //newtree
-	rows, err := conn.Query(context.Background(), "select node1_id, node2_id from connections")
+	rows, err := conn.Query(context.Background(), "select node_1, node_2 from connections3") //newtree
+	//rows, err := conn.Query(context.Background(), "select node1_id, node2_id from connections")
 	if err != nil { // if query failed
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
 		os.Exit(1)
@@ -205,9 +205,34 @@ func relationHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func IDtoPathHandler(w http.ResponseWriter, r *http.Request) {
+	conn, err := connectToDB()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
+		os.Exit(1)
+	}
+
+	nodes, err := fetchNodes(conn)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Row iteration failed: %v\n", err)
+		os.Exit(1)
+	}
+
+	// Create a map from node id to path
+	idToPath := make(map[int64]string)
+	for _, node := range nodes {
+		idToPath[node.ID] = node.Path
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*") // allow cross-origin requests
+	json.NewEncoder(w).Encode(idToPath)
+}
+
 func main() {
 	http.HandleFunc("/nodes", nodeHandler)
 	http.HandleFunc("/relations", relationHandler)
+	http.HandleFunc("/idpath", IDtoPathHandler)
 	fmt.Println("Server is running on port 9090")
 	log.Fatal(http.ListenAndServe(":9090", nil))
 
