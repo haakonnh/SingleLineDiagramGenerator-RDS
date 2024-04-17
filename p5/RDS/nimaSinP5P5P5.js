@@ -168,14 +168,7 @@ function setup() {
 /*     hei();
     whatShouldIDraw();  */
 
-    let forsok = new QBA1(100, 100, 150, 100);
-
-    
-
-    let forsokTilleg = new SkillebryterOgSeksjon(100, 100, 150, 100);
-
-    forsokTilleg.draw();
-    forsok.draw();
+    let forsok = new JE2(100, 100).draw();
 
     console.log("TESTARRAY:", testArray);
     console.log("TREE:", treeDataf);

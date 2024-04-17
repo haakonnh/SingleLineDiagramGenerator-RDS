@@ -54,8 +54,64 @@ class StationLine {
       }
 }
 
+/**Seksjon */
+
+class Section { 
+    constructor(x1, y1, x2, y2, avEllerPå = 0) {
+        // coords for the last line
+        this.lastX1 = x1
+        this.lastX2 = x2
+        this.lastY1 = y1
+        this.lastY2 = y2
+
+        // slope, angle and length of the last line
+        this.lastSlope = (y2 - y1) / (x2 - x1)
+        this.angle = atan2(y2 - y1, x2 - x1)
+        this.length = dist(x1, y1, x2, y2) / 6
+
+        // the desired angle of the upper line
+        this.newAngle = this.angle + radians(-60)
+
+        // calculated coords for the upper line
+        this.upperX = this.lastX2 + cos(this.newAngle) * this.length
+        this.upperY = this.lastY2 + sin(this.newAngle) * this.length
+
+        // pytahgorean theorem to calculate the coords for the lower line
+        this.mot = sin(radians(-60)) * this.length
+        this.hos = sqrt(this.length * this.length - this.mot * this.mot)
+        this.lowerX1 = x2 + cos(this.angle) * this.hos
+        this.lowerY1 = y2 + sin(this.angle) * this.hos
+        this.lowerAngle = this.newAngle + radians(180) // angle flipped by 180 degrees for lower line
+        this.lowerX2 = this.lowerX1 + cos(this.lowerAngle) * this.length
+        this.lowerY2 = this.lowerY1 + sin(this.lowerAngle) * this.length
+
+        // for skillebryter
+        this.skillebryterOppX1 = this.lastX2;
+        this.skillebryterOppY1 = this.lastY2;
+        this.skillebryterOppX2 = this.lowerX1 + 2* myDistX / 5;
+
+        // output coords for "last element", connection points essentially
+        this.connectionX1 = this.skillebryterOppX2
+        this.connectionY1 = this.lowerY1
+        this.connectionX2 = this.lowerX2
+        this.connectionY2 = this.lowerY2
+
+
+
+  }
+
+  draw() {
+        // draw upper and lower line
+        strokeWeight(1)
+        line(this.lastX2 + myDistX / 5, this.lastY2, this.upperX + myDistX / 5, this.upperY)
+        line(this.lowerX1 + myDistX / 5, this.lowerY1, this.lowerX2 + myDistX / 5, this.lowerY2)
+        line(this.skillebryterOppX1, this.lastY2, this.lastX2 + myDistX/5, this.lastY2)
+        line(this.skillebryterOppX2, this.lowerY1, this.lowerX1+ myDistX / 5, this.lowerY1)
+  }
+}
+
 // Sekjson
-class Section {
+/* class Section {
       constructor(x1, y1, x2, y2) {
             // coords for the last line
             this.lastX1 = x1
@@ -96,7 +152,7 @@ class Section {
             line(this.lastX2, this.lastY2, this.upperX, this.upperY)
             line(this.lowerX1, this.lowerY1, this.lowerX2, this.lowerY2)
       }
-}
+} */
 
 //paralell stasjon, denne må endres
 class ParallelStasjonBane {
@@ -181,6 +237,88 @@ class SectionIsolator {
             line(this.parallelX1, this.parallelY1, this.parallelX2, this.parallelY2)
             //line(this.lowerX1, this.lowerY1, this.lowerX2, this.lowerY2);
       }
+}
+
+/** Stasjon med 2 spor */
+class JE2 {
+        constructor(x, y) {   
+            this.x = x    
+            this.y = y
+
+            this.length = 100
+
+            // Start and end points for the first line
+            this.x1 = this.x
+            this.y1 = this.y
+            this.x2 = this.x + this.length
+            this.y2 = this.y
+
+            // Start and end points for the second line
+            this.x3 = this.x1 + 5
+            this.x4 = this.x2 - 5
+
+            // top points of the second line
+            this.y3 = this.y - 20
+            this.x5 = this.x3 + 10
+            this.x6 = this.x4 - 10
+        }
+
+    draw() {  
+        // main line
+        line(this.x1, this.y1, this.x2, this.y2)
+
+        // second line
+        line(this.x3, this.y1, this.x5, this.y3)
+        line(this.x4, this.y1, this.x6, this.y3)
+        line(this.x5, this.y3, this.x6, this.y3)
+    } 
+}
+
+/**
+ * Stasjon med 3 spor
+ */
+class JE3 {
+    constructor(x, y) {   
+        this.x = x    
+        this.y = y
+
+        this.length = 100
+
+        // Start and end points for the first line
+        this.x1 = this.x
+        this.y1 = this.y
+        this.x2 = this.x + this.length
+        this.y2 = this.y
+
+        // Start and end points for the second line
+        this.x3 = this.x1 + 5
+        this.x4 = this.x2 - 5
+
+        // top points of the second line
+        this.y3 = this.y - 20
+        this.x5 = this.x3 + 10
+        this.x6 = this.x4 - 10
+
+        // Bottom points of the third line
+        this.y4 = this.y + 20
+        
+
+    }
+
+draw() {  
+    // main line
+    line(this.x1, this.y1, this.x2, this.y2)
+
+    // second line
+    line(this.x3, this.y1, this.x5, this.y3)
+    line(this.x4, this.y1, this.x6, this.y3)
+    line(this.x5, this.y3, this.x6, this.y3)
+
+    // third line
+    line(this.x3, this.y1, this.x5, this.y4)
+    line(this.x4, this.y1, this.x6, this.y4)
+    line(this.x5, this.y4, this.x6, this.y4)
+} 
 }
 
 
@@ -538,7 +676,10 @@ class Motor {
 
 const componentToPath = {
       "UAA": SkillebryterOgSeksjon,
-      "QBA": Skillebryter, //Endrer denne til SkillebryterOgSeksjon, men må finne en bedre løsning
+      "QBA1": QBA1,
+      "QBA2": QBA2,
+      "QBA3": QBA3,
+      "QBA1": QBA1,
       "TAA": Trafo,
       "WBC": Line,
       "FCA": Sikring,
@@ -547,15 +688,6 @@ const componentToPath = {
       // TODO: MAKE THESE CLASSES
 }
 
-const typeToPath = {
-      "UAA1": Section,
-      "UAA2": SectionIsolator,
-      "XXX": ParallelStasjonBane,
-      "WBCX": StationLine,
-      "WBC1": Line,
-      "QBA1": Skillebryter,
-      "QBA2": LastSkillebryter,
-}
 
 /**
  * a class for storing the state of a component
