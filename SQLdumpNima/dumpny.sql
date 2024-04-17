@@ -40,7 +40,7 @@ SET default_table_access_method = heap;
 
 CREATE TABLE public.alternativ4 (
     path public.ltree NOT NULL,
-    id integer NOT NULL,
+    id SERIAL PRIMARY KEY,
     type_value text
 );
 
@@ -115,7 +115,7 @@ ALTER TABLE public.connections3 OWNER TO postgres;
 --
 
 CREATE TABLE public.connections4 (
-    id integer NOT NULL,
+    id SERIAL PRIMARY KEY,
     node1 integer,
     node2 integer
 );
@@ -261,7 +261,7 @@ ALTER TABLE public.type4 OWNER TO postgres;
 
 CREATE TABLE public.type_men_ny (
     value text NOT NULL,
-    id integer NOT NULL
+    id SERIAL PRIMARY KEY
 );
 
 
