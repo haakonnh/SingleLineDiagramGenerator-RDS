@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -17,6 +18,7 @@ import (
 type Node struct {
 	ID   int64
 	Path string
+	Type sql.NullString
 }
 
 // The structure of the returned relation json object
@@ -94,7 +96,7 @@ func connectToDB() (*pgx.Conn, error) {
 // fetchNodes fetches the nodes from the database and returns them
 func fetchNodes(conn *pgx.Conn) ([]Node, error) {
 	// Query for nodes from the tree table
-	rows, err := conn.Query(context.Background(), "select ID, path from mitttre")
+	rows, err := conn.Query(context.Background(), "select id, path, type from alternativ4")
 	if err != nil { // if query failed
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
 		os.Exit(1)
@@ -108,12 +110,13 @@ func fetchNodes(conn *pgx.Conn) ([]Node, error) {
 	for rows.Next() {
 		var id int64
 		var path string
-		err = rows.Scan(&id, &path)
+		var componentType sql.NullString
+		err = rows.Scan(&id, &path, &componentType)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Scan failed: %v\n", err)
 			os.Exit(1)
 		}
-		nodes = append(nodes, Node{id, path})
+		nodes = append(nodes, Node{id, path, componentType})
 	}
 
 	// Return the nodes array and the error
@@ -165,7 +168,7 @@ func relationHandler(w http.ResponseWriter, r *http.Request) {
 	relations := []Relation{} // initialize the relations array
 
 	// Query for relations from the tree table
-	rows, err := conn.Query(context.Background(), "select node1_id, node2_id from connections") //newtree
+	rows, err := conn.Query(context.Background(), "select node1, node2 from connections4") //newtree
 	//rows, err := conn.Query(context.Background(), "select node1_id, node2_id from connections")
 	if err != nil { // if query failed
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
@@ -223,7 +226,7 @@ func queryHandler(w http.ResponseWriter, r *http.Request) {
 	to := query.Get("to")
 
 	// Query for the children of the "from" node
-	selectQuery := fmt.Sprintf("SELECT id, path FROM tree3 WHERE path <@ '%s'", from)
+	selectQuery := fmt.Sprintf("SELECT id, path FROM alternativ4 WHERE path <@ '%s'", from)
 	rows, err := conn.Query(context.Background(), selectQuery)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
