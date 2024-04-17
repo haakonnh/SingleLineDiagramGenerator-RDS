@@ -168,7 +168,7 @@ function setup() {
 /*     hei();
     whatShouldIDraw();  */
 
-    let forsok = new QBA1(100, 100).draw();
+    let forsok = new QBA4(100, 100).draw();
 
     console.log("TESTARRAY:", testArray);
     console.log("TREE:", treeDataf);
