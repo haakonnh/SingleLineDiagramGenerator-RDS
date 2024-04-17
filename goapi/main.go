@@ -94,7 +94,7 @@ func connectToDB() (*pgx.Conn, error) {
 // fetchNodes fetches the nodes from the database and returns them
 func fetchNodes(conn *pgx.Conn) ([]Node, error) {
 	// Query for nodes from the tree table
-	rows, err := conn.Query(context.Background(), "select id, path from tree3")
+	rows, err := conn.Query(context.Background(), "select ID, path from mitttre")
 	if err != nil { // if query failed
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
 		os.Exit(1)
@@ -165,7 +165,7 @@ func relationHandler(w http.ResponseWriter, r *http.Request) {
 	relations := []Relation{} // initialize the relations array
 
 	// Query for relations from the tree table
-	rows, err := conn.Query(context.Background(), "select node_1, node_2 from connections3") //newtree
+	rows, err := conn.Query(context.Background(), "select node1_id, node2_id from connections") //newtree
 	//rows, err := conn.Query(context.Background(), "select node1_id, node2_id from connections")
 	if err != nil { // if query failed
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)

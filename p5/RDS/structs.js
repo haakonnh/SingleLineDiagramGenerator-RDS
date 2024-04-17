@@ -183,13 +183,26 @@ class SectionIsolator {
       }
 }
 
-//skillebryter, draw rectangle
-class Skillebryter {
+
+/** Skillebryter uten motor */
+class QBA1 {
+        /**
+     * 
+     * @param {number} x1 
+     * @param {number} y1 
+     * @param {number} x2 
+     * @param {number} y2 
+     */
       constructor(x1, y1, x2, y2) {
             this.x1 = x1
-            this.y1 = y1
             this.x2 = x2
-            this.y2 = y2
+
+            this.bottomPointY = y1 
+            this.topPointY = y2 - 25
+
+            this.gapForSwitch1 = x1 + 15
+            this.gapForSwitch2 = x1 + 35
+
             this.connectionX1 = this.x1 + 30
             this.connectionY1 = this.y1
             this.connectionX2 = this.x1
@@ -197,8 +210,162 @@ class Skillebryter {
       }
 
       draw() {
-            rect(this.x1, this.y1 - 15, 30, 30)
+            // to paralelle linjer oppover
+            line(this.x1, this.bottomPointY, this.x1, this.topPointY)
+            line(this.x2, this.bottomPointY, this.x2, this.topPointY)
+
+            // en honisontal linje øverst
+            line(this.x1, this.topPointY, this.gapForSwitch1, this.topPointY)
+            line(this.gapForSwitch2, this.topPointY, this.x2, this.topPointY)
+
+            // Bryteren
+            line(this.gapForSwitch2, this.topPointY + 5, this.gapForSwitch2, this.topPointY - 5)
+            strokeWeight(2)
+            line(this.gapForSwitch1, this.topPointY, this.gapForSwitch2, this.topPointY)
+            strokeWeight(1)
       }
+}
+
+
+/** Lastskillebryter uten motor */
+class QBA2 {
+    /**
+     * 
+     * @param {number} x1 
+     * @param {number} y1 
+     * @param {number} x2 
+     * @param {number} y2 
+     */
+    constructor(x1, y1, x2, y2) {
+          this.x1 = x1
+          this.x2 = x2
+
+          this.bottomPointY = y1 
+          this.topPointY = y2 -25
+
+          this.gapForSwitch1 = x1 + 15
+          this.gapForSwitch2 = x1 + 35
+
+          this.cricleGap = x1 + 40
+
+          this.connectionX1 = this.x1 + 30
+          this.connectionY1 = this.y1
+          this.connectionX2 = this.x1
+          this.connectionY2 = this.y1
+    }
+
+    draw() {
+          // to paralelle linjer oppover
+          line(this.x1, this.bottomPointY, this.x1, this.topPointY)
+          line(this.x2, this.bottomPointY, this.x2, this.topPointY)
+
+          // en honisontal linje øverst
+          line(this.x1, this.topPointY, this.gapForSwitch1, this.topPointY)
+          line(this.cricleGap, this.topPointY, this.x2, this.topPointY)
+
+          // Bryteren
+          circle((this.cricleGap + this.gapForSwitch2)/2, this.topPointY, 5)
+          line(this.gapForSwitch2, this.topPointY + 5, this.gapForSwitch2, this.topPointY - 5)
+          strokeWeight(2)
+          line(this.gapForSwitch1, this.topPointY, this.gapForSwitch2, this.topPointY)
+          strokeWeight(1)
+    }
+}
+/** Sillebryter med motor */
+class QBA3 {
+    constructor(x1, y1, x2, y2) {
+          this.x1 = x1
+          this.x2 = x2
+
+          this.bottomPointY = y1 
+          this.topPointY = y2 -25
+
+          this.gapForSwitch1 = x1 + 15
+          this.gapForSwitch2 = x1 + 35
+
+          this.motorLineTopPoint = this.topPointY - 15
+
+          this.connectionX1 = this.x1 + 30
+          this.connectionY1 = this.y1
+          this.connectionX2 = this.x1
+          this.connectionY2 = this.y1
+    }
+
+    draw() {
+          // to paralelle linjer oppover
+          line(this.x1, this.bottomPointY, this.x1, this.topPointY)
+          line(this.x2, this.bottomPointY, this.x2, this.topPointY)
+
+          // en honisontal linje øverst
+          line(this.x1, this.topPointY, this.gapForSwitch1, this.topPointY)
+          line(this.gapForSwitch2, this.topPointY, this.x2, this.topPointY)
+
+          //motoren
+          line(this.gapForSwitch1, this.topPointY, this.gapForSwitch1, this.motorLineTopPoint)
+          circle(this.gapForSwitch1, this.motorLineTopPoint + 5, 10)
+
+          textSize(8)
+          text("M", this.gapForSwitch1 - 3, this.motorLineTopPoint + 8)
+          // Bryteren
+          line(this.gapForSwitch2, this.topPointY + 5, this.gapForSwitch2, this.topPointY - 5)
+          strokeWeight(2)
+          line(this.gapForSwitch1, this.topPointY, this.gapForSwitch2, this.topPointY)
+          strokeWeight(1)
+    }
+}
+
+/** Lastskillebryter med motor */
+class QBA4 {
+    /**
+     * 
+     * @param {number} x1 
+     * @param {number} y1 
+     * @param {number} x2 
+     * @param {number} y2 
+     */
+    constructor(x1, y1, x2, y2) {
+          this.x1 = x1
+          this.x2 = x2
+
+          this.bottomPointY = y1 
+          this.topPointY = y2 - 25
+
+          this.gapForSwitch1 = x1 + 15
+          this.gapForSwitch2 = x1 + 35
+
+          this.motorLineTopPoint = this.topPointY - 15
+
+          this.cricleGap = x1 + 40
+
+          this.connectionX1 = this.x1 + 30
+          this.connectionY1 = this.y1
+          this.connectionX2 = this.x1
+          this.connectionY2 = this.y1
+    }
+
+    draw() {
+          // to paralelle linjer oppover
+          line(this.x1, this.bottomPointY, this.x1, this.topPointY)
+          line(this.x2, this.bottomPointY, this.x2, this.topPointY)
+
+          // en honisontal linje øverst
+          line(this.x1, this.topPointY, this.gapForSwitch1, this.topPointY)
+          line(this.cricleGap, this.topPointY, this.x2, this.topPointY)
+
+          //motoren
+          line(this.gapForSwitch1, this.topPointY, this.gapForSwitch1, this.motorLineTopPoint)
+          circle(this.gapForSwitch1, this.motorLineTopPoint + 5, 10)
+ 
+          textSize(8)
+          text("M", this.gapForSwitch1 - 3, this.motorLineTopPoint + 8)
+
+          // Bryteren
+          circle((this.cricleGap + this.gapForSwitch2)/2, this.topPointY, 5)
+          line(this.gapForSwitch2, this.topPointY + 5, this.gapForSwitch2, this.topPointY - 5)
+          strokeWeight(2)
+          line(this.gapForSwitch1, this.topPointY, this.gapForSwitch2, this.topPointY)
+          strokeWeight(1)
+    }
 }
 
 class SkillebryterOgSeksjon {
@@ -380,7 +547,28 @@ const componentToPath = {
       // TODO: MAKE THESE CLASSES
 }
 
+const typeToPath = {
+      "UAA1": Section,
+      "UAA2": SectionIsolator,
+      "XXX": ParallelStasjonBane,
+      "WBCX": StationLine,
+      "WBC1": Line,
+      "QBA1": Skillebryter,
+      "QBA2": LastSkillebryter,
+}
+
+/**
+ * a class for storing the state of a component
+
+ */
 class ComponentState {
+    /**
+     * 
+     * @param {number} x 
+     * @param {number} y 
+     * @param {number} id 
+     * @param {string} type 
+     */
       constructor(x, y, id, type = "component") {
             this.x = x
             this.y = y

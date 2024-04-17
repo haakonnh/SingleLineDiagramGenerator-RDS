@@ -27,31 +27,28 @@ let testList = [];
 const width = 800; 
 const height = 600;
 
-
-
-
 async function fetchAndProcessData() {
     const apiUrl = 'http://localhost:8000/relation_data'; // Replace with your endpoint
 
     const apiUrl1 = 'http://localhost:8000/diagram_data'; // Replace with your endpoint
 
-    const treedata = 'http://localhost:8000/tree_data';
+   /*  const treedata = 'http://localhost:8000/tree_data'; */
     try {
         const response = loadJSON(apiUrl);
         const response1 = loadJSON(apiUrl1);
-        const treeData = loadJSON(treedata);
+        /* const treeData = loadJSON(treedata); */
 
         const data = response;
         const data1 = response1;
-        const data2 = treeData;
+        /* const data2 = treeData; */
 
         console.log("Data from API:", data1);
         console.log("relations from API:", data);
-        console.log("tree data:", data2);
+       /*  console.log("tree data:", data2); */
 
         fetchedData = data1;
         fetchedDataRelations = data;
-        treeDataf = data2;
+        /* treeDataf = data2; */
     }
     catch (error) {
         console.error("Error fetching data:", error);
@@ -64,56 +61,7 @@ function preload() {
     fetchAndProcessData();
 }; 
 
-/* const svg = d3.select("#tree-container")
-              .append("svg")
-              .attr("width", width)
-              .attr("height", height);
- */
-// Get data
-/* d3.json('http://localhost:8000/tree_data')
-  .then(data => {
 
-    // Create hierarchy
-    const root = d3.hierarchy(data);
-
-    // Tree layout 
-    const treeLayout = d3.tree().size([width - 100, height - 100]); 
-    treeLayout(root); 
-
-    // Links
-    const linkGenerator = d3.linkHorizontal()
-                            .x(d => d.y)
-                            .y(d => d.x);
-
-    svg.selectAll("path")
-       .data(root.links())
-       .enter()
-       .append("path")
-       .attr("d", linkGenerator)
-       .attr("stroke", "white")
-       .attr("fill", "none");
-
-   // Nodes
-   svg.selectAll("circle")
-      .data(root.descendants()) 
-      .enter()
-      .append("circle")
-      .attr("cx", d => d.y)
-      .attr("cy", d => d.x)
-      .attr("r", 8) 
-      .attr("fill", "lightblue");
-
-    // Add labels
-    svg.selectAll("text")
-      .data(root.descendants())
-      .enter()
-      .append("text")
-      .attr("x", d => d.y + 15) // Offset to the right of the circle
-      .attr("y", d => d.x + 5)  // Center vertically
-      .text(d => d.data.name);
-
-});
- */
 function toCoords(x, y) {
     return { x: x, y: y + size / 2 };
 };
@@ -152,7 +100,7 @@ function getReadyForConnections() {
     });
 };
 
-/* function whatShouldIDraw() {
+function whatShouldIDraw() {
     let currentCords = {x1: 100, y1: 100, x2: 200, y2: 100};
 
     connections.forEach((value) => {
@@ -184,7 +132,7 @@ function getReadyForConnections() {
     });
     return connections;
 };
- */
+
 
 let testArray = [];
 
@@ -208,36 +156,6 @@ function hei() {
 
       const sortedData = sortArrayByPeriods(testArray);
 };
-/* 
-var treeLayout = d3.tree()
-	.size([400, 200]) */
-
-/* var root = d3.hierarchy(treeDataf)
-
-treeLayout(root) */
-
-// Nodes
-/* d3.select('svg g.nodes')
-	.selectAll('circle.node')
-	.data(root.descendants())
-	.join('circle')
-	.classed('node', true)
-	.attr('cx', function(d) {return d.x;})
-	.attr('cy', function(d) {return d.y;})
-	.attr('r', 4);
-
-// Links
-d3.select('svg g.links')
-	.selectAll('line.link')
-	.data(root.links())
-	.join('line')
-	.classed('link', true)
-	.attr('x1', function(d) {return d.source.x;})
-	.attr('y1', function(d) {return d.source.y;})
-	.attr('x2', function(d) {return d.target.x;})
-	.attr('y2', function(d) {return d.target.y;});
-
- */
 
 function setup() {
     createCanvas(1425, 725);
@@ -247,8 +165,18 @@ function setup() {
     console.log("CONNECTIONS:", connections);
     console.log("COMPONENTS:", drawnComponents);
     
-    hei();
-    /* whatShouldIDraw(); */
+/*     hei();
+    whatShouldIDraw();  */
+
+    let forsok = new QBA1(100, 100, 150, 100);
+
+    
+
+    let forsokTilleg = new SkillebryterOgSeksjon(100, 100, 150, 100);
+
+    forsokTilleg.draw();
+    forsok.draw();
+
     console.log("TESTARRAY:", testArray);
     console.log("TREE:", treeDataf);
     noLoop();
