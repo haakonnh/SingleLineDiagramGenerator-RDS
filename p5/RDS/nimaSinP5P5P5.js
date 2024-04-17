@@ -165,8 +165,18 @@ function setup() {
     console.log("CONNECTIONS:", connections);
     console.log("COMPONENTS:", drawnComponents);
     
-    hei();
-    whatShouldIDraw(); 
+/*     hei();
+    whatShouldIDraw();  */
+
+    let forsok = new QBA1(100, 100, 150, 100);
+
+    
+
+    let forsokTilleg = new SkillebryterOgSeksjon(100, 100, 150, 100);
+
+    forsokTilleg.draw();
+    forsok.draw();
+
     console.log("TESTARRAY:", testArray);
     console.log("TREE:", treeDataf);
     noLoop();
