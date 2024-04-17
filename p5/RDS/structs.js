@@ -201,6 +201,23 @@ class Skillebryter {
       }
 }
 
+class LastSkillebryter {
+    constructor(x1, y1, x2, y2) {
+          this.x1 = x1
+          this.y1 = y1
+          this.x2 = x2
+          this.y2 = y2
+          this.connectionX1 = this.x1 + 30
+          this.connectionY1 = this.y1
+          this.connectionX2 = this.x1
+          this.connectionY2 = this.y1
+    }
+
+    draw() {
+          circle(this.x1 + 15, this.y1, 15);
+    }
+}
+
 class SkillebryterOgSeksjon {
       constructor(x1, y1, x2, y2, avEllerPå = 0) {
             // coords for the last line
@@ -378,6 +395,16 @@ const componentToPath = {
       "XBA": Trafosamling,
       "MAA": Motor,
       // TODO: MAKE THESE CLASSES
+}
+
+const typeToPath = {
+      "UAA1": Section,
+      "UAA2": SectionIsolator,
+      "XXX": ParallelStasjonBane,
+      "WBCX": StationLine,
+      "WBC1": Line,
+      "QBA1": Skillebryter,
+      "QBA2": LastSkillebryter,
 }
 
 class ComponentState {

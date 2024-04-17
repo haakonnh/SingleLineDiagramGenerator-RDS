@@ -135,6 +135,15 @@ def sort_by_hierarchy(data):
 
     return sorted(data, key=count_periods)
 
+@app.get("/type_data")
+def get_type_data():
+    with psycopg.connect(dbname="banenor.sorberg-nypan", user="postgres") as conn:
+        with conn.cursor() as cur:
+            cur.execute('SELECT type, id FROM type')
+            results = cur.fetchall()
+
+    return results
+
 
 @app.get("/tree_data")
 def get_tree_data():
