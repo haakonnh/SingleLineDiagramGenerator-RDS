@@ -6,6 +6,7 @@
  * @typedef {object} Component
  * @property {number} ID
  * @property {string} Path
+ * @property {string} Type
  */
 
 /**
@@ -133,11 +134,7 @@ function populateConnections() {
                   path: idToPath.get(value.Node2.toString())
             };
             connections.push(value)
-      })
-      
-
-      console.log("giga", connections)
-
+      });
       return connections
 }
 

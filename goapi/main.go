@@ -18,7 +18,7 @@ import (
 type Node struct {
 	ID   int64
 	Path string
-	Type sql.NullString
+	Type string
 }
 
 // The structure of the returned relation json object
@@ -116,7 +116,7 @@ func fetchNodes(conn *pgx.Conn) ([]Node, error) {
 			fmt.Fprintf(os.Stderr, "Scan failed: %v\n", err)
 			os.Exit(1)
 		}
-		nodes = append(nodes, Node{id, path, componentType})
+		nodes = append(nodes, Node{id, path, componentType.String})
 	}
 
 	// Return the nodes array and the error
