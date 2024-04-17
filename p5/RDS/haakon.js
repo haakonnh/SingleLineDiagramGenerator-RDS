@@ -234,8 +234,6 @@ function setup() {
 
 
       //console.log("Drawn components: ", drawnComponents)
-
-      //updateTransform()
 }
 
 function draw() {
