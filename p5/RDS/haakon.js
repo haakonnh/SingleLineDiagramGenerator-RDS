@@ -2,18 +2,49 @@
 /// <reference path="p5files/p5.d.ts" />
 // import fs as es module
 
+/**
+ * @typedef {object} Component
+ * @property {number} ID
+ * @property {string} Path
+ */
+
+/**
+ * @typedef {object} Connection
+ * @property {Component} Node1
+ * @property {Component} Node2
+ */
+
 const size = 200;
 
 let data = {};
 
+/**
+ * @type {Component[]}
+ */
 let fetchedData = {};
 
+/**
+ * @type {Connection[]}
+ */
 let fetchedRelationships = {};
+
+let fetchedMap = {};
+
+/**
+ * @type {Map<string, string>}
+ */
+let idToPath = new Map();
 
 let dataArray = [];
 
+/**
+ * @type {Connection[]}
+ */
 let components = [];
 
+/**
+ * Fetches the components from the API
+ */
 async function fetchAndProcessComponents() {
       const apiUrl = 'http://localhost:9090/nodes' // Replace with your endpoint
       //const apiUrl = 'http://localhost:8000/diagram_data' // Replace with your endpoint
@@ -29,6 +60,9 @@ async function fetchAndProcessComponents() {
       }
 }
 
+/**
+ * Fetches the relationships from the API
+ */
 async function fetchAndProcessRelationships() {
       const apiUrl = 'http://localhost:9090/relations' // Replace with your endpoint
       try {
@@ -43,47 +77,66 @@ async function fetchAndProcessRelationships() {
       }
 }
 
+/**
+ * Fetches the idToPath from the API
+ */
+async function fetchAndProcessMap() {
+      const apiUrl = 'http://localhost:9090/idpath' // Replace with your endpoint
+      try {
+            const response = loadJSON(apiUrl)
+
+            const data = response
+            console.log('Map from API:', data)
+
+            fetchedMap = data
+
+      } catch (error) {
+            console.error('Error fetching data:', error)
+      }
+}
+
 function preload() {
       fetchAndProcessComponents()
       fetchAndProcessRelationships()
+      fetchAndProcessMap()
 }
 
+/**
+ * Takes a full path and returns the last object in the path
+ * @example "RDS.J1.WBC1" -> "WBC1"
+ * @param {string} path 
+ * @returns {string}
+ */
+function getLast(path) {
+      let pathArray = path.split('.')
+      return pathArray.pop()
+}
+
+/**
+ * This function creates a JS map of the fetched "map" structure from the API, and populates the connections array with the
+ * fetched relationships from the API. It uses the map to get the path of the components from the component id. 
+ * 
+ * @returns {Connection[]}
+ */
 function populateConnections() {
       // populate connections array with the fetched relationships from the python api
+      idToPath = new Map(Object.entries(fetchedMap))
       let connections = []
+      console.log("OKKK", idToPath)
       Object.entries(fetchedRelationships).forEach(([key, value]) => {
-            let id1 = value.Node1
-            let id2 = value.Node2
-            let from, to = null;
-            Object.entries(fetchedData).forEach(([key, value]) => {
-                  if (value.ID == id1) {
-                        from = {
-                              id: value.ID,
-                              path: value.Path.split('.').pop()
-                        };
-                  } else if (value.ID == id2) {
-                        to = {
-                              id: value.ID,
-                              path: value.Path.split('.').pop()
-                        };
-                  }
-                  if (from && to) {
-                        connections.push({
-                              from,
-                              to
-                        })
-                        from, to = null;
-                  }
-            });
-      });
-
-      for (let i = 0; i < connections.length; i++) {
-            if (connections[i].from.path.match(/[A-Za-z]+/)[0] == "UAA" && connections[i].to.path.match(/[A-Za-z]+/)[0] == "QBA") {
-                  // delete the element with slice
-                  connections.splice(i, 1);     
-                  i--;
+            value.Node1 = {
+                  id: value.Node1,
+                  path: idToPath.get(value.Node1.toString())
             }
-      }
+            value.Node2 = {
+                  id: value.Node2,
+                  path: idToPath.get(value.Node2.toString())
+            };
+            connections.push(value)
+      })
+      
+
+      console.log("giga", connections)
 
       return connections
 }
@@ -124,7 +177,7 @@ function drawConnections(pattern, connections, drawnComponents) {
 
             // get the component name from the path
             fromMatch = from.path.match(pattern)[0]; // this is regex that matches the first word in the path
-            
+
             // get the to-component name from the path
             toMatch = to.path.match(pattern)[0];
 
@@ -132,7 +185,7 @@ function drawConnections(pattern, connections, drawnComponents) {
             if (!(fromMatch.length > 2) || (fromMatch == "BaneNOR")) { // exit if the element is not a component
                   return;
             }
-            console.log("From: ", fromMatch, "To: ", toMatch)
+            //console.log("From: ", fromMatch, "To: ", toMatch)
             // if the from element has not been drawn, draw it
             if (!fromElement) {
                   drawFirstConnection(fromMatch, toMatch, from, to, drawnComponents)
@@ -160,21 +213,27 @@ function drawConnections(pattern, connections, drawnComponents) {
 function setup() {
       createCanvas(1425, 725);
       background(255); // white background
-      // regex pattern to match the first word in a string
+      
+      /**
+       * This pattern matches the first word in a string
+       * @type {RegExp}
+       */
       const pattern = /[A-Za-z]+/;
 
       // connection array
       let connections = populateConnections();
 
-      console.log("Tuned connections: ", connections)
+      //console.log("Tuned connections: ", connections)
 
+      /**
+       * @type {ComponentState[]}
+       */
       let drawnComponents = []; // components that have been drawn
-
       // loop through the connections and draw them
       drawConnections(pattern, connections, drawnComponents)
 
-      
-      console.log("Drawn components: ", drawnComponents)
+
+      //console.log("Drawn components: ", drawnComponents)
 
       //updateTransform()
 }

@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/joho/godotenv"
@@ -205,6 +206,138 @@ func relationHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// queryHandler handles a query request which moves one tree node and its children to another tree node; e.g. http://localhost:9090/query?from=J1.JE2&to=J2
+func queryHandler(w http.ResponseWriter, r *http.Request) {
+	conn, err := connectToDB()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
+		os.Exit(1)
+	}
+	defer conn.Close(context.Background())
+
+	// Parse the query parameter:
+	query := r.URL.Query()
+
+	// Get the "from" and "to" node id from the query
+	from := query.Get("from")
+	to := query.Get("to")
+
+	// Query for the children of the "from" node
+	selectQuery := fmt.Sprintf("SELECT id, path FROM tree3 WHERE path <@ '%s'", from)
+	rows, err := conn.Query(context.Background(), selectQuery)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
+		os.Exit(1)
+	}
+
+	sourcePaths := []string{}
+	sourceIDs := []int64{}
+	rowsProcessed := 0
+
+	// Iterate over the rows, updating the path of each node
+	for rows.Next() {
+		var path string
+		var id int64
+		err = rows.Scan(&id, &path)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Scan failed: %v\n", err)
+			os.Exit(1)
+		}
+
+		// Update the path of the node
+		sourcePaths = append(sourcePaths, path)
+		sourceIDs = append(sourceIDs, id)
+		rowsProcessed++
+	}
+
+	if rowsProcessed == 0 {
+		w.Write([]byte("Query failed: from node not found"))
+		return
+	}
+	rows.Close()
+
+	// Query the to node
+	selectQuery = fmt.Sprintf("SELECT path FROM tree3 WHERE path = '%s'", to)
+	rows, err = conn.Query(context.Background(), selectQuery)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
+		os.Exit(1)
+	}
+
+	var destinationPath string
+	for rows.Next() {
+		rows.Scan(&destinationPath)
+	}
+
+	rows.Close()
+
+	if destinationPath == "" {
+		w.Write([]byte(destinationPath))
+		w.Write([]byte("Query failed: to node not found"))
+		return
+	}
+	// Cut the source nodes such that they can be appended to the destination node
+	substrings := strings.Split(from, ".")
+	var cutPart string
+	for i, path := range substrings {
+		if i == len(substrings)-1 {
+			break
+		}
+		cutPart += path + "."
+	}
+
+	appendages := []string{}
+	for _, path := range sourcePaths {
+		// Update the path of the node
+		newPath := strings.Replace(path, cutPart, "", 1)
+		appendages = append(appendages, newPath)
+	}
+
+	// Actually append the cut parts to the destination path
+	transformedPaths := []string{}
+	for _, appendage := range appendages {
+		transformedPaths = append(transformedPaths, destinationPath+"."+appendage)
+	}
+
+	// Create update query
+	var values string
+	for i, id := range sourceIDs {
+		if i == len(sourceIDs)-1 {
+			values += fmt.Sprintf("(%d, '%s'::ltree)\n", id, transformedPaths[i])
+			break
+		}
+		values += fmt.Sprintf("(%d, '%s'::ltree),\n", id, transformedPaths[i])
+	}
+
+	// Construct update query, using aliases to update the path of the source nodes
+	queryString := fmt.Sprintf("UPDATE tree3 AS t SET\n path = t2.path\n FROM (VALUES %s) AS t2(id, path)\n WHERE t2.id = t.id", values)
+	_, err = conn.Exec(context.Background(), queryString)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "exec failed: %v\n", err)
+		w.Write([]byte("Query failed"))
+		os.Exit(1)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*") // allow cross-origin requests
+	w.Write([]byte("Source nodes:\n"))
+	json.NewEncoder(w).Encode(sourcePaths)
+
+	w.Write([]byte("\nDestination node:\n"))
+	json.NewEncoder(w).Encode(destinationPath)
+
+	w.Write([]byte("Cut parts: " + cutPart + "\n"))
+	json.NewEncoder(w).Encode(appendages)
+
+	w.Write([]byte("\nTransformed paths:\n"))
+	json.NewEncoder(w).Encode(transformedPaths)
+
+	w.Write([]byte("\nQuery string:\n"))
+	json.NewEncoder(w).Encode(queryString)
+
+	w.Write([]byte("\nQuery successful"))
+}
+
 func IDtoPathHandler(w http.ResponseWriter, r *http.Request) {
 	conn, err := connectToDB()
 	if err != nil {
@@ -233,6 +366,7 @@ func main() {
 	http.HandleFunc("/nodes", nodeHandler)
 	http.HandleFunc("/relations", relationHandler)
 	http.HandleFunc("/idpath", IDtoPathHandler)
+	http.HandleFunc("/query", queryHandler)
 	fmt.Println("Server is running on port 9090")
 	log.Fatal(http.ListenAndServe(":9090", nil))
 
