@@ -130,12 +130,12 @@ function getLast(path) {
  * This function creates a JS map of the fetched "map" structure from the API, and populates the connections array with the
  * fetched relationships from the API. It uses the map to get the path of the components from the component id. 
  * 
+ * @param {Component[]} components empty array to be populated with the fetched components
  * @returns {Connection[]}
  */
-function populateConnections() {
+function populateConnections(connections) {
       // populate connections array with the fetched relationships from the python api
       idToPath = new Map(Object.entries(fetchedMap))
-      let connections = []
       console.log("OKKK", idToPath)
       Object.entries(fetchedRelationships).forEach(([key, value]) => {
             value.Node1 = {
@@ -150,13 +150,13 @@ function populateConnections() {
       });
       return connections
 }
+
 /**
- * 
  * @param {Component} node 
  * @param {Relationship[]} connections 
  * @returns {Component[]}
  */
-function neighbours(node, connections) {
+function getNeighbours(node, connections) {
       let neighbours = []
       for (let connection of connections) {
             if (connection.Node1.id == node.id) {
@@ -167,51 +167,127 @@ function neighbours(node, connections) {
       return neighbours
 }
 
+/**
+ * draws a double track station to the screen, instantiates a new 
+ * track component state and appends it to the drawnComponents array
+ * @param {Coordinates} lastComponentCoords 
+ * @param {number} length 
+ * @param {ComponentState[]} drawnComponents
+ */
+function drawDoubleTrackStation(lastComponentCoords, length, drawnComponents) {
+      const x1 = lastComponentCoords.x;
+      const y1 = lastComponentCoords.y;
+
+      const x2 = x1 + length;
+      const y2 = y1;
+
+      const x3 = x1 + 5;
+      const x4 = x2 - 5;
+
+      const y3 = y1 - 20;
+      const x5 = x3 + 10;
+      const x6 = x4 - 10;
+
+      line(x1, y1, x2, y2);
+
+      line(x3, y1, x5, y3);
+      line(x4, y1, x6, y3);
+      line(x5, y3, x6, y3);
+}
 
 /**
- * draws a station dependent on the number of lines on the station
- * @param {Component} node 
- * @param {Component[]} drawnComponents  // this is wong, drawn components is a ComponentState[]
- * @param {Context} context 
+ * draws a station dependent on the number of tracks on the station
+ * @param {ComponentState} lastComponent the node which the station is connected to
+ * @param {ComponentState[]} drawnComponents  this is wrong, drawn components is a ComponentState[]
+ * @param {Context} context type aspect context
  */
-function drawStation(node, drawnComponents, context) {
+function drawStation(lastComponent, drawnComponents, connections, context) {
       /**
        * list of neighbor nodes
        * @type {Component[]}
        */
-      let neighbours = neighbours(node, connections)
+      let neighbours = getNeighbours(lastComponent, connections)
       // only include nodes that are station lines
+      neighbours = [2, 1]
+      // station with two tracks
+      if (neighbours.length == 1) {
+            drawDoubleTrackStation((lastComponent.x, lastComponent.y), 100, drawnComponents)
+            const x1 = lastComponent.x;
+            const y1 = lastComponent.y;
 
+            const length = 100;
 
-      // draw the station
-      if (neighbours.length > 1) {
-            let station = new StationLine(50, 150, 50, 150 + myDistY)
-            station.draw()
-            for (let neighbour of neighbours) {
-                  let component = new ComponentState(station.connectionX1, station.connectionY1, neighbour.id, neighbour.path)
-                  drawnComponents.push(component)
-            }
+            // Start and end points for the first line
+            const x2 = x1 + length;
+            const y2 = y1;
+
+            // Start and end points for the second line
+            const x3 = x1 + 5;
+            const x4 = x2 - 5;
+
+            // top points of the second line
+            const y3 = y1 - 20;
+            const x5 = x3 + 10;
+            const x6 = x4 - 10;
+            line(x1, y1, x2, y2);
+
+            // second line
+            line(x3, y1, x5, y3);
+            line(x4, y1, x6, y3);
+            line(x5, y3, x6, y3);
       }
 
-      if (neightbours.length == 1) {
-            line()
+      if (neighbours.length == 2) {
+            // Start and end points for the first line
+            const x1 = lastComponent.x;
+            const y1 = lastComponent.y;
+
+            const length = 100;
+
+            const x2 = x1 + length;
+            const y2 = y1;
+
+            // Start and end points for the second line
+            const x3 = x1 + 5;
+            const x4 = x2 - 5;
+
+            // top points of the second line
+            const y3 = y1 - 20;
+            const x5 = x3 + 10;
+            const x6 = x4 - 10;
+
+            // Bottom points of the third line
+            const y4 = y1 + 20;
+            // main line
+            line(x1, y1, x2, y2);
+
+            // second line
+            line(x3, y1, x5, y3);
+            line(x4, y1, x6, y3);
+            line(x5, y3, x6, y3);
+
+            // third line
+            line(x3, y1, x5, y4);
+            line(x4, y1, x6, y4);
+            line(x5, y4, x6, y4);
       }
-      station.draw()
+
+      /* //station.draw()
       for (let neighbour of neighbours) {
             let component = new ComponentState(station.connectionX1, station.connectionY1, neighbour.id, neighbour.path)
             drawnComponents.push(component)
-      }
+      } */
 }
 
 // function drawSwitch
 
-function drawFirstConnection(fromMatch, toMatch, from, to, drawnComponents) {
+/* function drawFirstConnection(fromMatch, toMatch, from, to, drawnComponents) {
       let instance = new componentToPath[fromMatch](50, 150, 50, 150);
       let drawnComponent = new ComponentState(instance.connectionX1, instance.connectionY1, from.id, fromMatch);
       drawnComponents.push(drawnComponent);
       instance.draw()
 
-      new JE2(0,0)
+      new JE2(0, 0)
 
 
       // draw the to-element based on the newly drawn component
@@ -224,9 +300,9 @@ function drawFirstConnection(fromMatch, toMatch, from, to, drawnComponents) {
       drawnComponent = new ComponentState(secondInstance.connectionX1, secondInstance.connectionY1, to.id, toMatch);
       drawnComponents.push(drawnComponent);
       secondInstance.draw()
-}
+} */
 
-function drawConnections(pattern, connections, drawnComponents) {
+/* function drawConnections(pattern, connections, drawnComponents) {
       connections.forEach((value) => {
             // get the from and to elements from the connection object
             let from = value.from;
@@ -275,12 +351,12 @@ function drawConnections(pattern, connections, drawnComponents) {
                   instance.draw()
             }
       });
-}
+} */
 
 function setup() {
       createCanvas(1425, 725);
       background(255); // white background
-      
+
       /**
        * This pattern matches the first word in a string
        * @type {RegExp}
@@ -288,7 +364,7 @@ function setup() {
       const pattern = /[A-Za-z]+/;
 
       // connection array
-      let connections = populateConnections();
+      let connections = populateConnections([]);
 
       //console.log("Tuned connections: ", connections)
 
@@ -296,9 +372,9 @@ function setup() {
        * @type {ComponentState[]}
        */
       let drawnComponents = []; // components that have been drawn
-      // loop through the connections and draw them
-      drawConnections(pattern, connections, drawnComponents)
+      //drawConnections(pattern, connections, drawnComponents)
 
+      drawStation(new ComponentState(50, 150, 1, "WBC1"), drawnComponents, connections, context)
 
       //console.log("Drawn components: ", drawnComponents)
 }
