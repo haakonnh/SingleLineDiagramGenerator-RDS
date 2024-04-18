@@ -208,33 +208,11 @@ function drawStation(lastComponent, drawnComponents, connections, context) {
        */
       let neighbours = getNeighbours(lastComponent, connections)
       // only include nodes that are station lines
-      neighbours = [2, 1]
+      neighbours = [1]
       // station with two tracks
       if (neighbours.length == 1) {
-            drawDoubleTrackStation((lastComponent.x, lastComponent.y), 100, drawnComponents)
-            const x1 = lastComponent.x;
-            const y1 = lastComponent.y;
-
-            const length = 100;
-
-            // Start and end points for the first line
-            const x2 = x1 + length;
-            const y2 = y1;
-
-            // Start and end points for the second line
-            const x3 = x1 + 5;
-            const x4 = x2 - 5;
-
-            // top points of the second line
-            const y3 = y1 - 20;
-            const x5 = x3 + 10;
-            const x6 = x4 - 10;
-            line(x1, y1, x2, y2);
-
-            // second line
-            line(x3, y1, x5, y3);
-            line(x4, y1, x6, y3);
-            line(x5, y3, x6, y3);
+            const coords = new Coordinates(lastComponent.x, lastComponent.y)
+            drawDoubleTrackStation(coords, 100, drawnComponents)
       }
 
       if (neighbours.length == 2) {
