@@ -192,12 +192,12 @@ function drawDoubleTrackStation(lastComponentCoords, length, drawnComponents, st
       // create two new components for the two lines and add them to the drawnComponents array
       const connUpperX = x1 + length / 2;
       const connUpperY = y3;
-      upperComponent = new ComponentState(connUpperX, connUpperY, stationLines[0].ID, stationLines[0].Path)
+      upperComponent = new ComponentState(connUpperX, connUpperY, stationLines[0].ID, "WBC")
       drawnComponents.push(upperComponent)
 
       const connLowerX = x1 + length;
       const connLowerY = y1;
-      lowerComponent = new ComponentState(connLowerX, connLowerY, stationLines[1].ID, stationLines[1].Path)
+      lowerComponent = new ComponentState(connLowerX, connLowerY, stationLines[1].ID, "WBC")
       drawnComponents.push(lowerComponent)
 
       // TODO FIX THE INDEX THING HER
@@ -236,17 +236,17 @@ function drawTripleTrackStation(lastComponentCoords, length, drawnComponents, st
       // create three new components for the middle, upper and lower connections and add them to the drawnComponents array
       const connUpperX = x1 + length / 2;
       const connUpperY = y3;
-      upperComponent = new ComponentState(connUpperX, connUpperY, stationLines[0].ID, stationLines[0].Path)
+      upperComponent = new ComponentState(connUpperX, connUpperY, stationLines[0].ID, "WBC")
       drawnComponents.push(upperComponent)
 
       const connLowerX = x1 + length / 2;
       const connLowerY = y4;
-      lowerComponent = new ComponentState(connLowerX, connLowerY, stationLines[1].ID, stationLines[1].Path)
+      lowerComponent = new ComponentState(connLowerX, connLowerY, stationLines[1].ID, "WBC")
       drawnComponents.push(lowerComponent)
 
       const connMiddleX = x1 + length;
       const connMiddleY = y1;
-      middleComponent = new ComponentState(connMiddleX, connMiddleY, stationLines[2].ID, stationLines[2].Path)
+      middleComponent = new ComponentState(connMiddleX, connMiddleY, stationLines[2].ID, "WBC")
       drawnComponents.push(middleComponent)
 
       // straight middle line
@@ -265,40 +265,43 @@ function drawTripleTrackStation(lastComponentCoords, length, drawnComponents, st
 
 /**
  * draws a station dependent on the number of tracks on the station
- * @param {ComponentState} lastComponent the node which the station is connected to
+ * @param {Component} fromComponent the component which the station is connected to
+ * @param {Component} mainLine the node which the station is connected to
  * @param {ComponentState[]} drawnComponents  this is wrong, drawn components is a ComponentState[]
  * @param {Context} context type aspect context
  */
-function drawStation(lastComponent, drawnComponents, connections, context) {
+function drawStation(fromComponent, mainLine, drawnComponents, connections, context) {
       /**
        * list of neighbor nodes
        * @type {Component[]}
        */
-      let neighbours = getNeighbours(lastComponent, connections)
-
+      let neighbours = getNeighbours(mainLine, connections)
       
-
-      // TODO: FILTER FOR ONLY LINES
-      neighbours = [1]
+      // filter out the neighbours that are not WBC
+      neighbours = neighbours.filter((neighbour) => neighbour.Type == "WBC") 
+      
+      neighbours = [{ID: 1, Path: "RDS.J1.WBC1"}, {ID: 2, Path: "RDS.J1.WBC2"}]
 
       /**
        * list of lines composing the station.
        * last element should always be the last component
        * @type {Component[]}
        */
-      const stationLines = [neighbours[0], neighbours[1], lastComponent]
+      const stationLines = [neighbours[0], neighbours[1], mainLine]
 
       const length = 100
       // station with two tracks
       if (neighbours.length == 1) {
-            const coords = new Coordinates(lastComponent.x, lastComponent.y)
+            const coords = new Coordinates(fromComponent.x, fromComponent.y)
             drawDoubleTrackStation(coords, length, drawnComponents, stationLines)
       }
 
       if (neighbours.length == 2) {
-            const coords = new Coordinates(lastComponent.x, lastComponent.y)
+            const coords = new Coordinates(fromComponent.x, fromComponent.y)
             drawTripleTrackStation(coords, length, drawnComponents, stationLines)
       }
+
+      console.log("Drawn: ", drawnComponents)
 }
 
 // function drawSwitch
