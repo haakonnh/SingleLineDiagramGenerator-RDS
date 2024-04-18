@@ -11,15 +11,6 @@ let canvasWidth = 1425;
 let myDistX = canvasWidth / 20;
 let myDistY = canvasHeight / 20;
 
-/**
- * A class representing a point in 2D space
- */
-class Coordinates {
-        constructor(x, y) {
-                this.x = x;
-                this.y = y;
-        }
-}
 
 /**Seksjon */
 class UAA1 {
