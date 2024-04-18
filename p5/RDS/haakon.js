@@ -9,10 +9,17 @@
  * @property {string} Type
  */
 
+// TODO: FIX THE CONNECTIONS ARRAY, IT DOES NOT HAVE COMPONENTS
+/**
+ * @typedef {object} Node
+ * @property {number} id
+ * @property {string} path
+ */
+
 /**
  * @typedef {object} Connection
- * @property {Component} Node1
- * @property {Component} Node2
+ * @property {Node} Node1
+ * @property {Node} Node2
  */
 
 /**
@@ -109,10 +116,10 @@ async function fetchAndProcessMap() {
       }
 }
 
-function preload() {
-      fetchAndProcessComponents()
-      fetchAndProcessRelationships()
-      fetchAndProcessMap()
+async function preload() {
+      await fetchAndProcessComponents()
+      await fetchAndProcessRelationships()
+      await fetchAndProcessMap()
 }
 
 /**
@@ -153,11 +160,12 @@ function populateConnections(connections) {
 
 /**
  * @param {Component} node 
- * @param {Relationship[]} connections 
+ * @param {Connection[]} connections 
  * @returns {Component[]}
  */
 function getNeighbours(node, connections) {
       let neighbours = []
+      console.log(connections)
       for (let connection of connections) {
             if (connection.Node1.id == node.ID) {
                   neighbours.push(connection.Node2)
@@ -268,6 +276,7 @@ function drawTripleTrackStation(lastComponentCoords, length, drawnComponents, st
  * @param {Component} fromComponent the component which the station is connected to
  * @param {Component} mainLine the node which the station is connected to
  * @param {ComponentState[]} drawnComponents  this is wrong, drawn components is a ComponentState[]
+ * @param {Connection[]} connections list of connections
  * @param {Context} context type aspect context
  */
 function drawStation(fromComponent, mainLine, drawnComponents, connections, context) {
@@ -304,7 +313,37 @@ function drawStation(fromComponent, mainLine, drawnComponents, connections, cont
       console.log("Drawn: ", drawnComponents)
 }
 
-// function drawSwitch
+
+function setup() {
+      createCanvas(1425, 725);
+      background(255); // white background
+
+      /**
+       * This pattern matches the first word in a string
+       * @type {RegExp}
+       */
+      const pattern = /[A-Za-z]+/;
+
+      // connection array
+      let connections = populateConnections([]);
+
+
+      console.log("Tuned connections: ", connections)
+
+      /**
+       * @type {ComponentState[]}
+       */
+      let drawnComponents = []; // components that have been drawn
+      //drawConnections(pattern, connections, drawnComponents)
+
+      drawStation(new ComponentState(50, 150, 1, "WBC1"), drawnComponents, connections, context)
+
+      //console.log("Drawn components: ", drawnComponents)
+}
+
+function draw() {
+      noLoop()
+}
 
 /* function drawFirstConnection(fromMatch, toMatch, from, to, drawnComponents) {
       let instance = new componentToPath[fromMatch](50, 150, 50, 150);
@@ -377,33 +416,3 @@ function drawStation(fromComponent, mainLine, drawnComponents, connections, cont
             }
       });
 } */
-
-function setup() {
-      createCanvas(1425, 725);
-      background(255); // white background
-
-      /**
-       * This pattern matches the first word in a string
-       * @type {RegExp}
-       */
-      const pattern = /[A-Za-z]+/;
-
-      // connection array
-      let connections = populateConnections([]);
-
-      //console.log("Tuned connections: ", connections)
-
-      /**
-       * @type {ComponentState[]}
-       */
-      let drawnComponents = []; // components that have been drawn
-      //drawConnections(pattern, connections, drawnComponents)
-
-      drawStation(new ComponentState(50, 150, 1, "WBC1"), drawnComponents, connections, context)
-
-      //console.log("Drawn components: ", drawnComponents)
-}
-
-function draw() {
-      noLoop()
-}
