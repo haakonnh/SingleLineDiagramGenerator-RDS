@@ -27,7 +27,7 @@ class Coordinates {
 
 class UAA1 {
       constructor(x1, y1) {
-           this.lineLength = 14;
+           this.lineLength = 20;
             
             // Start and end points for the first line
            this.line1StartX = x1;
@@ -35,12 +35,12 @@ class UAA1 {
            this.line1EndX = x1 + this.lineLength;
 
            // Start and end points for the first section
-           this.sectionEndX = this.line1EndX + 8;
-           this.
+           this.sectionEndX = this.line1EndX + 5;
+           this.sectionTopY = this.lineY - 8;
+           this.sectionBottomY = this.lineY + 8;
 
-           // Start and end points for the second section
-
-           this.line2StartX = this.sectionEndX + 8;
+           this.line2StartX = this.sectionEndX + 5;
+           this.line2EndX = this.line2StartX + this.lineLength;
 
 
            
@@ -55,69 +55,51 @@ class UAA1 {
             line(this.line1StartX, this.lineY, this.line1EndX, this.lineY);
             // first section
             stroke("red");
-            line();
+            line(this.line1EndX, this.lineY, this.sectionEndX, this.sectionTopY);
             // second section
             stroke("green");
-            line();
+            line(this.sectionEndX, this.sectionBottomY, this.line2StartX, this.lineY);
             //line from second section to right
             stroke("black");
-            line(this.line2StartX, this.lineY, this.line2StartX + this.lineLength, this.lineY);
+            line(this.line2StartX, this.lineY, this.line2EndX, this.lineY);
       }
 }
 
 /** Section insulator */
 class UAA2 {
-      constructor(x1, y1, x2, y2) {
-            this.lastX1 = x1;
-            this.lastX2 = x2;
-            this.lastY1 = y1;
-            this.lastY2 = y2;
-            // Calculate the perpendicular line coordinates
-            const angle = atan2(y2 - y1, x2 - x1);
-            const length = 15; // Set your desired length here
-            const parallelOffset = -10; // Set the desired offset for parallel lines
+    constructor(x1, y1) {
+         this.lineLength = 22;
+          
+          // Start and end points for the first line
+         this.line1StartX = x1;
+         this.lineY = y1;
+         this.line1EndX = x1 + this.lineLength;
 
-            // Calculate coordinates for both ends of the perpendicular line
-            [this.upperX1, this.upperY1] = [
-                  x2 + cos(angle + HALF_PI) * length,
-                  y2 + sin(angle + HALF_PI) * length,
-            ];
-            [this.upperX2, this.upperY2] = [
-                  x2 + cos(angle - HALF_PI) * length,
-                  y2 + sin(angle - HALF_PI) * length,
-            ];
+         // Start and end points for the first section
+         this.sectionEndX = this.line1EndX;
+         this.sectionTopY = this.lineY - 8;
+         this.sectionBottomY = this.lineY + 8;
 
-            // Calculate coordinates for both ends of the parallel line
-            const parallelLength = dist(
-                  this.upperX1,
-                  this.upperY1,
-                  this.upperX2,
-                  this.upperY2
-            );
-            const parallelAngle = angle + PI; // Opposite direction
+         this.line2StartX = this.sectionEndX + 6;
+         this.line2EndX = this.line2StartX + this.lineLength;
+    }
 
-            this.parallelX1 = this.upperX1 + cos(parallelAngle) * parallelOffset;
-            this.parallelY1 = this.upperY1 + sin(parallelAngle) * parallelOffset;
-            this.parallelX2 = this.upperX2 + cos(parallelAngle) * parallelOffset;
-            this.parallelY2 = this.upperY2 + sin(parallelAngle) * parallelOffset;
-            [this.lowerX1, this.lowerY1] = [x2, y2];
-            [this.lowerX2, this.lowerY2] = [
-                  x2 + cos(angle + PI) * length,
-                  y2 + sin(angle + PI) * length,
-            ];
-
-            // find connection point, which is halfway on the right line
-            this.connectionX1 = (this.parallelX1 + this.parallelX2) / 2;
-            this.connectionY1 = (this.parallelY1 + this.parallelY2) / 2;
-            this.connectionX2 = this.connectionX1;
-            this.connectionY2 = this.connectionY1;
-      }
-
-      draw() {
-            line(this.upperX1, this.upperY1, this.upperX2, this.upperY2);
-            line(this.parallelX1, this.parallelY1, this.parallelX2, this.parallelY2);
-            //line(this.lowerX1, this.lowerY1, this.lowerX2, this.lowerY2);
-      }
+    draw() {
+          // draw upper and lower line
+          strokeWeight(1);
+          // line from left to first section
+          stroke("blue");
+          line(this.line1StartX, this.lineY, this.line1EndX, this.lineY);
+          // first section
+          stroke("red");
+          line(this.line1EndX, this.sectionBottomY, this.sectionEndX, this.sectionTopY);
+          // second section
+          stroke("green");
+          line(this.line2StartX, this.sectionBottomY, this.line2StartX, this.sectionTopY);
+          //line from second section to right
+          stroke("black");
+          line(this.line2StartX, this.lineY, this.line2EndX, this.lineY);
+    }
 }
 
 /**Main track */
@@ -135,7 +117,7 @@ class WBC1 {
     }
 
     draw() {
-        line(x1, y1, this.endPointX, this.endPointY);
+        line(this.x1, this.y1, this.endPointX, this.endPointY);
     }   
 }
 

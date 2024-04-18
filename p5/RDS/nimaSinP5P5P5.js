@@ -169,8 +169,10 @@ function setup() {
 /*     hei();
     whatShouldIDraw();  */
 
-    let forsok = new UAA1(100, 100).draw();
-
+    let forsok = new UAA2(100, 100).draw();
+    let forsok1 = new QBA1(100, 100).draw();
+    let stasjon = new JE2(150, 100).draw();
+    let linje = new WBC1(250, 100).draw();
 
     image(img, 100, 600, 200, 100);
 
