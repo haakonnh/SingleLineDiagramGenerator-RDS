@@ -6,12 +6,21 @@
  * @typedef {object} Component
  * @property {number} ID
  * @property {string} Path
+ * @property {string} Type
  */
 
 /**
  * @typedef {object} Connection
  * @property {Component} Node1
  * @property {Component} Node2
+ */
+
+/**
+ * @typedef {object} Context
+ * @property {string} Main
+ * @property {string} Sub
+ * @property {string} MainType
+ * @property {string} SubType
  */
 
 const size = 200;
@@ -41,6 +50,11 @@ let dataArray = [];
  * @type {Connection[]}
  */
 let components = [];
+
+/**
+ * @type {Context}
+ */
+let context = {}
 
 /**
  * Fetches the components from the API
@@ -133,19 +147,72 @@ function populateConnections() {
                   path: idToPath.get(value.Node2.toString())
             };
             connections.push(value)
-      })
-      
-
-      console.log("giga", connections)
-
+      });
       return connections
 }
+/**
+ * 
+ * @param {Component} node 
+ * @param {Relationship[]} connections 
+ * @returns {Component[]}
+ */
+function neighbours(node, connections) {
+      let neighbours = []
+      for (let connection of connections) {
+            if (connection.Node1.id == node.id) {
+                  neighbours.push(connection.Node2)
+                  console.log("Neighbour: ", connection.Node2)
+            }
+      }
+      return neighbours
+}
+
+
+/**
+ * draws a station dependent on the number of lines on the station
+ * @param {Component} node 
+ * @param {Component[]} drawnComponents  // this is wong, drawn components is a ComponentState[]
+ * @param {Context} context 
+ */
+function drawStation(node, drawnComponents, context) {
+      /**
+       * list of neighbor nodes
+       * @type {Component[]}
+       */
+      let neighbours = neighbours(node, connections)
+      // only include nodes that are station lines
+
+
+      // draw the station
+      if (neighbours.length > 1) {
+            let station = new StationLine(50, 150, 50, 150 + myDistY)
+            station.draw()
+            for (let neighbour of neighbours) {
+                  let component = new ComponentState(station.connectionX1, station.connectionY1, neighbour.id, neighbour.path)
+                  drawnComponents.push(component)
+            }
+      }
+
+      if (neightbours.length == 1) {
+            line()
+      }
+      station.draw()
+      for (let neighbour of neighbours) {
+            let component = new ComponentState(station.connectionX1, station.connectionY1, neighbour.id, neighbour.path)
+            drawnComponents.push(component)
+      }
+}
+
+// function drawSwitch
 
 function drawFirstConnection(fromMatch, toMatch, from, to, drawnComponents) {
       let instance = new componentToPath[fromMatch](50, 150, 50, 150);
       let drawnComponent = new ComponentState(instance.connectionX1, instance.connectionY1, from.id, fromMatch);
       drawnComponents.push(drawnComponent);
       instance.draw()
+
+      new JE2(0,0)
+
 
       // draw the to-element based on the newly drawn component
       let secondInstance = new componentToPath[toMatch](instance.connectionX1, instance.connectionY1, 50 + myDistX, 150);
