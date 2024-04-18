@@ -22,24 +22,6 @@ class Coordinates {
 
 }
 
-/** WBC1 */
-class WBC1 {
-      constructor(x1, y1, x2, y2) {
-            this.x1 = x1;
-            this.y1 = y1;
-            this.x2 = x2;
-            this.y2 = y2;
-            // connectionX1 and connectionY1 are the starting coords for this element
-            // connectionX2 and connectionY2 are the ending coords for this element
-            this.connectionX1 = this.x1 + myDistX;
-            this.connectionY1 = this.y1;
-            this.connectionX2 = this.x1;
-            this.connectionY2 = this.y1;
-      }
-      draw() {
-            line(this.x1, this.y1, this.x1 + myDistX, this.y1); // temp dist. and y2
-      }
-}
 
 /**Seksjon */
 
@@ -52,8 +34,11 @@ class UAA1 {
            this.lineY = y1;
            this.line1EndX = x1 + this.lineLength;
 
-           // Start and end points for the second line
+           // Start and end points for the first section
            this.sectionEndX = this.line1EndX + 8;
+           this.
+
+           // Start and end points for the second section
 
            this.line2StartX = this.sectionEndX + 8;
 
