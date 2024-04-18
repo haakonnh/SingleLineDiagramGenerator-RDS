@@ -3,6 +3,13 @@
 // import fs as es module
 
 /**
+ * @typedef {object} Coordinates
+ * @property {number} x
+ * @property {number} y
+ */
+
+
+/**
  * @typedef {object} Component
  * @property {number} ID
  * @property {string} Path
@@ -131,6 +138,20 @@ async function preload() {
 function getLast(path) {
       let pathArray = path.split('.')
       return pathArray.pop()
+}
+
+/**
+ * finds a component state in the drawnComponents array based on the id
+ * @param {number} id 
+ * @param {ComponentState[]} drawnComponents
+ * @returns {ComponentState}
+ */
+function findComponentState(id, drawnComponents) {
+      for (let component of drawnComponents) {
+            if (component.id == id) {
+                  return component
+            }
+      }
 }
 
 /**
@@ -284,12 +305,12 @@ function drawStation(fromComponent, mainLine, drawnComponents, connections, cont
        * list of neighbor nodes
        * @type {Component[]}
        */
-      let neighbours = getNeighbours(mainLine, connections)
+      //let neighbours = getNeighbours(mainLine, connections)
       
       // filter out the neighbours that are not WBC
-      neighbours = neighbours.filter((neighbour) => neighbour.Type == "WBC") 
+      //neighbours = neighbours.filter((neighbour) => neighbour.Type == "WBC") 
       
-      neighbours = [{ID: 1, Path: "RDS.J1.WBC1"}, {ID: 2, Path: "RDS.J1.WBC2"}]
+      let neighbours = [{ID: 3, Path: "RDS.J1.WBC1", Type: "WBC1"}, {ID: 2, Path: "RDS.J1.WBC2", Type: "WBC1"}]
 
       /**
        * list of lines composing the station.
@@ -298,15 +319,17 @@ function drawStation(fromComponent, mainLine, drawnComponents, connections, cont
        */
       const stationLines = [neighbours[0], neighbours[1], mainLine]
 
+      const fromComponentState = findComponentState(fromComponent.ID, drawnComponents)
+
       const length = 100
       // station with two tracks
       if (neighbours.length == 1) {
-            const coords = new Coordinates(fromComponent.x, fromComponent.y)
+            const coords = new Coordinates(fromComponentState.x, fromComponentState.y)
             drawDoubleTrackStation(coords, length, drawnComponents, stationLines)
       }
 
       if (neighbours.length == 2) {
-            const coords = new Coordinates(fromComponent.x, fromComponent.y)
+            const coords = new Coordinates(fromComponentState.x, fromComponentState.y)
             drawTripleTrackStation(coords, length, drawnComponents, stationLines)
       }
 
@@ -325,7 +348,7 @@ function setup() {
       const pattern = /[A-Za-z]+/;
 
       // connection array
-      let connections = populateConnections([]);
+      const connections = populateConnections([]);
 
 
       console.log("Tuned connections: ", connections)
@@ -336,7 +359,11 @@ function setup() {
       let drawnComponents = []; // components that have been drawn
       //drawConnections(pattern, connections, drawnComponents)
 
-      drawStation(new ComponentState(50, 150, 1, "WBC1"), drawnComponents, connections, context)
+      drawnComponents.push(new ComponentState(50, 150, 1, "QBA1")) // example of a drawn component
+
+      drawStation({ID: 1, Path: "RDS.J1.QBA1", Type: "QBA1"},
+      {ID: 2, Path: "RDS.J1.WBC2", Type: "WBC1"}, 
+      drawnComponents, connections, context)
 
       //console.log("Drawn components: ", drawnComponents)
 }
