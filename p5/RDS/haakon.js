@@ -159,7 +159,7 @@ function populateConnections(connections) {
 function getNeighbours(node, connections) {
       let neighbours = []
       for (let connection of connections) {
-            if (connection.Node1.id == node.id) {
+            if (connection.Node1.id == node.ID) {
                   neighbours.push(connection.Node2)
                   console.log("Neighbour: ", connection.Node2)
             }
@@ -173,8 +173,9 @@ function getNeighbours(node, connections) {
  * @param {Coordinates} lastComponentCoords 
  * @param {number} length 
  * @param {ComponentState[]} drawnComponents
+ * @param {Component[]} stationLines
  */
-function drawDoubleTrackStation(lastComponentCoords, length, drawnComponents) {
+function drawDoubleTrackStation(lastComponentCoords, length, drawnComponents, stationLines) {
       const x1 = lastComponentCoords.x;
       const y1 = lastComponentCoords.y;
 
@@ -188,11 +189,78 @@ function drawDoubleTrackStation(lastComponentCoords, length, drawnComponents) {
       const x5 = x3 + 10;
       const x6 = x4 - 10;
 
-      line(x1, y1, x2, y2);
+      // create two new components for the two lines and add them to the drawnComponents array
+      const connUpperX = x1 + length / 2;
+      const connUpperY = y3;
+      upperComponent = new ComponentState(connUpperX, connUpperY, stationLines[0].ID, stationLines[0].Path)
+      drawnComponents.push(upperComponent)
 
+      const connLowerX = x1 + length;
+      const connLowerY = y1;
+      lowerComponent = new ComponentState(connLowerX, connLowerY, stationLines[1].ID, stationLines[1].Path)
+      drawnComponents.push(lowerComponent)
+
+      // TODO FIX THE INDEX THING HER
+
+      // middle line
+      line(x1, y1, x2, y2);
       line(x3, y1, x5, y3);
       line(x4, y1, x6, y3);
       line(x5, y3, x6, y3);
+}
+
+/**
+ * draws a triple track station to the screen, instantiates a new 
+ * track component state and appends it to the drawnComponents array
+ * @param {Coordinates} lastComponentCoords 
+ * @param {number} length 
+ * @param {ComponentState[]} drawnComponents 
+ * @param {Component[]} stationLines 
+ */
+function drawTripleTrackStation(lastComponentCoords, length, drawnComponents, stationLines) {
+      const x1 = lastComponentCoords.x;
+      const y1 = lastComponentCoords.y;
+
+      const x2 = x1 + length;
+      const y2 = y1;
+
+      const x3 = x1 + 5;
+      const x4 = x2 - 5;
+
+      const y3 = y1 - 20;
+      const x5 = x3 + 10;
+      const x6 = x4 - 10;
+
+      const y4 = y1 + 20;
+
+      // create three new components for the middle, upper and lower connections and add them to the drawnComponents array
+      const connUpperX = x1 + length / 2;
+      const connUpperY = y3;
+      upperComponent = new ComponentState(connUpperX, connUpperY, stationLines[0].ID, stationLines[0].Path)
+      drawnComponents.push(upperComponent)
+
+      const connLowerX = x1 + length / 2;
+      const connLowerY = y4;
+      lowerComponent = new ComponentState(connLowerX, connLowerY, stationLines[1].ID, stationLines[1].Path)
+      drawnComponents.push(lowerComponent)
+
+      const connMiddleX = x1 + length;
+      const connMiddleY = y1;
+      middleComponent = new ComponentState(connMiddleX, connMiddleY, stationLines[2].ID, stationLines[2].Path)
+      drawnComponents.push(middleComponent)
+
+      // straight middle line
+      line(x1, y1, x2, y2);
+
+      // upper line
+      line(x3, y1, x5, y3);
+      line(x4, y1, x6, y3);
+      line(x5, y3, x6, y3);
+
+      // lower line
+      line(x3, y1, x5, y4);
+      line(x4, y1, x6, y4);
+      line(x5, y4, x6, y4);
 }
 
 /**
@@ -207,54 +275,30 @@ function drawStation(lastComponent, drawnComponents, connections, context) {
        * @type {Component[]}
        */
       let neighbours = getNeighbours(lastComponent, connections)
-      // only include nodes that are station lines
+
+      
+
+      // TODO: FILTER FOR ONLY LINES
       neighbours = [1]
+
+      /**
+       * list of lines composing the station.
+       * last element should always be the last component
+       * @type {Component[]}
+       */
+      const stationLines = [neighbours[0], neighbours[1], lastComponent]
+
+      const length = 100
       // station with two tracks
       if (neighbours.length == 1) {
             const coords = new Coordinates(lastComponent.x, lastComponent.y)
-            drawDoubleTrackStation(coords, 100, drawnComponents)
+            drawDoubleTrackStation(coords, length, drawnComponents, stationLines)
       }
 
       if (neighbours.length == 2) {
-            // Start and end points for the first line
-            const x1 = lastComponent.x;
-            const y1 = lastComponent.y;
-
-            const length = 100;
-
-            const x2 = x1 + length;
-            const y2 = y1;
-
-            // Start and end points for the second line
-            const x3 = x1 + 5;
-            const x4 = x2 - 5;
-
-            // top points of the second line
-            const y3 = y1 - 20;
-            const x5 = x3 + 10;
-            const x6 = x4 - 10;
-
-            // Bottom points of the third line
-            const y4 = y1 + 20;
-            // main line
-            line(x1, y1, x2, y2);
-
-            // second line
-            line(x3, y1, x5, y3);
-            line(x4, y1, x6, y3);
-            line(x5, y3, x6, y3);
-
-            // third line
-            line(x3, y1, x5, y4);
-            line(x4, y1, x6, y4);
-            line(x5, y4, x6, y4);
+            const coords = new Coordinates(lastComponent.x, lastComponent.y)
+            drawTripleTrackStation(coords, length, drawnComponents, stationLines)
       }
-
-      /* //station.draw()
-      for (let neighbour of neighbours) {
-            let component = new ComponentState(station.connectionX1, station.connectionY1, neighbour.id, neighbour.path)
-            drawnComponents.push(component)
-      } */
 }
 
 // function drawSwitch
