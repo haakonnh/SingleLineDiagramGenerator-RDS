@@ -59,6 +59,7 @@ async function fetchAndProcessData() {
 
 function preload() {
     fetchAndProcessData();
+    img = loadImage('BanenorBilde.png');
 }; 
 
 
@@ -168,7 +169,10 @@ function setup() {
 /*     hei();
     whatShouldIDraw();  */
 
-    let forsok = new QBA4(100, 100).draw();
+    let forsok = new UAA1(100, 100).draw();
+
+
+    image(img, 100, 600, 200, 100);
 
     console.log("TESTARRAY:", testArray);
     console.log("TREE:", treeDataf);
