@@ -177,21 +177,6 @@ class WBC1 {
     }   
 }
 
-/**Paralell line */
-class WBC3 {
-    constructor(x1, y1) {  
-        this.x1 = x1;
-        this.y1 = y1;
-
-        this.endPointX = x1 + myDistX;
-        this.endPointY = y1;
-    }
-
-    draw() {
-        line(x1, y1, this.endPointX, this.endPointY);
-    }
-}
-
 
 /** Stasjon med 2 spor */
 class JE2 {
