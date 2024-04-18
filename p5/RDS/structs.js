@@ -11,6 +11,36 @@ let canvasWidth = 1425;
 let myDistX = canvasWidth / 20;
 let myDistY = canvasHeight / 20;
 
+/**
+ * A class representing a point in 2D space
+ */
+class Coordinates {
+      constructor(x, y) {
+            this.x = x;
+            this.y = y;
+      }
+
+}
+
+/** WBC1 */
+class WBC1 {
+      constructor(x1, y1, x2, y2) {
+            this.x1 = x1;
+            this.y1 = y1;
+            this.x2 = x2;
+            this.y2 = y2;
+            // connectionX1 and connectionY1 are the starting coords for this element
+            // connectionX2 and connectionY2 are the ending coords for this element
+            this.connectionX1 = this.x1 + myDistX;
+            this.connectionY1 = this.y1;
+            this.connectionX2 = this.x1;
+            this.connectionY2 = this.y1;
+      }
+      draw() {
+            line(this.x1, this.y1, this.x1 + myDistX, this.y1); // temp dist. and y2
+      }
+}
+
 /**Seksjon */
 
 class UAA1 {
