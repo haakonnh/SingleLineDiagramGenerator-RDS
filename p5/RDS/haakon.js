@@ -8,7 +8,6 @@
  * @property {number} y
  */
 
-
 /**
  * @typedef {object} Component
  * @property {number} ID
@@ -155,6 +154,18 @@ async function preload() {
 }
 
 /**
+ * Takes a full path and returns the last object in the path
+ * @example "RDS.J1.WBC1" -> "WBC1"
+ * @param {string} path 
+ * @returns {string}
+ */
+function getLast(path) {
+      let pathArray = path.split('.')
+      return pathArray.pop()
+}
+
+
+/**
  * Takes a full path and returns the upper technical system label.
  * @example ""J1.KL1.KL2.WBC1" -> "KL1"
  * @param {string} path 
@@ -213,7 +224,7 @@ function getComponent(path) {
  * finds a component state in the drawnComponents array based on the id
  * @param {number} id 
  * @param {ComponentState[]} drawnComponents
- * @returns {ComponentState}
+ * @returns {ComponentState | null} returns a component state if it exists, or null if it doesn't
  */
 function findComponentState(id, drawnComponents) {
       for (let component of drawnComponents) {
@@ -221,6 +232,7 @@ function findComponentState(id, drawnComponents) {
                   return component
             }
       }
+      return null
 }
 
 /**
@@ -436,12 +448,8 @@ function drawStation(fromComponent, mainLine, drawnComponents, connections) {
 
       const length = 100
 
-      /**
-       * @type {Coordinates}
-       */
-      let coords;
-
-      coords = {
+      /** @type {Coordinates} */
+      let coords = {
             x: fromComponentState.x,
             y: fromComponentState.y
       }
@@ -458,13 +466,42 @@ function drawStation(fromComponent, mainLine, drawnComponents, connections) {
       console.log("Drawn: ", drawnComponents)
 }
 
+
 /**
- * 
+ * This is the main loop of the program which loops through all connections and draws the
+ * components accordingly.
  * @param {Connection[]} connections 
  * @param {ComponentState[]} drawnComponents
  */
 function mainLoop(connections, drawnComponents) {
+      let firstConnection = connections[0]
+      console.log("First connection: ", firstConnection)
+      connections = [connections[0], connections[1]]
+      
+      // main loop
+      for (let connection of connections) {
+            const component1 = connection.Component1
+            const component2 = connection.Component2
 
+            context.Main = getUpperTechnical(component1.Path)
+            context.Sub = getLowerTechnical(component1.Path)
+            console.log("Context: ", context.Main, context.Sub)
+
+            // if this is a new branch, so we need to start the entire drawing here
+            if (findComponentState(component1.ID, drawnComponents) == null) {
+                  const component1Last = getLast(component1.Path)
+                  const component2Last = getLast(component2.Path)
+
+                  const component1LastMatched = component1Last.match(pattern)[0]
+                  const component2LastMatched = component2Last.match(pattern)[0]
+
+                  //console.log("Component1: ", component1LastMatched)
+                  const component1Object = new componentToPath[component1LastMatched](50, 150, 50, 150)
+                  component1Object.draw()
+            }
+            else {
+            }
+      }
 }
 
 
@@ -484,11 +521,11 @@ function setup() {
        */
       let drawnComponents = []; // components that have been drawn
 
-      drawnComponents.push(new ComponentState(50, 150, 1, "QBA1")) // example of a drawn component
+      //drawnComponents.push(new ComponentState(50, 150, 1, "QBA1")) // example of a drawn component
 
       mainLoop(connections, drawnComponents)
 
-      drawStation({
+      /* drawStation({
                   ID: 1,
                   Path: "RDS.J1.QBA1",
                   Type: "QBA1"
@@ -497,7 +534,7 @@ function setup() {
                   Path: "RDS.J1.WBC2",
                   Type: "WBC1"
             },
-            drawnComponents, connections)
+            drawnComponents, connections) */
 
       //console.log("Drawn components: ", drawnComponents)
 }
