@@ -15,8 +15,7 @@
  * @property {string} Path
  * @property {string} Type
  */
-
-// TODO: FIX THE CONNECTIONS ARRAY, IT DOES NOT HAVE COMPONENTS
+// TODO: COMPONENT AND NODE TYPE SHOULD MAYBE ME MERGED TOGETHER TO THE SAME TYPE.
 /**
  * @typedef {object} Node
  * @property {number} id
@@ -69,6 +68,12 @@ let components = [];
  * @type {Context}
  */
 let context = {}
+
+/**
+ * This pattern matches the first word in a string
+ * @type {RegExp}
+ */
+const pattern = /[A-Za-z]+/;
 
 /**
  * Fetches the components from the API
@@ -130,12 +135,56 @@ async function preload() {
 }
 
 /**
- * Takes a full path and returns the last object in the path
+ * Takes a full path and returns the upper technical system label.
+ * @example ""J1.KL1.KL2.WBC1" -> "KL1"
+ * @param {string} path 
+ * @returns {string} upper technical system label or empty string if there is no technical system i
+ */
+function getUpperTechnical(path) {
+      let pathArray = path.split('.')
+      if (pathArray.length <= 2) return ""
+
+      let technicalSystemCount = 0
+      pathArray.forEach(value => {
+            if (value.match(pattern)[0].length === 2) {
+                  technicalSystemCount++
+            }
+      })
+
+      if (technicalSystemCount === 2) {
+            return pathArray[pathArray.length - 3]
+      }
+
+      else if (technicalSystemCount === 1) {
+            return pathArray[pathArray.length - 2]
+      }
+
+      return ""
+}
+
+/**
+ * Takes a full path and returns the lower technical system label. 
+ * Client code should test against empty string returns
+ * @example ""J1.KL1.KL2.WBC1" -> "KL2"
+ * @param {string} path 
+ * @returns {string} upper technical system label or empty string if there is no technical system i
+ */
+function getLowerTechnical(path) {
+      let pathArray = path.split('.')
+      if (pathArray.length <= 2) return ""
+      // ternary operator statement which checks that the path consists of atleast two objects, 
+      // and that the second to last index is of length exactly 2, e.g. KL or JE.
+      return (pathArray[pathArray.length - 2].match(pattern)[0].length == 2) ?
+            pathArray[pathArray.length - 2] : ""
+}
+
+/**
+ * Takes a full path and returns the component system label in the path
  * @example "RDS.J1.WBC1" -> "WBC1"
  * @param {string} path 
  * @returns {string}
  */
-function getLast(path) {
+function getComponent(path) {
       let pathArray = path.split('.')
       return pathArray.pop()
 }
@@ -298,19 +347,26 @@ function drawTripleTrackStation(lastComponentCoords, length, drawnComponents, st
  * @param {Component} mainLine the node which the station is connected to
  * @param {ComponentState[]} drawnComponents  this is wrong, drawn components is a ComponentState[]
  * @param {Connection[]} connections list of connections
- * @param {Context} context type aspect context
  */
-function drawStation(fromComponent, mainLine, drawnComponents, connections, context) {
+function drawStation(fromComponent, mainLine, drawnComponents, connections) {
       /**
        * list of neighbor nodes
        * @type {Component[]}
        */
       //let neighbours = getNeighbours(mainLine, connections)
-      
+
       // filter out the neighbours that are not WBC
       //neighbours = neighbours.filter((neighbour) => neighbour.Type == "WBC") 
-      
-      let neighbours = [{ID: 3, Path: "RDS.J1.WBC1", Type: "WBC1"}, {ID: 2, Path: "RDS.J1.WBC2", Type: "WBC1"}]
+
+      let neighbours = [{
+            ID: 3,
+            Path: "RDS.J1.WBC1",
+            Type: "WBC1"
+      }, {
+            ID: 2,
+            Path: "RDS.J1.WBC2",
+            Type: "WBC1"
+      }]
 
       /**
        * list of lines composing the station.
@@ -322,18 +378,38 @@ function drawStation(fromComponent, mainLine, drawnComponents, connections, cont
       const fromComponentState = findComponentState(fromComponent.ID, drawnComponents)
 
       const length = 100
-      // station with two tracks
-      if (neighbours.length == 1) {
-            const coords = new Coordinates(fromComponentState.x, fromComponentState.y)
-            drawDoubleTrackStation(coords, length, drawnComponents, stationLines)
+
+      /**
+       * @type {Coordinates}
+       */
+      let coords;
+
+      if (neighbours.length == 1) { // two tracks
+            coords = {
+                  x: fromComponentState.x,
+                  y: fromComponentState.y
+            }
+            drawDoubleTrackStation({}, length, drawnComponents, stationLines)
       }
 
-      if (neighbours.length == 2) {
-            const coords = new Coordinates(fromComponentState.x, fromComponentState.y)
+      if (neighbours.length == 2) { // three tracks
+            coords = {
+                  x: fromComponentState.x,
+                  y: fromComponentState.y
+            }
             drawTripleTrackStation(coords, length, drawnComponents, stationLines)
       }
 
       console.log("Drawn: ", drawnComponents)
+}
+
+/**
+ * 
+ * @param {Connection[]} connections 
+ * @param {ComponentState[]} drawnComponents
+ */
+function mainLoop(connections, drawnComponents) {
+
 }
 
 
@@ -341,15 +417,10 @@ function setup() {
       createCanvas(1425, 725);
       background(255); // white background
 
-      /**
-       * This pattern matches the first word in a string
-       * @type {RegExp}
-       */
-      const pattern = /[A-Za-z]+/;
+
 
       // connection array
       const connections = populateConnections([]);
-
 
       console.log("Tuned connections: ", connections)
 
@@ -357,13 +428,21 @@ function setup() {
        * @type {ComponentState[]}
        */
       let drawnComponents = []; // components that have been drawn
-      //drawConnections(pattern, connections, drawnComponents)
 
       drawnComponents.push(new ComponentState(50, 150, 1, "QBA1")) // example of a drawn component
 
-      drawStation({ID: 1, Path: "RDS.J1.QBA1", Type: "QBA1"},
-      {ID: 2, Path: "RDS.J1.WBC2", Type: "WBC1"}, 
-      drawnComponents, connections, context)
+      mainLoop(connections, drawnComponents)
+
+      drawStation({
+                  ID: 1,
+                  Path: "RDS.J1.QBA1",
+                  Type: "QBA1"
+            }, {
+                  ID: 2,
+                  Path: "RDS.J1.WBC2",
+                  Type: "WBC1"
+            },
+            drawnComponents, connections)
 
       //console.log("Drawn components: ", drawnComponents)
 }
