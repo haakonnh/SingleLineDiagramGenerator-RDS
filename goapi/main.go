@@ -365,10 +365,35 @@ func IDtoPathHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(idToPath)
 }
 
+func IDtoTypeHandler(w http.ResponseWriter, r *http.Request) {
+	conn, err := connectToDB()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
+		os.Exit(1)
+	}
+
+	nodes, err := fetchNodes(conn)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Row iteration failed: %v\n", err)
+		os.Exit(1)
+	}
+
+	// Create a map from node id to path
+	idToType := make(map[int64]string)
+	for _, node := range nodes {
+		idToType[node.ID] = node.Type
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*") // allow cross-origin requests
+	json.NewEncoder(w).Encode(idToType)
+}
+
 func main() {
 	http.HandleFunc("/nodes", nodeHandler)
 	http.HandleFunc("/relations", relationHandler)
 	http.HandleFunc("/idpath", IDtoPathHandler)
+	http.HandleFunc("/idtype", IDtoTypeHandler)
 	http.HandleFunc("/query", queryHandler)
 	fmt.Println("Server is running on port 9090")
 	log.Fatal(http.ListenAndServe(":9090", nil))

@@ -24,8 +24,8 @@
 
 /**
  * @typedef {object} Connection
- * @property {Node} Node1
- * @property {Node} Node2
+ * @property {Component} Component1
+ * @property {Component} Component2 
  */
 
 /**
@@ -52,10 +52,17 @@ let fetchedRelationships = {};
 
 let fetchedMap = {};
 
+let fetchedTypeMap = {};
+
 /**
  * @type {Map<string, string>}
  */
 let idToPath = new Map();
+
+/**
+ * @type {Map<string, string>}
+ */
+let idToType = new Map();
 
 let dataArray = [];
 
@@ -113,8 +120,8 @@ async function fetchAndProcessRelationships() {
 /**
  * Fetches the idToPath from the API
  */
-async function fetchAndProcessMap() {
-      const apiUrl = 'http://localhost:9090/idpath' // Replace with your endpoint
+async function fetchAndProcessMaps() {
+      const apiUrl = 'http://localhost:9090/idpath' 
       try {
             const response = loadJSON(apiUrl)
 
@@ -126,12 +133,25 @@ async function fetchAndProcessMap() {
       } catch (error) {
             console.error('Error fetching data:', error)
       }
+
+      const newApiUrl = 'http://localhost:9090/idtype' 
+      try {
+            const response = loadJSON(newApiUrl)
+
+            const data = response
+            console.log('Map from API:', data)
+
+            fetchedTypeMap = data
+
+      } catch (error) {
+            console.error('Error fetching data:', error)
+      }
 }
 
 async function preload() {
       await fetchAndProcessComponents()
       await fetchAndProcessRelationships()
-      await fetchAndProcessMap()
+      await fetchAndProcessMaps()
 }
 
 /**
@@ -207,23 +227,27 @@ function findComponentState(id, drawnComponents) {
  * This function creates a JS map of the fetched "map" structure from the API, and populates the connections array with the
  * fetched relationships from the API. It uses the map to get the path of the components from the component id. 
  * 
- * @param {Component[]} components empty array to be populated with the fetched components
  * @returns {Connection[]}
  */
-function populateConnections(connections) {
+function populateConnections() {
       // populate connections array with the fetched relationships from the python api
       idToPath = new Map(Object.entries(fetchedMap))
-      console.log("OKKK", idToPath)
+      idToType = new Map(Object.entries(fetchedTypeMap))
+      console.log("OKKK", idToType)
+      let connections = []
       Object.entries(fetchedRelationships).forEach(([key, value]) => {
-            value.Node1 = {
-                  id: value.Node1,
-                  path: idToPath.get(value.Node1.toString())
+            let comp1 = {
+                  ID: value.Node1,
+                  Path: idToPath.get(value.Node1.toString()),
+                  Type: idToType.get(value.Node1.toString()),
+
             }
-            value.Node2 = {
-                  id: value.Node2,
-                  path: idToPath.get(value.Node2.toString())
-            };
-            connections.push(value)
+            let comp2 = {
+                  ID: value.Node2,
+                  Path: idToPath.get(value.Node2.toString()),
+                  Type: idToType.get(value.Node2.toString()),
+            }
+            connections.push({Component1: comp1, Component2: comp2})
       });
       return connections
 }
@@ -451,7 +475,7 @@ function setup() {
 
 
       // connection array
-      const connections = populateConnections([]);
+      const connections = populateConnections();
 
       console.log("Tuned connections: ", connections)
 
