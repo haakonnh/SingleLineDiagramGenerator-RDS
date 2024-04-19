@@ -213,6 +213,7 @@ class QBA2 {
                 strokeWeight(1);
         }
 }
+
 /** Sillebryter med motor */
 class QBA3 {
         constructor(x1, y1) {
