@@ -341,6 +341,39 @@ function drawTripleTrackStation(lastComponentCoords, length, drawnComponents, st
       line(x5, y4, x6, y4);
 }
 
+function drawSwitchForSection(lastComponentCoords, length, drawnComponents, switchComponent) {
+}
+
+function drawSwitchForTransformer(lastComponentCoords, length, drawnComponents, switchComponent) {
+}
+
+/**
+ * 
+ * @param {Component} fromComponent 
+ * @param {Component} switchComponent 
+ * @param {ComponentState[]} drawnComponents 
+ * @param {Connection[]} connections 
+ */
+function drawSwitch(fromComponent, switchComponent, drawnComponents, connections) {
+      const fromComponentState = findComponentState(fromComponent.ID, drawnComponents)
+      /** @type {Coordinates} */
+      let coords;
+
+      coords = {
+            x: fromComponentState.x,
+            y: fromComponentState.y
+      }
+
+      if (getLast(fromComponent.Path.match(pattern)[0]) == "UAA") {
+            drawSwitchForSection(coords, 100, drawnComponents, switchComponent)
+      }
+
+      else if (getLast(fromComponent.Path.match(pattern)[0]) == "WBC") {
+            drawSwitchForTransformer(coords, 100, drawnComponents, switchComponent)
+      }
+
+}
+
 /**
  * draws a station dependent on the number of tracks on the station
  * @param {Component} fromComponent the component which the station is connected to
@@ -384,19 +417,17 @@ function drawStation(fromComponent, mainLine, drawnComponents, connections) {
        */
       let coords;
 
+      coords = {
+            x: fromComponentState.x,
+            y: fromComponentState.y
+      }
+      
       if (neighbours.length == 1) { // two tracks
-            coords = {
-                  x: fromComponentState.x,
-                  y: fromComponentState.y
-            }
-            drawDoubleTrackStation({}, length, drawnComponents, stationLines)
+            
+            drawDoubleTrackStation(coords, length, drawnComponents, stationLines)
       }
 
       if (neighbours.length == 2) { // three tracks
-            coords = {
-                  x: fromComponentState.x,
-                  y: fromComponentState.y
-            }
             drawTripleTrackStation(coords, length, drawnComponents, stationLines)
       }
 
