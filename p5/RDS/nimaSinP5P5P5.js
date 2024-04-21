@@ -456,10 +456,11 @@ function setup() {
       let drawnComponents = []; // components that have been drawn
       //drawConnections(pattern, connections, drawnComponents)
 
-      drawnComponents.push(new ComponentState(50, 150, 1, "UAA1")) // example of a drawn component
+      let FORSLK = new XBA(50, 150).draw();
 
-      drawSwitch({ID: 1, Path: "RDS.J1.UAA1", Type: "WBC1"}, {ID: 2, Path: "RDS.J1.WBC2", Type: "WBC1"}, drawnComponents, connections)
-
+      line(50, 150, 100, 150);
+     
+    
 /*       drawStation({ID: 1, Path: "RDS.J1.QBA1", Type: "QBA1"},
       {ID: 2, Path: "RDS.J1.WBC2", Type: "WBC1"}, 
       drawnComponents, connections, context) */

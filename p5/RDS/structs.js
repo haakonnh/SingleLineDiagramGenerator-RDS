@@ -14,6 +14,11 @@ let myDistY = canvasHeight / 20;
 
 /**Seksjon */
 class UAA1 {
+        /**
+         * 
+         * @param {number} x1 
+         * @param {number} y1 
+         */
         constructor(x1, y1) {
                 this.lineLength = 20;
 
@@ -47,6 +52,11 @@ class UAA1 {
 
 /** Section insulator */
 class UAA2 {
+        /**
+         * 
+         * @param {number} x1 
+         * @param {number} y1 
+         */
         constructor(x1, y1) {
                 this.lineLength = 22;
 
@@ -113,8 +123,6 @@ class QBA1 {
          *
          * @param {number} x1
          * @param {number} y1
-         * @param {number} x2
-         * @param {number} y2
          */
         constructor(x1, y1) {
                 this.x1 = x1;
@@ -165,8 +173,6 @@ class QBA2 {
          *
          * @param {number} x1
          * @param {number} y1
-         * @param {number} x2
-         * @param {number} y2
          */
         constructor(x1, y1) {
                 this.x1 = x1;
@@ -216,6 +222,11 @@ class QBA2 {
 
 /** Sillebryter med motor */
 class QBA3 {
+        /**
+         * 
+         * @param {number} x1 
+         * @param {number} y1 
+         */
         constructor(x1, y1) {
                 this.x1 = x1;
                 this.x2 = x1 + 50;
@@ -278,8 +289,6 @@ class QBA4 {
          *
          * @param {number} x1
          * @param {number} y1
-         * @param {number} x2
-         * @param {number} y2
          */
         constructor(x1, y1) {
                 this.x1 = x1;
@@ -341,57 +350,31 @@ class QBA4 {
         }
 }
 
-class Trafo {
-        constructor(x1, y1, x2, y2) {
-                // coords for the last line
-                this.x = x2;
-                this.y = y2;
-                this.d = 50;
-        }
+/** Trafo */
+class XBA {
+    /**
+     * 
+     * @param {number} x 
+     * @param {number} y 
+     */
+    constructor(x, y){
+        this.x = x;
+        this.y = y;
 
-        draw() {
-                noFill();
-                circle(this.x, this.y - 25, this.d);
-                circle(this.x, this.y - 50, this.d);
-        }
+        this.yBottomCircleMid = y - 25;
+        this.yTopCircleMid = y - 35;
+
+        this.d = 12;
+    }
+
+    draw(){
+        noFill();
+        circle(this.x, this.yBottomCircleMid, this.d);
+        circle(this.x, this.yTopCircleMid, this.d);
+        line(this.x, this.yBottomCircleMid + 6, this.x, this.y);
+    }
 }
 
-class Sikring {
-        constructor(x1, y1, x2, y2) {
-                this.x = x2;
-                this.y = y2;
-                this.d = 5;
-        }
-
-        draw() {
-                fill("black");
-                circle(this.x, this.y, this.d);
-        }
-}
-
-class Trafosamling {
-        constructor(x1, y1, x2, y2) {
-                this.x = x2;
-                this.y = y2;
-                this.d = 5;
-                this.d2 = 30;
-                this.connectionX1 = this.x + this.d;
-                this.connectionY1 = this.y;
-
-                //endepunkt for linje
-                this.endepunktY = this.y + myDistX - 65;
-        }
-
-        draw() {
-                fill("black");
-                circle(this.x, this.y, this.d);
-                line(this.x, this.y, this.x, this.endepunktY + myDistX - 35);
-                noFill();
-                circle(this.x, this.y + myDistX * 1.5 - 25, this.d2);
-                circle(this.x, this.y + myDistX * 1.5 - 50, this.d2);
-                stroke("black");
-        }
-}
 
 const componentToPath = {
         UAA1: UAA1,
@@ -399,10 +382,8 @@ const componentToPath = {
         QBA1: QBA1,
         QBA2: QBA2,
         QBA3: QBA3,
-        TAA: Trafo,
-        WBC1: WBC1,
-        FCA: Sikring,
-        XBA: Trafosamling,
+        XBA: XBA,
+        WBC1: WBC1
         // TODO: MAKE THESE CLASSES
 };
 
