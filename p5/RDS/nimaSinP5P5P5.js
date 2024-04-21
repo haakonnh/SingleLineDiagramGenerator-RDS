@@ -233,8 +233,42 @@ function drawSwitchForSection(lastComponentCoords, length, drawnComponents, comp
     strokeWeight(1);
 }
 
+function drawSwitchForTransformer(lastComponentCoords, length, drawnComponents, component) {
+    line(300, 150, 400, 150);
+}
 
 
+/**
+ * 
+ * @param {Component} fromComponent 
+ * @param {Component} switchComponent 
+ * @param {ComponentState[]} drawnComponents 
+ * @param {Connection[]} connections 
+ */
+function drawSwitch(fromComponent, switchComponent, drawnComponents, connections) {
+    /** @type{Component[]} */
+    let neighbours = [{ID: 3, Path: "RDS.J1.WBC1", Type: "WBC1"}, {ID: 2, Path: "RDS.J1.WBC2", Type: "WBC1"}]
+
+    switchComponent = neighbours[0]
+
+    const fromComponentState = findComponentState(fromComponent.ID, drawnComponents)
+    /** @type {Coordinates} */
+    let coords;
+
+    coords = {
+          x: fromComponentState.x,
+          y: fromComponentState.y
+    }
+
+    if (getLast(fromComponent.Path.match(pattern)[0]) == "UAA") {
+          drawSwitchForSection(coords, 100, drawnComponents, switchComponent)
+    }
+
+    else if (getLast(fromComponent.Path.match(pattern)[0]) == "WBC") {
+          drawSwitchForTransformer(coords, 100, drawnComponents, switchComponent)
+    }
+
+}
 
 /**
  * draws a double track station to the screen, instantiates a new 
@@ -361,15 +395,23 @@ function drawStation(fromComponent, mainLine, drawnComponents, connections, cont
 
       const fromComponentState = findComponentState(fromComponent.ID, drawnComponents)
 
+      /**
+       * @type {Coordinates}
+       */
       const length = 100
+
+      let coords;
+      coords = {
+        x: fromComponentState.x,
+        y: fromComponentState.y
+      }
+
       // station with two tracks
       if (neighbours.length == 1) {
-            const coords = new Coordinates(fromComponentState.x, fromComponentState.y)
             drawDoubleTrackStation(coords, length, drawnComponents, stationLines)
       }
 
       if (neighbours.length == 2) {
-            const coords = new Coordinates(fromComponentState.x, fromComponentState.y)
             drawTripleTrackStation(coords, length, drawnComponents, stationLines)
       }
 
@@ -400,6 +442,8 @@ function setup() {
       //drawConnections(pattern, connections, drawnComponents)
 
       drawnComponents.push(new ComponentState(50, 150, 1, "QBA1")) // example of a drawn component
+
+      drawSwitch({ID: 1, Path: "RDS.J1.QBA1", Type: "QBA1"}, {ID: 2, Path: "RDS.J1.WBC2", Type: "WBC1"}, drawnComponents, connections)
 
       drawStation({ID: 1, Path: "RDS.J1.QBA1", Type: "QBA1"},
       {ID: 2, Path: "RDS.J1.WBC2", Type: "WBC1"}, 
