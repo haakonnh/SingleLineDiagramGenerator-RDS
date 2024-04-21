@@ -205,24 +205,25 @@ function getNeighbours(node, connections) {
  */
 function drawSwitchForSection(lastComponentCoords, length, drawnComponents, component) {
     const x1 = lastComponentCoords.x;
-    const x2 = x1 + length;
+    const x2 = x1 + 50;
 
-    const bottomPointY = y1;
-    const topPointY = y1 - 25;
+    const bottomPointY = lastComponentCoords.y;
+    const topPointY = lastComponentCoords.y - 25;
 
     const gapForSwitch1 = x1 + 15;
-    const gapForSwitch2 = x2 + 35;
+    const gapForSwitch2 = x1 + 35;
 
     const cricleGap = x1 + 40;
 
-    switchComponent = new ComponentState(0, 0, component[0].ID, "QBA")
+    switchComponent = new ComponentState(0, 0, component.ID, "QBA")
 
     drawnComponents.push(switchComponent)
     
-
+    stroke('red');
     line(x1, bottomPointY, x1, topPointY);
     line(x2, bottomPointY, x2, topPointY);
 
+    stroke('blue')
     line(x1, topPointY, gapForSwitch1, topPointY);
     line(cricleGap, topPointY, x2, topPointY);
 
@@ -234,9 +235,26 @@ function drawSwitchForSection(lastComponentCoords, length, drawnComponents, comp
 }
 
 function drawSwitchForTransformer(lastComponentCoords, length, drawnComponents, component) {
-    line(300, 150, 400, 150);
+    const x1 = lastComponentCoords.x;
+    const switchWidth = 3;
+
+    const y1 = lastComponentCoords.y;
+    const y2 = y1 - 50;
+
+    const startOfSwitch = y2 + 10
+
+    switchComponent = new ComponentState(0, 0, component.ID, "QBA")
+    drawnComponents.push(switchComponent)
+    
+    line(x1, y1, x1, y2);
+
+    strokeWeight(2);
+    line(x1, startOfSwitch, x1, y2);
+    line(x1 + switchWidth, y2, x1 -switchWidth, y2);
 }
 
+
+const pattern = /[A-Za-z]+/;
 
 /**
  * 
@@ -246,26 +264,23 @@ function drawSwitchForTransformer(lastComponentCoords, length, drawnComponents, 
  * @param {Connection[]} connections 
  */
 function drawSwitch(fromComponent, switchComponent, drawnComponents, connections) {
-    /** @type{Component[]} */
-    let neighbours = [{ID: 3, Path: "RDS.J1.WBC1", Type: "WBC1"}, {ID: 2, Path: "RDS.J1.WBC2", Type: "WBC1"}]
-
-    switchComponent = neighbours[0]
 
     const fromComponentState = findComponentState(fromComponent.ID, drawnComponents)
     /** @type {Coordinates} */
     let coords;
-
+    console.log("From component: ", fromComponent) 
     coords = {
           x: fromComponentState.x,
           y: fromComponentState.y
     }
 
-    if (getLast(fromComponent.Path.match(pattern)[0]) == "UAA") {
+    if (fromComponent.Type == "UAA1") {
           drawSwitchForSection(coords, 100, drawnComponents, switchComponent)
     }
 
-    else if (getLast(fromComponent.Path.match(pattern)[0]) == "WBC") {
+    else if (fromComponent.Type == "WBC1") {
           drawSwitchForTransformer(coords, 100, drawnComponents, switchComponent)
+          console.log(coords)
     }
 
 }
@@ -441,13 +456,13 @@ function setup() {
       let drawnComponents = []; // components that have been drawn
       //drawConnections(pattern, connections, drawnComponents)
 
-      drawnComponents.push(new ComponentState(50, 150, 1, "QBA1")) // example of a drawn component
+      drawnComponents.push(new ComponentState(50, 150, 1, "UAA1")) // example of a drawn component
 
-      drawSwitch({ID: 1, Path: "RDS.J1.QBA1", Type: "QBA1"}, {ID: 2, Path: "RDS.J1.WBC2", Type: "WBC1"}, drawnComponents, connections)
+      drawSwitch({ID: 1, Path: "RDS.J1.UAA1", Type: "WBC1"}, {ID: 2, Path: "RDS.J1.WBC2", Type: "WBC1"}, drawnComponents, connections)
 
-      drawStation({ID: 1, Path: "RDS.J1.QBA1", Type: "QBA1"},
+/*       drawStation({ID: 1, Path: "RDS.J1.QBA1", Type: "QBA1"},
       {ID: 2, Path: "RDS.J1.WBC2", Type: "WBC1"}, 
-      drawnComponents, connections, context)
+      drawnComponents, connections, context) */
 
       //console.log("Drawn components: ", drawnComponents)
 }
