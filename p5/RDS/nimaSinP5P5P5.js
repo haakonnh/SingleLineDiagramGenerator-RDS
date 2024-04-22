@@ -442,7 +442,7 @@ function setup() {
        * This pattern matches the first word in a string
        * @type {RegExp}
        */
-      const pattern = /[A-Za-z]+/;
+
 
       // connection array
       const connections = populateConnections([]);
@@ -456,11 +456,10 @@ function setup() {
       let drawnComponents = []; // components that have been drawn
       //drawConnections(pattern, connections, drawnComponents)
 
-      let FORSLK = new XBA(50, 150).draw();
+      drawnComponents.push(new ComponentState(50, 150, 1, "UAA1")) // example of a drawn component
 
-      line(50, 150, 100, 150);
-     
-    
+      drawSwitch({ID: 1, Path: "RDS.J1.UAA1", Type: "WBC1"}, {ID: 2, Path: "RDS.J1.WBC2", Type: "WBC1"}, drawnComponents, connections)
+
 /*       drawStation({ID: 1, Path: "RDS.J1.QBA1", Type: "QBA1"},
       {ID: 2, Path: "RDS.J1.WBC2", Type: "WBC1"}, 
       drawnComponents, connections, context) */
