@@ -135,6 +135,10 @@ class WBC1 {
       draw() {
             line(this.x1, this.y1, this.endPointX, this.endPointY);
       }
+
+      makeComponentState(id) {
+            return new ComponentState(this.endPointX, this.endPointY, id, "WBC1");
+      }
 }
 
 
@@ -160,6 +164,10 @@ class XBA {
             circle(this.x, this.yBottomCircleMid, this.d);
             circle(this.x, this.yTopCircleMid, this.d);
             line(this.x, this.yBottomCircleMid + 6, this.x, this.y);
+      }
+
+      makeComponentState(id) {
+            return new ComponentState(this.x, this.y, id, "XBA");
       }
 }
 

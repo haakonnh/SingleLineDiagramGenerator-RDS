@@ -170,6 +170,10 @@ function getLast(path) {
  * @returns {string}
  */
 String.prototype.getWord = function () {
+      console.log("wtf", this)
+      if (this.match(pattern) == null) {
+            return ""
+      }
       return this.match(pattern)[0]
 }
 
@@ -278,16 +282,20 @@ function populateConnections() {
       return connections
 }
 
+let glob = 0
 /**
  * @param {Component} node 
  * @param {Connection[]} connections 
  * @returns {Component[]}
  */
-function getNeighbours(node, connections) {
+function getParallellLines(node, connections) {
       let neighbours = []
-      console.log(connections)
+      //console.log(connections)
       for (let connection of connections) {
-            if (connection.Component1.ID == node.ID) {
+            glob++
+            console.log(connection.Component1.ID, node.ID, connection.Component2.Type.getWord(), glob)
+            if (connection.Component1.ID == node.ID && connection.Component2.Type.getWord() == "WBC") {
+                  //console.log(connection.Component2.Type.getWord())
                   neighbours.push(connection.Component2)
                   console.log("Neighbour: ", connection.Component2)
             }
@@ -320,6 +328,7 @@ function drawDoubleTrackStation(lastComponentCoords, length, drawnComponents, st
       // create two new components for the two lines and add them to the drawnComponents array
       const connUpperX = x1 + length / 2;
       const connUpperY = y3;
+      console.log("Station lines: ", stationLines)
       upperComponent = new ComponentState(connUpperX, connUpperY, stationLines[0].ID, "WBC")
       drawnComponents.push(upperComponent)
 
@@ -364,6 +373,7 @@ function drawTripleTrackStation(lastComponentCoords, length, drawnComponents, st
       // create three new components for the middle, upper and lower connections and add them to the drawnComponents array
       const connUpperX = x1 + length / 2;
       const connUpperY = y3;
+      console.log("Station 3 lines: ", stationLines)
       upperComponent = new ComponentState(connUpperX, connUpperY, stationLines[0].ID, "WBC")
       drawnComponents.push(upperComponent)
 
@@ -393,6 +403,49 @@ function drawTripleTrackStation(lastComponentCoords, length, drawnComponents, st
 }
 
 /**
+ * draws a station dependent on the number of tracks on the station
+ * @param {Component} fromComponent the component which the station is connected to
+ * @param {Component} mainLine the node which the station is connected to
+ * @param {ComponentState[]} drawnComponents  this is wrong, drawn components is a ComponentState[]
+ * @param {Connection[]} connections list of connections
+ */
+function drawStation(fromComponent, mainLine, drawnComponents, connections) {
+      /**
+       * list of neighbor nodes
+       * @type {Component[]}
+       */
+      let neighbours = getParallellLines(mainLine, connections)
+      // filter out the neighbours that are not WBC
+      /**
+       * list of lines composing the station.
+       * last element should always be the last component
+       * @type {Component[]}
+       */
+      neighbours.push(mainLine)
+
+      const fromComponentState = findComponentState(fromComponent.ID, drawnComponents)
+
+      const length = 100
+      console.log("Stationliensss: ", neighbours)
+
+      /** @type {Coordinates} */
+      let coords = {
+            x: fromComponentState.x,
+            y: fromComponentState.y
+      }
+
+      if (neighbours.length == 2) { // two tracks
+            drawDoubleTrackStation(coords, length, drawnComponents, neighbours)
+      }
+
+      if (neighbours.length == 3) { // three tracks
+            drawTripleTrackStation(coords, length, drawnComponents, neighbours)
+      }
+
+      //console.log("Drawn: ", drawnComponents)
+}
+
+/**
  * 
  * @param {Coordinates} lastComponentCoords
  * @param {number} length
@@ -401,20 +454,21 @@ function drawTripleTrackStation(lastComponentCoords, length, drawnComponents, st
  */
 function drawSwitchForSection(lastComponentCoords, length, drawnComponents, switchComponent) {
       const x1 = lastComponentCoords.x;
-      const x2 = x1 + length;
+      const x2 = x1 - 50;
 
-      const bottomPointY = y1;
-      const topPointY = y1 - 25;
+      const bottomPointY = lastComponentCoords.y;
+      const topPointY = lastComponentCoords.y - 25;
 
-      const gapForSwitch1 = x1 + 15;
-      const gapForSwitch2 = x2 + 35;
+      const gapForSwitch1 = x1 - 15;
+      const gapForSwitch2 = x2 - 35;
 
-      const cricleGap = x1 + 40;
+      const cricleGap = x1 - 40;
 
+      stroke('red');
       line(x1, bottomPointY, x1, topPointY);
-
       line(x2, bottomPointY, x2, topPointY);
 
+      stroke('blue')
       line(x1, topPointY, gapForSwitch1, topPointY);
       line(cricleGap, topPointY, x2, topPointY);
 
@@ -423,9 +477,34 @@ function drawSwitchForSection(lastComponentCoords, length, drawnComponents, swit
       line(gapForSwitch2, topPointY + 5, gapForSwitch2, topPointY - 5);
       line(gapForSwitch1, topPointY, gapForSwitch2, topPointY);
       strokeWeight(1);
+      stroke('black');
 }
 
-function drawSwitchForTransformer(lastComponentCoords, length, drawnComponents, switchComponent) {}
+/**
+ * 
+ * @param {Coordinates} lastComponentCoords
+ * @param {number} length
+ * @param {ComponentState[]} drawnComponents
+ * @param {Component} switchComponent
+ */
+function drawSwitchForTransformer(lastComponentCoords, length, drawnComponents, switchComponent) {
+      const x1 = lastComponentCoords.x;
+      const switchWidth = 3;
+
+      const y1 = lastComponentCoords.y;
+      const y2 = y1 - 50;
+
+      const startOfSwitch = y2 + 10
+
+      const state = new ComponentState(x1, y2, switchComponent.ID, "QBA")
+      drawnComponents.push(state)
+
+      line(x1, y1, x1, y2);
+
+      strokeWeight(2);
+      line(x1, startOfSwitch, x1, y2);
+      line(x1 + switchWidth, y2, x1 - switchWidth, y2);
+}
 
 /**
  * 
@@ -450,62 +529,55 @@ function drawSwitch(fromComponent, switchComponent, drawnComponents, connections
 
 }
 
-/**
- * draws a station dependent on the number of tracks on the station
- * @param {Component} fromComponent the component which the station is connected to
- * @param {Component} mainLine the node which the station is connected to
- * @param {ComponentState[]} drawnComponents  this is wrong, drawn components is a ComponentState[]
- * @param {Connection[]} connections list of connections
- */
-function drawStation(fromComponent, mainLine, drawnComponents, connections) {
-      /**
-       * list of neighbor nodes
-       * @type {Component[]}
-       */
-      let neighbours = getNeighbours(mainLine, connections)
 
-      // filter out the neighbours that are not WBC
-      //neighbours = neighbours.filter((neighbour) => neighbour.Type == "WBC") 
-
-      /* let neighbours = [{
-            ID: 3,
-            Path: "RDS.J1.WBC1",
-            Type: "WBC1"
-      }, {
-            ID: 2,
-            Path: "RDS.J1.WBC2",
-            Type: "WBC1"
-      }] */
-
-      /**
-       * list of lines composing the station.
-       * last element should always be the last component
-       * @type {Component[]}
-       */
-      const stationLines = [neighbours[0], neighbours[1], mainLine]
-
-      const fromComponentState = findComponentState(fromComponent.ID, drawnComponents)
-
-      const length = 100
-
-      /** @type {Coordinates} */
-      let coords = {
-            x: fromComponentState.x,
-            y: fromComponentState.y
-      }
-
-      if (neighbours.length == 1) { // two tracks
-            drawDoubleTrackStation(coords, length, drawnComponents, stationLines)
-      }
-
-      if (neighbours.length == 2) { // three tracks
-            drawTripleTrackStation(coords, length, drawnComponents, stationLines)
-      }
-
-      //console.log("Drawn: ", drawnComponents)
-}
 
 function resolveContext(context) {
+
+}
+/**
+ * This function draws a component based on the type of the component.
+ * @param {Component} component1
+ * @param {Component} component2
+ * @param {ComponentState[]} drawnComponents
+ * @param {Connection[]} connections
+ */
+function universalDrawComponent(component1, component2, drawnComponents, connections) {
+      // if the technical system is KL.JE and the second component is a main line (WBC1), draw a station.
+      //console.log(drawnComponents)
+      if (findComponentState(component2.ID, drawnComponents) != null) {
+            return
+      }
+      const component2Last = getLast(component2.Path)
+      if (context.Main.getWord() == "KL" &&
+            context.Sub.getWord() == "JE" &&
+            component2.Type == "WBC1") {
+            //console.log("Drawing station")
+            drawStation(component1, component2, drawnComponents, connections)
+
+      }
+      // enter into the switch function
+      else if (component2Last.getWord() == "QBA") {
+            drawSwitch(component1, component2, drawnComponents, connections)
+      }
+
+      // the rest of components are drawn here
+      else {
+            let keyword = component2Last.getWord()
+            if (component2.Type == "") {
+                  //console.log("Component2 type is empty")
+            } else {
+                  keyword = component2.Type
+            }
+            let component1State = findComponentState(component1.ID, drawnComponents)
+
+            console.log("Drawing: ", keyword, component2.ID)
+            const component2Object = new componentToPath[keyword]
+                  (component1State.x, component1State.y);
+
+            drawnComponents.push(component2Object.makeComponentState(component2.ID));
+
+            component2Object.draw()
+      }
 
 }
 
@@ -537,29 +609,17 @@ function mainLoop(connections, drawnComponents) {
 
             // if this is a new branch, so we need to start the entire drawing here
             if (findComponentState(component1.ID, drawnComponents) == null) {
-                  console.log("im here", component1.ID, component1.Path, component1Last.getWord())
-                  let state1 = new ComponentState(x, 150, component1.ID, component1Last.getWord())
-                  drawnComponents.push(state1)
+                  console.log("New branch", component1.ID, component1.Path, component1Last.getWord())
+                  // first comp should always be a line
+                  const component1Object = new WBC1(x, y)
+                  drawnComponents.push(component1Object.makeComponentState(component1.ID))
+                  component1Object.draw()
+
                   drawnComponents.push(new ComponentState(x, 150, component2.ID, component2Last.getWord()))
-                  //console.log("Component1: ", component1LastMatched)
-                  //const component1Object = new componentToPath[component1LastMatched](50, 150, 50, 150)
-                  //component1Object.draw()
+
+                  universalDrawComponent(component1, component2, drawnComponents, connections)
             } else {
-                  const comp1 = connection.Component1
-                  const comp2 = connection.Component2
-                  // if the technical system is KL.JE and the second component is a main line (WBC1), draw a station.
-                  if (context.Main.getWord() == "KL" &&
-                        context.Sub.getWord() == "JE" &&
-                        comp2.Type == "WBC1") {
-                        //console.log("Drawing station")
-                        drawStation(comp1, comp2, drawnComponents, connections)
-                  }
-
-                  if (component2Last.getWord() == "QBA") {
-                        drawSwitch(comp1, comp2, drawnComponents, connections)
-                  }
-
-
+                  universalDrawComponent(component1, component2, drawnComponents, connections)
             }
       }
 }
