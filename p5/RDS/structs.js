@@ -48,6 +48,15 @@ class UAA1 {
                 //line from second section to right
                 line(this.line2StartX, this.lineY, this.line2EndX, this.lineY);
         }
+
+        /**
+         * 
+         * @param {string} id 
+         * @returns {ComponentState} returns a new component state based on the coordinates of the component
+         */
+        makeComponentState(id) {
+                return new ComponentState(this.line2EndX, this.lineY, id, "UAA1");
+        }
 }
 
 /** Section insulator */
@@ -117,238 +126,6 @@ class WBC1 {
         }
 }
 
-/** Skillebryter uten motor */
-class QBA1 {
-        /**
-         *
-         * @param {number} x1
-         * @param {number} y1
-         */
-        constructor(x1, y1) {
-                this.x1 = x1;
-                this.x2 = x1 + 50;
-
-                this.bottomPointY = y1;
-                this.topPointY = y1 - 25;
-
-                this.gapForSwitch1 = x1 + 15;
-                this.gapForSwitch2 = x1 + 35;
-
-                this.connectionX1 = this.x1 + 30;
-                this.connectionY1 = this.y1;
-                this.connectionX2 = this.x1;
-                this.connectionY2 = this.y1;
-        }
-
-        draw() {
-                // to paralelle linjer oppover
-                line(this.x1, this.bottomPointY, this.x1, this.topPointY);
-                line(this.x2, this.bottomPointY, this.x2, this.topPointY);
-
-                // en honisontal linje øverst
-                line(this.x1, this.topPointY, this.gapForSwitch1, this.topPointY);
-                line(this.gapForSwitch2, this.topPointY, this.x2, this.topPointY);
-
-                // Bryteren
-                line(
-                        this.gapForSwitch2,
-                        this.topPointY + 5,
-                        this.gapForSwitch2,
-                        this.topPointY - 5
-                );
-                strokeWeight(2);
-                line(
-                        this.gapForSwitch1,
-                        this.topPointY,
-                        this.gapForSwitch2,
-                        this.topPointY
-                );
-                strokeWeight(1);
-        }
-}
-
-/** Lastskillebryter uten motor */
-class QBA2 {
-        /**
-         *
-         * @param {number} x1
-         * @param {number} y1
-         */
-        constructor(x1, y1) {
-                this.x1 = x1;
-                this.x2 = x1 + 50;
-
-                this.bottomPointY = y1;
-                this.topPointY = y1 - 25;
-
-                this.gapForSwitch1 = x1 + 15;
-                this.gapForSwitch2 = x1 + 35;
-
-                this.cricleGap = x1 + 40;
-
-                this.connectionX1 = this.x1 + 30;
-                this.connectionY1 = this.y1;
-                this.connectionX2 = this.x1;
-                this.connectionY2 = this.y1;
-        }
-
-        draw() {
-                // to paralelle linjer oppover
-                line(this.x1, this.bottomPointY, this.x1, this.topPointY);
-                line(this.x2, this.bottomPointY, this.x2, this.topPointY);
-
-                // en honisontal linje øverst
-                line(this.x1, this.topPointY, this.gapForSwitch1, this.topPointY);
-                line(this.cricleGap, this.topPointY, this.x2, this.topPointY);
-
-                // Bryteren
-                circle((this.cricleGap + this.gapForSwitch2) / 2, this.topPointY, 5);
-                line(
-                        this.gapForSwitch2,
-                        this.topPointY + 5,
-                        this.gapForSwitch2,
-                        this.topPointY - 5
-                );
-                strokeWeight(2);
-                line(
-                        this.gapForSwitch1,
-                        this.topPointY,
-                        this.gapForSwitch2,
-                        this.topPointY
-                );
-                strokeWeight(1);
-        }
-}
-
-/** Sillebryter med motor */
-class QBA3 {
-        /**
-         * 
-         * @param {number} x1 
-         * @param {number} y1 
-         */
-        constructor(x1, y1) {
-                this.x1 = x1;
-                this.x2 = x1 + 50;
-
-                this.bottomPointY = y1;
-                this.topPointY = y1 - 25;
-
-                this.gapForSwitch1 = x1 + 15;
-                this.gapForSwitch2 = x1 + 35;
-
-                this.motorLineTopPoint = this.topPointY - 15;
-
-                this.connectionX1 = this.x1 + 30;
-                this.connectionY1 = this.y1;
-                this.connectionX2 = this.x1;
-                this.connectionY2 = this.y1;
-        }
-
-        draw() {
-                // to paralelle linjer oppover
-                line(this.x1, this.bottomPointY, this.x1, this.topPointY);
-                line(this.x2, this.bottomPointY, this.x2, this.topPointY);
-
-                // en honisontal linje øverst
-                line(this.x1, this.topPointY, this.gapForSwitch1, this.topPointY);
-                line(this.gapForSwitch2, this.topPointY, this.x2, this.topPointY);
-
-                //motoren
-                line(
-                        this.gapForSwitch1,
-                        this.topPointY,
-                        this.gapForSwitch1,
-                        this.motorLineTopPoint
-                );
-                circle(this.gapForSwitch1, this.motorLineTopPoint + 5, 10);
-
-                textSize(8);
-                text("M", this.gapForSwitch1 - 3, this.motorLineTopPoint + 8);
-                // Bryteren
-                line(
-                        this.gapForSwitch2,
-                        this.topPointY + 5,
-                        this.gapForSwitch2,
-                        this.topPointY - 5
-                );
-                strokeWeight(2);
-                line(
-                        this.gapForSwitch1,
-                        this.topPointY,
-                        this.gapForSwitch2,
-                        this.topPointY
-                );
-                strokeWeight(1);
-        }
-}
-
-/** Lastskillebryter med motor */
-class QBA4 {
-        /**
-         *
-         * @param {number} x1
-         * @param {number} y1
-         */
-        constructor(x1, y1) {
-                this.x1 = x1;
-                this.x2 = x1 + 50;
-
-                this.bottomPointY = y1;
-                this.topPointY = y1 - 25;
-
-                this.gapForSwitch1 = x1 + 15;
-                this.gapForSwitch2 = x1 + 35;
-
-                this.motorLineTopPoint = this.topPointY - 15;
-
-                this.cricleGap = x1 + 40;
-
-                this.connectionX1 = this.x1 + 30;
-                this.connectionY1 = this.y1;
-                this.connectionX2 = this.x1;
-                this.connectionY2 = this.y1;
-        }
-
-        draw() {
-                // to paralelle linjer oppover
-                line(this.x1, this.bottomPointY, this.x1, this.topPointY);
-                line(this.x2, this.bottomPointY, this.x2, this.topPointY);
-
-                // en honisontal linje øverst
-                line(this.x1, this.topPointY, this.gapForSwitch1, this.topPointY);
-                line(this.cricleGap, this.topPointY, this.x2, this.topPointY);
-
-                //motoren
-                line(
-                        this.gapForSwitch1,
-                        this.topPointY,
-                        this.gapForSwitch1,
-                        this.motorLineTopPoint
-                );
-                circle(this.gapForSwitch1, this.motorLineTopPoint + 5, 10);
-
-                textSize(8);
-                text("M", this.gapForSwitch1 - 3, this.motorLineTopPoint + 8);
-
-                // Bryteren
-                circle((this.cricleGap + this.gapForSwitch2) / 2, this.topPointY, 5);
-                line(
-                        this.gapForSwitch2,
-                        this.topPointY + 5,
-                        this.gapForSwitch2,
-                        this.topPointY - 5
-                );
-                strokeWeight(2);
-                line(
-                        this.gapForSwitch1,
-                        this.topPointY,
-                        this.gapForSwitch2,
-                        this.topPointY
-                );
-                strokeWeight(1);
-        }
-}
 
 /** Trafo */
 class XBA {
@@ -404,4 +181,237 @@ class ComponentState {
                 this.id = id;
                 this.type = type;
         }
+}
+
+/** Skillebryter uten motor */
+class QBA1 {
+      /**
+       *
+       * @param {number} x1
+       * @param {number} y1
+       */
+      constructor(x1, y1) {
+              this.x1 = x1;
+              this.x2 = x1 + 50;
+
+              this.bottomPointY = y1;
+              this.topPointY = y1 - 25;
+
+              this.gapForSwitch1 = x1 + 15;
+              this.gapForSwitch2 = x1 + 35;
+
+              this.connectionX1 = this.x1 + 30;
+              this.connectionY1 = this.y1;
+              this.connectionX2 = this.x1;
+              this.connectionY2 = this.y1;
+      }
+
+      draw() {
+              // to paralelle linjer oppover
+              line(this.x1, this.bottomPointY, this.x1, this.topPointY);
+              line(this.x2, this.bottomPointY, this.x2, this.topPointY);
+
+              // en honisontal linje øverst
+              line(this.x1, this.topPointY, this.gapForSwitch1, this.topPointY);
+              line(this.gapForSwitch2, this.topPointY, this.x2, this.topPointY);
+
+              // Bryteren
+              line(
+                      this.gapForSwitch2,
+                      this.topPointY + 5,
+                      this.gapForSwitch2,
+                      this.topPointY - 5
+              );
+              strokeWeight(2);
+              line(
+                      this.gapForSwitch1,
+                      this.topPointY,
+                      this.gapForSwitch2,
+                      this.topPointY
+              );
+              strokeWeight(1);
+      }
+}
+
+/** Lastskillebryter uten motor */
+class QBA2 {
+      /**
+       *
+       * @param {number} x1
+       * @param {number} y1
+       */
+      constructor(x1, y1) {
+              this.x1 = x1;
+              this.x2 = x1 + 50;
+
+              this.bottomPointY = y1;
+              this.topPointY = y1 - 25;
+
+              this.gapForSwitch1 = x1 + 15;
+              this.gapForSwitch2 = x1 + 35;
+
+              this.cricleGap = x1 + 40;
+
+              this.connectionX1 = this.x1 + 30;
+              this.connectionY1 = this.y1;
+              this.connectionX2 = this.x1;
+              this.connectionY2 = this.y1;
+      }
+
+      draw() {
+              // to paralelle linjer oppover
+              line(this.x1, this.bottomPointY, this.x1, this.topPointY);
+              line(this.x2, this.bottomPointY, this.x2, this.topPointY);
+
+              // en honisontal linje øverst
+              line(this.x1, this.topPointY, this.gapForSwitch1, this.topPointY);
+              line(this.cricleGap, this.topPointY, this.x2, this.topPointY);
+
+              // Bryteren
+              circle((this.cricleGap + this.gapForSwitch2) / 2, this.topPointY, 5);
+              line(
+                      this.gapForSwitch2,
+                      this.topPointY + 5,
+                      this.gapForSwitch2,
+                      this.topPointY - 5
+              );
+              strokeWeight(2);
+              line(
+                      this.gapForSwitch1,
+                      this.topPointY,
+                      this.gapForSwitch2,
+                      this.topPointY
+              );
+              strokeWeight(1);
+      }
+}
+
+/** Sillebryter med motor */
+class QBA3 {
+      /**
+       * 
+       * @param {number} x1 
+       * @param {number} y1 
+       */
+      constructor(x1, y1) {
+              this.x1 = x1;
+              this.x2 = x1 + 50;
+
+              this.bottomPointY = y1;
+              this.topPointY = y1 - 25;
+
+              this.gapForSwitch1 = x1 + 15;
+              this.gapForSwitch2 = x1 + 35;
+
+              this.motorLineTopPoint = this.topPointY - 15;
+
+              this.connectionX1 = this.x1 + 30;
+              this.connectionY1 = this.y1;
+              this.connectionX2 = this.x1;
+              this.connectionY2 = this.y1;
+      }
+
+      draw() {
+              // to paralelle linjer oppover
+              line(this.x1, this.bottomPointY, this.x1, this.topPointY);
+              line(this.x2, this.bottomPointY, this.x2, this.topPointY);
+
+              // en honisontal linje øverst
+              line(this.x1, this.topPointY, this.gapForSwitch1, this.topPointY);
+              line(this.gapForSwitch2, this.topPointY, this.x2, this.topPointY);
+
+              //motoren
+              line(
+                      this.gapForSwitch1,
+                      this.topPointY,
+                      this.gapForSwitch1,
+                      this.motorLineTopPoint
+              );
+              circle(this.gapForSwitch1, this.motorLineTopPoint + 5, 10);
+
+              textSize(8);
+              text("M", this.gapForSwitch1 - 3, this.motorLineTopPoint + 8);
+              // Bryteren
+              line(
+                      this.gapForSwitch2,
+                      this.topPointY + 5,
+                      this.gapForSwitch2,
+                      this.topPointY - 5
+              );
+              strokeWeight(2);
+              line(
+                      this.gapForSwitch1,
+                      this.topPointY,
+                      this.gapForSwitch2,
+                      this.topPointY
+              );
+              strokeWeight(1);
+      }
+}
+
+/** Lastskillebryter med motor */
+class QBA4 {
+      /**
+       *
+       * @param {number} x1
+       * @param {number} y1
+       */
+      constructor(x1, y1) {
+              this.x1 = x1;
+              this.x2 = x1 + 50;
+
+              this.bottomPointY = y1;
+              this.topPointY = y1 - 25;
+
+              this.gapForSwitch1 = x1 + 15;
+              this.gapForSwitch2 = x1 + 35;
+
+              this.motorLineTopPoint = this.topPointY - 15;
+
+              this.cricleGap = x1 + 40;
+
+              this.connectionX1 = this.x1 + 30;
+              this.connectionY1 = this.y1;
+              this.connectionX2 = this.x1;
+              this.connectionY2 = this.y1;
+      }
+
+      draw() {
+              // to paralelle linjer oppover
+              line(this.x1, this.bottomPointY, this.x1, this.topPointY);
+              line(this.x2, this.bottomPointY, this.x2, this.topPointY);
+
+              // en honisontal linje øverst
+              line(this.x1, this.topPointY, this.gapForSwitch1, this.topPointY);
+              line(this.cricleGap, this.topPointY, this.x2, this.topPointY);
+
+              //motoren
+              line(
+                      this.gapForSwitch1,
+                      this.topPointY,
+                      this.gapForSwitch1,
+                      this.motorLineTopPoint
+              );
+              circle(this.gapForSwitch1, this.motorLineTopPoint + 5, 10);
+
+              textSize(8);
+              text("M", this.gapForSwitch1 - 3, this.motorLineTopPoint + 8);
+
+              // Bryteren
+              circle((this.cricleGap + this.gapForSwitch2) / 2, this.topPointY, 5);
+              line(
+                      this.gapForSwitch2,
+                      this.topPointY + 5,
+                      this.gapForSwitch2,
+                      this.topPointY - 5
+              );
+              strokeWeight(2);
+              line(
+                      this.gapForSwitch1,
+                      this.topPointY,
+                      this.gapForSwitch2,
+                      this.topPointY
+              );
+              strokeWeight(1);
+      }
 }
