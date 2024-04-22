@@ -165,6 +165,10 @@ function getLast(path) {
       return pathArray.pop()
 }
 
+/**
+ * method that returns the first word in a string
+ * @returns {string}
+ */
 String.prototype.getWord = function () {
       return this.match(pattern)[0]
 }
@@ -388,6 +392,13 @@ function drawTripleTrackStation(lastComponentCoords, length, drawnComponents, st
       line(x5, y4, x6, y4);
 }
 
+/**
+ * 
+ * @param {Coordinates} lastComponentCoords
+ * @param {number} length
+ * @param {ComponentState[]} drawnComponents
+ * @param {Component} switchComponent
+ */
 function drawSwitchForSection(lastComponentCoords, length, drawnComponents, switchComponent) {
       const x1 = lastComponentCoords.x;
       const x2 = x1 + length;
@@ -400,12 +411,8 @@ function drawSwitchForSection(lastComponentCoords, length, drawnComponents, swit
 
       const cricleGap = x1 + 40;
 
-      switchComponent = new ComponentState(0, 0, component[0].ID, "QBA")
-
-      drawnComponents.push(switchComponent)
-
-
       line(x1, bottomPointY, x1, topPointY);
+
       line(x2, bottomPointY, x2, topPointY);
 
       line(x1, topPointY, gapForSwitch1, topPointY);
@@ -430,16 +437,14 @@ function drawSwitchForTransformer(lastComponentCoords, length, drawnComponents, 
 function drawSwitch(fromComponent, switchComponent, drawnComponents, connections) {
       const fromComponentState = findComponentState(fromComponent.ID, drawnComponents)
       /** @type {Coordinates} */
-      let coords;
-
-      coords = {
+      let coords = {
             x: fromComponentState.x,
             y: fromComponentState.y
       }
 
-      if (getLast(fromComponent.Path).match(pattern)[0] == "UAA") {
+      if (getLast(fromComponent.Path).getWord() == "UAA") {
             drawSwitchForSection(coords, 100, drawnComponents, switchComponent)
-      } else if (getLast(fromComponent.Path).match(pattern)[0] == "WBC") {
+      } else if (getLast(fromComponent.Path).getWord() == "WBC") {
             drawSwitchForTransformer(coords, 100, drawnComponents, switchComponent)
       }
 
@@ -490,7 +495,6 @@ function drawStation(fromComponent, mainLine, drawnComponents, connections) {
       }
 
       if (neighbours.length == 1) { // two tracks
-
             drawDoubleTrackStation(coords, length, drawnComponents, stationLines)
       }
 
@@ -504,6 +508,7 @@ function drawStation(fromComponent, mainLine, drawnComponents, connections) {
 function resolveContext(context) {
 
 }
+
 /**
  * This is the main loop of the program which loops through all connections and draws the
  * components accordingly.
@@ -520,41 +525,40 @@ function mainLoop(connections, drawnComponents) {
       let y = 150
       // main loop
       for (let connection of connections) {
-            x += 15
             const component1 = connection.Component1
             const component2 = connection.Component2
 
             context.Main = getUpperTechnical(component2.Path)
             context.Sub = getLowerTechnical(component2.Path)
-            //console.log("Context: ", context.Main, context.Sub)
+
+
+            const component1Last = getLast(component1.Path)
+            const component2Last = getLast(component2.Path)
 
             // if this is a new branch, so we need to start the entire drawing here
-
             if (findComponentState(component1.ID, drawnComponents) == null) {
-                  console.log("state: ", findComponentState(component1.ID, drawnComponents))
-                  const component1Last = getLast(component1.Path)
-                  const component2Last = getLast(component2.Path)
-
-                  const component1LastMatched = component1Last.match(pattern)[0]
-                  const component2LastMatched = component2Last.match(pattern)[0]
-                  console.log(drawnComponents.length)
-                  let state1 = new ComponentState(x, 150, component1.ID, component1LastMatched)
+                  console.log("im here", component1.ID, component1.Path, component1Last.getWord())
+                  let state1 = new ComponentState(x, 150, component1.ID, component1Last.getWord())
                   drawnComponents.push(state1)
-                  drawnComponents.push(new ComponentState(x, 150, component2.ID, component2LastMatched))
+                  drawnComponents.push(new ComponentState(x, 150, component2.ID, component2Last.getWord()))
                   //console.log("Component1: ", component1LastMatched)
                   //const component1Object = new componentToPath[component1LastMatched](50, 150, 50, 150)
                   //component1Object.draw()
             } else {
                   const comp1 = connection.Component1
                   const comp2 = connection.Component2
-                  console.log(context.Main.match(pattern)[0], context.Sub.match(pattern)[0], comp2.Type)
                   // if the technical system is KL.JE and the second component is a main line (WBC1), draw a station.
-                  if (context.Main.match(pattern)[0] == "KL" &&
-                        context.Sub.match(pattern)[0] == "JE" &&
+                  if (context.Main.getWord() == "KL" &&
+                        context.Sub.getWord() == "JE" &&
                         comp2.Type == "WBC1") {
-                        console.log("Drawing station")
+                        //console.log("Drawing station")
                         drawStation(comp1, comp2, drawnComponents, connections)
                   }
+
+                  if (component2Last.getWord() == "QBA") {
+                        drawSwitch(comp1, comp2, drawnComponents, connections)
+                  }
+
 
             }
       }
@@ -564,6 +568,7 @@ function mainLoop(connections, drawnComponents) {
 function setup() {
       createCanvas(1425, 725);
       background(255); // white background
+
 
       console.log("techs", getUpperTechnical("RDS.KL1.JE1.WBC1"), getLowerTechnical("RDS.KL1.JE1.WBC1"))
 
@@ -637,7 +642,7 @@ function draw() {
             };
 
             // get the component name from the path
-            fromMatch = from.path.match(pattern)[0]; // this is regex that matches the first word in the path
+            fromMatch = from.path.  ; // this is regex that matches the first word in the path
 
             // get the to-component name from the path
             toMatch = to.path.match(pattern)[0];
