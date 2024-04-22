@@ -565,8 +565,6 @@ function setup() {
       createCanvas(1425, 725);
       background(255); // white background
 
-      console.log("hello".getWord())
-
       console.log("techs", getUpperTechnical("RDS.KL1.JE1.WBC1"), getLowerTechnical("RDS.KL1.JE1.WBC1"))
 
       // connection array
