@@ -165,6 +165,14 @@ function getLast(path) {
       return pathArray.pop()
 }
 
+String.prototype.getWord = function () {
+      return this.match(pattern)[0]
+}
+
+function getWord(path) {
+      return path.match(pattern)[0]
+}
+
 
 /**
  * Takes a full path and returns the upper technical system label.
@@ -393,7 +401,7 @@ function drawSwitchForSection(lastComponentCoords, length, drawnComponents, swit
       const cricleGap = x1 + 40;
 
       switchComponent = new ComponentState(0, 0, component[0].ID, "QBA")
-      
+
       drawnComponents.push(switchComponent)
 
 
@@ -429,9 +437,9 @@ function drawSwitch(fromComponent, switchComponent, drawnComponents, connections
             y: fromComponentState.y
       }
 
-      if (getLast(fromComponent.Path.match(pattern)[0]) == "UAA") {
+      if (getLast(fromComponent.Path).match(pattern)[0] == "UAA") {
             drawSwitchForSection(coords, 100, drawnComponents, switchComponent)
-      } else if (getLast(fromComponent.Path.match(pattern)[0]) == "WBC") {
+      } else if (getLast(fromComponent.Path).match(pattern)[0] == "WBC") {
             drawSwitchForTransformer(coords, 100, drawnComponents, switchComponent)
       }
 
@@ -556,6 +564,8 @@ function mainLoop(connections, drawnComponents) {
 function setup() {
       createCanvas(1425, 725);
       background(255); // white background
+
+      console.log("hello123".getWord())
 
       console.log("techs", getUpperTechnical("RDS.KL1.JE1.WBC1"), getLowerTechnical("RDS.KL1.JE1.WBC1"))
 
