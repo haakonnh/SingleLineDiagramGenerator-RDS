@@ -14,6 +14,7 @@
  * @property {string} Path
  * @property {string} Type
  */
+
 // TODO: COMPONENT AND NODE TYPE SHOULD MAYBE ME MERGED TOGETHER TO THE SAME TYPE.
 /**
  * @typedef {object} Node
@@ -120,7 +121,7 @@ async function fetchAndProcessRelationships() {
  * Fetches the idToPath from the API
  */
 async function fetchAndProcessMaps() {
-      const apiUrl = 'http://localhost:9090/idpath' 
+      const apiUrl = 'http://localhost:9090/idpath'
       try {
             const response = loadJSON(apiUrl)
 
@@ -133,7 +134,7 @@ async function fetchAndProcessMaps() {
             console.error('Error fetching data:', error)
       }
 
-      const newApiUrl = 'http://localhost:9090/idtype' 
+      const newApiUrl = 'http://localhost:9090/idtype'
       try {
             const response = loadJSON(newApiUrl)
 
@@ -184,9 +185,7 @@ function getUpperTechnical(path) {
 
       if (technicalSystemCount === 2) {
             return pathArray[pathArray.length - 3]
-      }
-
-      else if (technicalSystemCount === 1) {
+      } else if (technicalSystemCount === 1) {
             return pathArray[pathArray.length - 2]
       }
 
@@ -259,7 +258,10 @@ function populateConnections() {
                   Path: idToPath.get(value.Node2.toString()),
                   Type: idToType.get(value.Node2.toString()),
             }
-            connections.push({Component1: comp1, Component2: comp2})
+            connections.push({
+                  Component1: comp1,
+                  Component2: comp2
+            })
       });
       return connections
 }
@@ -273,9 +275,9 @@ function getNeighbours(node, connections) {
       let neighbours = []
       console.log(connections)
       for (let connection of connections) {
-            if (connection.Node1.id == node.ID) {
-                  neighbours.push(connection.Node2)
-                  console.log("Neighbour: ", connection.Node2)
+            if (connection.Component1.ID == node.ID) {
+                  neighbours.push(connection.Component2)
+                  console.log("Neighbour: ", connection.Component2)
             }
       }
       return neighbours
@@ -358,6 +360,7 @@ function drawTripleTrackStation(lastComponentCoords, length, drawnComponents, st
       lowerComponent = new ComponentState(connLowerX, connLowerY, stationLines[1].ID, "WBC")
       drawnComponents.push(lowerComponent)
 
+      // main line
       const connMiddleX = x1 + length;
       const connMiddleY = y1;
       middleComponent = new ComponentState(connMiddleX, connMiddleY, stationLines[2].ID, "WBC")
@@ -378,10 +381,36 @@ function drawTripleTrackStation(lastComponentCoords, length, drawnComponents, st
 }
 
 function drawSwitchForSection(lastComponentCoords, length, drawnComponents, switchComponent) {
+      const x1 = lastComponentCoords.x;
+      const x2 = x1 + length;
+
+      const bottomPointY = y1;
+      const topPointY = y1 - 25;
+
+      const gapForSwitch1 = x1 + 15;
+      const gapForSwitch2 = x2 + 35;
+
+      const cricleGap = x1 + 40;
+
+      switchComponent = new ComponentState(0, 0, component[0].ID, "QBA")
+      
+      drawnComponents.push(switchComponent)
+
+
+      line(x1, bottomPointY, x1, topPointY);
+      line(x2, bottomPointY, x2, topPointY);
+
+      line(x1, topPointY, gapForSwitch1, topPointY);
+      line(cricleGap, topPointY, x2, topPointY);
+
+      circle((cricleGap + gapForSwitch2) / 2, topPointY, 5);
+      strokeWeight(2);
+      line(gapForSwitch2, topPointY + 5, gapForSwitch2, topPointY - 5);
+      line(gapForSwitch1, topPointY, gapForSwitch2, topPointY);
+      strokeWeight(1);
 }
 
-function drawSwitchForTransformer(lastComponentCoords, length, drawnComponents, switchComponent) {
-}
+function drawSwitchForTransformer(lastComponentCoords, length, drawnComponents, switchComponent) {}
 
 /**
  * 
@@ -402,9 +431,7 @@ function drawSwitch(fromComponent, switchComponent, drawnComponents, connections
 
       if (getLast(fromComponent.Path.match(pattern)[0]) == "UAA") {
             drawSwitchForSection(coords, 100, drawnComponents, switchComponent)
-      }
-
-      else if (getLast(fromComponent.Path.match(pattern)[0]) == "WBC") {
+      } else if (getLast(fromComponent.Path.match(pattern)[0]) == "WBC") {
             drawSwitchForTransformer(coords, 100, drawnComponents, switchComponent)
       }
 
@@ -422,12 +449,12 @@ function drawStation(fromComponent, mainLine, drawnComponents, connections) {
        * list of neighbor nodes
        * @type {Component[]}
        */
-      //let neighbours = getNeighbours(mainLine, connections)
+      let neighbours = getNeighbours(mainLine, connections)
 
       // filter out the neighbours that are not WBC
       //neighbours = neighbours.filter((neighbour) => neighbour.Type == "WBC") 
 
-      let neighbours = [{
+      /* let neighbours = [{
             ID: 3,
             Path: "RDS.J1.WBC1",
             Type: "WBC1"
@@ -435,7 +462,7 @@ function drawStation(fromComponent, mainLine, drawnComponents, connections) {
             ID: 2,
             Path: "RDS.J1.WBC2",
             Type: "WBC1"
-      }]
+      }] */
 
       /**
        * list of lines composing the station.
@@ -453,9 +480,9 @@ function drawStation(fromComponent, mainLine, drawnComponents, connections) {
             x: fromComponentState.x,
             y: fromComponentState.y
       }
-      
+
       if (neighbours.length == 1) { // two tracks
-            
+
             drawDoubleTrackStation(coords, length, drawnComponents, stationLines)
       }
 
@@ -463,10 +490,12 @@ function drawStation(fromComponent, mainLine, drawnComponents, connections) {
             drawTripleTrackStation(coords, length, drawnComponents, stationLines)
       }
 
-      console.log("Drawn: ", drawnComponents)
+      //console.log("Drawn: ", drawnComponents)
 }
 
+function resolveContext(context) {
 
+}
 /**
  * This is the main loop of the program which loops through all connections and draws the
  * components accordingly.
@@ -476,30 +505,49 @@ function drawStation(fromComponent, mainLine, drawnComponents, connections) {
 function mainLoop(connections, drawnComponents) {
       let firstConnection = connections[0]
       console.log("First connection: ", firstConnection)
-      connections = [connections[0], connections[1]]
-      
+      //connections = [connections[0], connections[1]]
+
+      /** @type {number} */
+      let x = 50
+      let y = 150
       // main loop
       for (let connection of connections) {
+            x += 15
             const component1 = connection.Component1
             const component2 = connection.Component2
 
-            context.Main = getUpperTechnical(component1.Path)
-            context.Sub = getLowerTechnical(component1.Path)
-            console.log("Context: ", context.Main, context.Sub)
+            context.Main = getUpperTechnical(component2.Path)
+            context.Sub = getLowerTechnical(component2.Path)
+            //console.log("Context: ", context.Main, context.Sub)
 
             // if this is a new branch, so we need to start the entire drawing here
+
             if (findComponentState(component1.ID, drawnComponents) == null) {
+                  console.log("state: ", findComponentState(component1.ID, drawnComponents))
                   const component1Last = getLast(component1.Path)
                   const component2Last = getLast(component2.Path)
 
                   const component1LastMatched = component1Last.match(pattern)[0]
                   const component2LastMatched = component2Last.match(pattern)[0]
-
+                  console.log(drawnComponents.length)
+                  let state1 = new ComponentState(x, 150, component1.ID, component1LastMatched)
+                  drawnComponents.push(state1)
+                  drawnComponents.push(new ComponentState(x, 150, component2.ID, component2LastMatched))
                   //console.log("Component1: ", component1LastMatched)
-                  const component1Object = new componentToPath[component1LastMatched](50, 150, 50, 150)
-                  component1Object.draw()
-            }
-            else {
+                  //const component1Object = new componentToPath[component1LastMatched](50, 150, 50, 150)
+                  //component1Object.draw()
+            } else {
+                  const comp1 = connection.Component1
+                  const comp2 = connection.Component2
+                  console.log(context.Main.match(pattern)[0], context.Sub.match(pattern)[0], comp2.Type)
+                  // if the technical system is KL.JE and the second component is a main line (WBC1), draw a station.
+                  if (context.Main.match(pattern)[0] == "KL" &&
+                        context.Sub.match(pattern)[0] == "JE" &&
+                        comp2.Type == "WBC1") {
+                        console.log("Drawing station")
+                        drawStation(comp1, comp2, drawnComponents, connections)
+                  }
+
             }
       }
 }
@@ -509,7 +557,7 @@ function setup() {
       createCanvas(1425, 725);
       background(255); // white background
 
-
+      console.log("techs", getUpperTechnical("RDS.KL1.JE1.WBC1"), getLowerTechnical("RDS.KL1.JE1.WBC1"))
 
       // connection array
       const connections = populateConnections();
@@ -536,7 +584,7 @@ function setup() {
             },
             drawnComponents, connections) */
 
-      //console.log("Drawn components: ", drawnComponents)
+      console.log("Drawn components: ", drawnComponents)
 }
 
 function draw() {
