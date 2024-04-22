@@ -41,6 +41,8 @@ const size = 200;
 
 let data = {};
 
+const pattern = /[A-Za-z]+/;
+
 /**
  * @type {Component[]}
  */
@@ -254,8 +256,6 @@ function drawSwitchForTransformer(lastComponentCoords, length, drawnComponents, 
 }
 
 
-const pattern = /[A-Za-z]+/;
-
 /**
  * 
  * @param {Component} fromComponent 
@@ -274,11 +274,11 @@ function drawSwitch(fromComponent, switchComponent, drawnComponents, connections
           y: fromComponentState.y
     }
 
-    if (fromComponent.Type == "UAA1") {
+    if (getLast(fromComponent.Path).match(pattern)[0] == "UAA1") {
           drawSwitchForSection(coords, 100, drawnComponents, switchComponent)
     }
 
-    else if (fromComponent.Type == "WBC1") {
+    else if (getLast(fromComponent.Path).match(pattern)[0] == "WBC1") {
           drawSwitchForTransformer(coords, 100, drawnComponents, switchComponent)
           console.log(coords)
     }
