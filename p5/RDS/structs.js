@@ -1,14 +1,7 @@
-class Component {
-      constructor(path = "") {
-            this.path = path;
-      }
-      get path() {
-            return this.path;
-      }
-}
+
 let canvasHeight = 725;
 let canvasWidth = 1425;
-let myDistX = canvasWidth / 20;
+let myDistX = 100
 let myDistY = canvasHeight / 20;
 
 
