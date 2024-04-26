@@ -1,186 +1,198 @@
-class Component {
-        constructor(path = "") {
-                this.path = path;
-        }
-        get path() {
-                return this.path;
-        }
-}
+
 let canvasHeight = 725;
 let canvasWidth = 1425;
-let myDistX = canvasWidth / 20;
+let myDistX = 100
 let myDistY = canvasHeight / 20;
 
 
 /**Seksjon */
 class UAA1 {
-        /**
-         * 
-         * @param {number} x1 
-         * @param {number} y1 
-         */
-        constructor(x1, y1) {
-                this.lineLength = 20;
+      /**
+       * 
+       * @param {number} x1 
+       * @param {number} y1 
+       */
+      constructor(x1, y1) {
+            this.lineLength = 20;
 
-                // Start and end points for the first line
-                this.line1StartX = x1;
-                this.lineY = y1;
-                this.line1EndX = x1 + this.lineLength;
+            // Start and end points for the first line
+            this.line1StartX = x1;
+            this.lineY = y1;
+            this.line1EndX = x1 + this.lineLength;
 
-                // Start and end points for the first section
-                this.sectionEndX = this.line1EndX + 5;
-                this.sectionTopY = this.lineY - 8;
-                this.sectionBottomY = this.lineY + 8;
+            // Start and end points for the first section
+            this.sectionEndX = this.line1EndX + 5;
+            this.sectionTopY = this.lineY - 8;
+            this.sectionBottomY = this.lineY + 8;
 
-                this.line2StartX = this.sectionEndX + 5;
-                this.line2EndX = this.line2StartX + this.lineLength;
-        }
+            this.line2StartX = this.sectionEndX + 5;
+            this.line2EndX = this.line2StartX + this.lineLength;
+      }
 
-        draw() {
-                // draw upper and lower line
-                strokeWeight(1);
-                // line from left to first section
-                line(this.line1StartX, this.lineY, this.line1EndX, this.lineY);
-                // first section
-                line(this.line1EndX, this.lineY, this.sectionEndX, this.sectionTopY);
-                // second section
-                line(this.sectionEndX, this.sectionBottomY, this.line2StartX, this.lineY);
-                //line from second section to right
-                line(this.line2StartX, this.lineY, this.line2EndX, this.lineY);
-        }
+      draw() {
+            // draw upper and lower line
+            strokeWeight(1);
+            // line from left to first section
+            line(this.line1StartX, this.lineY, this.line1EndX, this.lineY);
+            // first section
+            line(this.line1EndX, this.lineY, this.sectionEndX, this.sectionTopY);
+            // second section
+            line(this.sectionEndX, this.sectionBottomY, this.line2StartX, this.lineY);
+            //line from second section to right
+            line(this.line2StartX, this.lineY, this.line2EndX, this.lineY);
 
-        /**
-         * 
-         * @param {string} id 
-         * @returns {ComponentState} returns a new component state based on the coordinates of the component
-         */
-        makeComponentState(id) {
-                return new ComponentState(this.line2EndX, this.lineY, id, "UAA1");
-        }
+
+      }
+
+      /**
+       * 
+       * @param {string} id 
+       * @returns {ComponentState} returns a new component state based on the coordinates of the component
+       */
+      makeComponentState(id) {
+            return new ComponentState(this.line2EndX, this.lineY, id, "UAA1");
+      }
 }
 
 /** Section insulator */
 class UAA2 {
-        /**
-         * 
-         * @param {number} x1 
-         * @param {number} y1 
-         */
-        constructor(x1, y1) {
-                this.lineLength = 22;
+      /**
+       * 
+       * @param {number} x1 
+       * @param {number} y1 
+       */
+      constructor(x1, y1) {
+            this.lineLength = 22;
 
-                // Start and end points for the first line
-                this.line1StartX = x1;
-                this.lineY = y1;
-                this.line1EndX = x1 + this.lineLength;
+            // Start and end points for the first line
+            this.line1StartX = x1;
+            this.lineY = y1;
+            this.line1EndX = x1 + this.lineLength;
 
-                // Start and end points for the first section
-                this.sectionEndX = this.line1EndX;
-                this.sectionTopY = this.lineY - 8;
-                this.sectionBottomY = this.lineY + 8;
+            // Start and end points for the first section
+            this.sectionEndX = this.line1EndX;
+            this.sectionTopY = this.lineY - 8;
+            this.sectionBottomY = this.lineY + 8;
 
-                this.line2StartX = this.sectionEndX + 6;
-                this.line2EndX = this.line2StartX + this.lineLength;
-        }
+            this.line2StartX = this.sectionEndX + 6;
+            this.line2EndX = this.line2StartX + this.lineLength;
+      }
 
-        draw() {
-                // draw upper and lower line
-                strokeWeight(1);
-                // line from left to first section
-                line(this.line1StartX, this.lineY, this.line1EndX, this.lineY);
-                // first section
-                line(
-                        this.line1EndX,
-                        this.sectionBottomY,
-                        this.sectionEndX,
-                        this.sectionTopY
-                );
-                // second section
-                line(
-                        this.line2StartX,
-                        this.sectionBottomY,
-                        this.line2StartX,
-                        this.sectionTopY
-                );
-                //line from second section to right
-                line(this.line2StartX, this.lineY, this.line2EndX, this.lineY);
-        }
+      draw() {
+            // draw upper and lower line
+            strokeWeight(1);
+            // line from left to first section
+            line(this.line1StartX, this.lineY, this.line1EndX, this.lineY);
+            // first section
+            line(
+                  this.line1EndX,
+                  this.sectionBottomY,
+                  this.sectionEndX,
+                  this.sectionTopY
+            );
+            // second section
+            line(
+                  this.line2StartX,
+                  this.sectionBottomY,
+                  this.line2StartX,
+                  this.sectionTopY
+            );
+            //line from second section to right
+            line(this.line2StartX, this.lineY, this.line2EndX, this.lineY);
+      }
+
+      /**
+       * 
+       * @param {string} id 
+       * @returns {ComponentState} returns a new component state based on the coordinates of the component
+       */
+      makeComponentState(id) {
+            return new ComponentState(this.line2EndX, this.lineY, id, "UAA2");
+      }
 }
 
 /**Main track */
 class WBC1 {
-        /**
-         *
-         * @param {number} x1
-         * @param {number} y1
-         */
-        constructor(x1, y1) {
-                this.x1 = x1;
-                this.y1 = y1;
-                this.endPointX = x1 + myDistX;
-                this.endPointY = y1;
-        }
+      /**
+       *
+       * @param {number} x1
+       * @param {number} y1
+       */
+      constructor(x1, y1) {
+            this.x1 = x1;
+            this.y1 = y1;
+            this.endPointX = x1 + myDistX;
+            this.endPointY = y1;
+      }
 
-        draw() {
-                line(this.x1, this.y1, this.endPointX, this.endPointY);
-        }
+      draw() {
+            line(this.x1, this.y1, this.endPointX, this.endPointY);
+      }
+
+      makeComponentState(id) {
+            return new ComponentState(this.endPointX, this.endPointY, id, "WBC1");
+      }
 }
 
 
 /** Trafo */
 class XBA {
-    /**
-     * 
-     * @param {number} x 
-     * @param {number} y 
-     */
-    constructor(x, y){
-        this.x = x;
-        this.y = y;
+      /**
+       * 
+       * @param {number} x 
+       * @param {number} y 
+       */
+      constructor(x, y) {
+            this.x = x;
+            this.y = y;
 
-        this.yBottomCircleMid = y - 25;
-        this.yTopCircleMid = y - 35;
+            this.yBottomCircleMid = y - 25;
+            this.yTopCircleMid = y - 35;
 
-        this.d = 12;
-    }
+            this.d = 12;
+      }
 
-    draw(){
-        noFill();
-        circle(this.x, this.yBottomCircleMid, this.d);
-        circle(this.x, this.yTopCircleMid, this.d);
-        line(this.x, this.yBottomCircleMid + 6, this.x, this.y);
-    }
+      draw() {
+            noFill();
+            circle(this.x, this.yBottomCircleMid, this.d);
+            circle(this.x, this.yTopCircleMid, this.d);
+            line(this.x, this.yBottomCircleMid + 6, this.x, this.y);
+      }
+
+      makeComponentState(id) {
+            return new ComponentState(this.x, this.y, id, "XBA");
+      }
 }
 
 
 const componentToPath = {
-        UAA1: UAA1,
-        UAA2: UAA2,
-        QBA1: QBA1,
-        QBA2: QBA2,
-        QBA3: QBA3,
-        XBA: XBA,
-        WBC1: WBC1
-        // TODO: MAKE THESE CLASSES
+      UAA1: UAA1,
+      UAA2: UAA2,
+      /*  QBA1: QBA1,
+       QBA2: QBA2,
+       QBA3: QBA3, */
+      XBA: XBA,
+      WBC1: WBC1
+      // TODO: MAKE THESE CLASSES
 };
 
 /**
  * a class for storing the state of a component
  */
 class ComponentState {
-        /**
-         *
-         * @param {number} x
-         * @param {number} y
-         * @param {number} id
-         * @param {string} type
-         */
-        constructor(x, y, id, type = "component") {
-                this.x = x;
-                this.y = y;
-                this.id = id;
-                this.type = type;
-        }
+      /**
+       *
+       * @param {number} x
+       * @param {number} y
+       * @param {number} id
+       * @param {string} type
+       */
+      constructor(x, y, id, type = "component") {
+            this.x = x;
+            this.y = y;
+            this.id = id;
+            this.type = type;
+      }
 }
 
 /** Skillebryter uten motor */
@@ -191,45 +203,45 @@ class QBA1 {
        * @param {number} y1
        */
       constructor(x1, y1) {
-              this.x1 = x1;
-              this.x2 = x1 + 50;
+            this.x1 = x1;
+            this.x2 = x1 + 50;
 
-              this.bottomPointY = y1;
-              this.topPointY = y1 - 25;
+            this.bottomPointY = y1;
+            this.topPointY = y1 - 25;
 
-              this.gapForSwitch1 = x1 + 15;
-              this.gapForSwitch2 = x1 + 35;
+            this.gapForSwitch1 = x1 + 15;
+            this.gapForSwitch2 = x1 + 35;
 
-              this.connectionX1 = this.x1 + 30;
-              this.connectionY1 = this.y1;
-              this.connectionX2 = this.x1;
-              this.connectionY2 = this.y1;
+            this.connectionX1 = this.x1 + 30;
+            this.connectionY1 = this.y1;
+            this.connectionX2 = this.x1;
+            this.connectionY2 = this.y1;
       }
 
       draw() {
-              // to paralelle linjer oppover
-              line(this.x1, this.bottomPointY, this.x1, this.topPointY);
-              line(this.x2, this.bottomPointY, this.x2, this.topPointY);
+            // to paralelle linjer oppover
+            line(this.x1, this.bottomPointY, this.x1, this.topPointY);
+            line(this.x2, this.bottomPointY, this.x2, this.topPointY);
 
-              // en honisontal linje øverst
-              line(this.x1, this.topPointY, this.gapForSwitch1, this.topPointY);
-              line(this.gapForSwitch2, this.topPointY, this.x2, this.topPointY);
+            // en honisontal linje øverst
+            line(this.x1, this.topPointY, this.gapForSwitch1, this.topPointY);
+            line(this.gapForSwitch2, this.topPointY, this.x2, this.topPointY);
 
-              // Bryteren
-              line(
-                      this.gapForSwitch2,
-                      this.topPointY + 5,
-                      this.gapForSwitch2,
-                      this.topPointY - 5
-              );
-              strokeWeight(2);
-              line(
-                      this.gapForSwitch1,
-                      this.topPointY,
-                      this.gapForSwitch2,
-                      this.topPointY
-              );
-              strokeWeight(1);
+            // Bryteren
+            line(
+                  this.gapForSwitch2,
+                  this.topPointY + 5,
+                  this.gapForSwitch2,
+                  this.topPointY - 5
+            );
+            strokeWeight(2);
+            line(
+                  this.gapForSwitch1,
+                  this.topPointY,
+                  this.gapForSwitch2,
+                  this.topPointY
+            );
+            strokeWeight(1);
       }
 }
 
@@ -241,48 +253,48 @@ class QBA2 {
        * @param {number} y1
        */
       constructor(x1, y1) {
-              this.x1 = x1;
-              this.x2 = x1 + 50;
+            this.x1 = x1;
+            this.x2 = x1 + 50;
 
-              this.bottomPointY = y1;
-              this.topPointY = y1 - 25;
+            this.bottomPointY = y1;
+            this.topPointY = y1 - 25;
 
-              this.gapForSwitch1 = x1 + 15;
-              this.gapForSwitch2 = x1 + 35;
+            this.gapForSwitch1 = x1 + 15;
+            this.gapForSwitch2 = x1 + 35;
 
-              this.cricleGap = x1 + 40;
+            this.cricleGap = x1 + 40;
 
-              this.connectionX1 = this.x1 + 30;
-              this.connectionY1 = this.y1;
-              this.connectionX2 = this.x1;
-              this.connectionY2 = this.y1;
+            this.connectionX1 = this.x1 + 30;
+            this.connectionY1 = this.y1;
+            this.connectionX2 = this.x1;
+            this.connectionY2 = this.y1;
       }
 
       draw() {
-              // to paralelle linjer oppover
-              line(this.x1, this.bottomPointY, this.x1, this.topPointY);
-              line(this.x2, this.bottomPointY, this.x2, this.topPointY);
+            // to paralelle linjer oppover
+            line(this.x1, this.bottomPointY, this.x1, this.topPointY);
+            line(this.x2, this.bottomPointY, this.x2, this.topPointY);
 
-              // en honisontal linje øverst
-              line(this.x1, this.topPointY, this.gapForSwitch1, this.topPointY);
-              line(this.cricleGap, this.topPointY, this.x2, this.topPointY);
+            // en honisontal linje øverst
+            line(this.x1, this.topPointY, this.gapForSwitch1, this.topPointY);
+            line(this.cricleGap, this.topPointY, this.x2, this.topPointY);
 
-              // Bryteren
-              circle((this.cricleGap + this.gapForSwitch2) / 2, this.topPointY, 5);
-              line(
-                      this.gapForSwitch2,
-                      this.topPointY + 5,
-                      this.gapForSwitch2,
-                      this.topPointY - 5
-              );
-              strokeWeight(2);
-              line(
-                      this.gapForSwitch1,
-                      this.topPointY,
-                      this.gapForSwitch2,
-                      this.topPointY
-              );
-              strokeWeight(1);
+            // Bryteren
+            circle((this.cricleGap + this.gapForSwitch2) / 2, this.topPointY, 5);
+            line(
+                  this.gapForSwitch2,
+                  this.topPointY + 5,
+                  this.gapForSwitch2,
+                  this.topPointY - 5
+            );
+            strokeWeight(2);
+            line(
+                  this.gapForSwitch1,
+                  this.topPointY,
+                  this.gapForSwitch2,
+                  this.topPointY
+            );
+            strokeWeight(1);
       }
 }
 
@@ -294,58 +306,58 @@ class QBA3 {
        * @param {number} y1 
        */
       constructor(x1, y1) {
-              this.x1 = x1;
-              this.x2 = x1 + 50;
+            this.x1 = x1;
+            this.x2 = x1 + 50;
 
-              this.bottomPointY = y1;
-              this.topPointY = y1 - 25;
+            this.bottomPointY = y1;
+            this.topPointY = y1 - 25;
 
-              this.gapForSwitch1 = x1 + 15;
-              this.gapForSwitch2 = x1 + 35;
+            this.gapForSwitch1 = x1 + 15;
+            this.gapForSwitch2 = x1 + 35;
 
-              this.motorLineTopPoint = this.topPointY - 15;
+            this.motorLineTopPoint = this.topPointY - 15;
 
-              this.connectionX1 = this.x1 + 30;
-              this.connectionY1 = this.y1;
-              this.connectionX2 = this.x1;
-              this.connectionY2 = this.y1;
+            this.connectionX1 = this.x1 + 30;
+            this.connectionY1 = this.y1;
+            this.connectionX2 = this.x1;
+            this.connectionY2 = this.y1;
       }
 
       draw() {
-              // to paralelle linjer oppover
-              line(this.x1, this.bottomPointY, this.x1, this.topPointY);
-              line(this.x2, this.bottomPointY, this.x2, this.topPointY);
+            // to paralelle linjer oppover
+            line(this.x1, this.bottomPointY, this.x1, this.topPointY);
+            line(this.x2, this.bottomPointY, this.x2, this.topPointY);
 
-              // en honisontal linje øverst
-              line(this.x1, this.topPointY, this.gapForSwitch1, this.topPointY);
-              line(this.gapForSwitch2, this.topPointY, this.x2, this.topPointY);
+            // en honisontal linje øverst
+            line(this.x1, this.topPointY, this.gapForSwitch1, this.topPointY);
+            line(this.gapForSwitch2, this.topPointY, this.x2, this.topPointY);
 
-              //motoren
-              line(
-                      this.gapForSwitch1,
-                      this.topPointY,
-                      this.gapForSwitch1,
-                      this.motorLineTopPoint
-              );
-              circle(this.gapForSwitch1, this.motorLineTopPoint + 5, 10);
+            //motoren
+            line(
+                  this.gapForSwitch1,
+                  this.topPointY,
+                  this.gapForSwitch1,
+                  this.motorLineTopPoint
+            );
+            circle(this.gapForSwitch1, this.motorLineTopPoint + 5, 10);
 
-              textSize(8);
-              text("M", this.gapForSwitch1 - 3, this.motorLineTopPoint + 8);
-              // Bryteren
-              line(
-                      this.gapForSwitch2,
-                      this.topPointY + 5,
-                      this.gapForSwitch2,
-                      this.topPointY - 5
-              );
-              strokeWeight(2);
-              line(
-                      this.gapForSwitch1,
-                      this.topPointY,
-                      this.gapForSwitch2,
-                      this.topPointY
-              );
-              strokeWeight(1);
+            textSize(8);
+            text("M", this.gapForSwitch1 - 3, this.motorLineTopPoint + 8);
+            // Bryteren
+            line(
+                  this.gapForSwitch2,
+                  this.topPointY + 5,
+                  this.gapForSwitch2,
+                  this.topPointY - 5
+            );
+            strokeWeight(2);
+            line(
+                  this.gapForSwitch1,
+                  this.topPointY,
+                  this.gapForSwitch2,
+                  this.topPointY
+            );
+            strokeWeight(1);
       }
 }
 
@@ -357,61 +369,61 @@ class QBA4 {
        * @param {number} y1
        */
       constructor(x1, y1) {
-              this.x1 = x1;
-              this.x2 = x1 + 50;
+            this.x1 = x1;
+            this.x2 = x1 + 50;
 
-              this.bottomPointY = y1;
-              this.topPointY = y1 - 25;
+            this.bottomPointY = y1;
+            this.topPointY = y1 - 25;
 
-              this.gapForSwitch1 = x1 + 15;
-              this.gapForSwitch2 = x1 + 35;
+            this.gapForSwitch1 = x1 + 15;
+            this.gapForSwitch2 = x1 + 35;
 
-              this.motorLineTopPoint = this.topPointY - 15;
+            this.motorLineTopPoint = this.topPointY - 15;
 
-              this.cricleGap = x1 + 40;
+            this.cricleGap = x1 + 40;
 
-              this.connectionX1 = this.x1 + 30;
-              this.connectionY1 = this.y1;
-              this.connectionX2 = this.x1;
-              this.connectionY2 = this.y1;
+            this.connectionX1 = this.x1 + 30;
+            this.connectionY1 = this.y1;
+            this.connectionX2 = this.x1;
+            this.connectionY2 = this.y1;
       }
 
       draw() {
-              // to paralelle linjer oppover
-              line(this.x1, this.bottomPointY, this.x1, this.topPointY);
-              line(this.x2, this.bottomPointY, this.x2, this.topPointY);
+            // to paralelle linjer oppover
+            line(this.x1, this.bottomPointY, this.x1, this.topPointY);
+            line(this.x2, this.bottomPointY, this.x2, this.topPointY);
 
-              // en honisontal linje øverst
-              line(this.x1, this.topPointY, this.gapForSwitch1, this.topPointY);
-              line(this.cricleGap, this.topPointY, this.x2, this.topPointY);
+            // en honisontal linje øverst
+            line(this.x1, this.topPointY, this.gapForSwitch1, this.topPointY);
+            line(this.cricleGap, this.topPointY, this.x2, this.topPointY);
 
-              //motoren
-              line(
-                      this.gapForSwitch1,
-                      this.topPointY,
-                      this.gapForSwitch1,
-                      this.motorLineTopPoint
-              );
-              circle(this.gapForSwitch1, this.motorLineTopPoint + 5, 10);
+            //motoren
+            line(
+                  this.gapForSwitch1,
+                  this.topPointY,
+                  this.gapForSwitch1,
+                  this.motorLineTopPoint
+            );
+            circle(this.gapForSwitch1, this.motorLineTopPoint + 5, 10);
 
-              textSize(8);
-              text("M", this.gapForSwitch1 - 3, this.motorLineTopPoint + 8);
+            textSize(8);
+            text("M", this.gapForSwitch1 - 3, this.motorLineTopPoint + 8);
 
-              // Bryteren
-              circle((this.cricleGap + this.gapForSwitch2) / 2, this.topPointY, 5);
-              line(
-                      this.gapForSwitch2,
-                      this.topPointY + 5,
-                      this.gapForSwitch2,
-                      this.topPointY - 5
-              );
-              strokeWeight(2);
-              line(
-                      this.gapForSwitch1,
-                      this.topPointY,
-                      this.gapForSwitch2,
-                      this.topPointY
-              );
-              strokeWeight(1);
+            // Bryteren
+            circle((this.cricleGap + this.gapForSwitch2) / 2, this.topPointY, 5);
+            line(
+                  this.gapForSwitch2,
+                  this.topPointY + 5,
+                  this.gapForSwitch2,
+                  this.topPointY - 5
+            );
+            strokeWeight(2);
+            line(
+                  this.gapForSwitch1,
+                  this.topPointY,
+                  this.gapForSwitch2,
+                  this.topPointY
+            );
+            strokeWeight(1);
       }
 }
