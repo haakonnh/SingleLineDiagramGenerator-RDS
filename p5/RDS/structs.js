@@ -40,6 +40,11 @@ class UAA1 {
             line(this.sectionEndX, this.sectionBottomY, this.line2StartX, this.lineY);
             //line from second section to right
             line(this.line2StartX, this.lineY, this.line2EndX, this.lineY);
+            strokeWeight(1);
+            stroke('black');
+            fill('black');
+            text('UAA1', this.line1EndX - 10, this.sectionBottomY + 12);
+            noFill()
 
 
       }
@@ -127,6 +132,8 @@ class WBC1 {
 
       draw() {
             line(this.x1, this.y1, this.endPointX, this.endPointY);
+
+            text('WBC1', this.x1 + myDistX / 2 - 15, this.y1 +20)
       }
 
       makeComponentState(id) {

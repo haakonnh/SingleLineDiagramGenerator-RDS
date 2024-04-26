@@ -68,6 +68,11 @@ let dataArray = [];
  */
 let components = [];
 
+/**
+ * @type {ComponentState[]}
+ */
+let drawnComponents = [];
+
 /** @type {Context} */
 let context = {}
 
@@ -76,6 +81,14 @@ let context = {}
  * @type {RegExp}
  */
 const pattern = /[A-Za-z]+/;
+
+/**  @type {p5.Image} */
+let banenorPicture;
+/**  @type {p5.Image} */
+let bottomLeftPicture;
+
+let boxesBoolean = true;
+let globcount = 0
 
 /**
  * Fetches the components from the API
@@ -121,7 +134,7 @@ async function fetchAndProcessMaps() {
             const response = loadJSON(apiUrl)
 
             const data = response
-            console.log('Map from API:', data)
+            console.log('PathMap from API:', data)
 
             fetchedMap = data
 
@@ -134,7 +147,7 @@ async function fetchAndProcessMaps() {
             const response = loadJSON(newApiUrl)
 
             const data = response
-            console.log('Map from API:', data)
+            console.log('TypeMap from API:', data)
 
             fetchedTypeMap = data
 
@@ -147,6 +160,8 @@ async function preload() {
       await fetchAndProcessComponents()
       await fetchAndProcessRelationships()
       await fetchAndProcessMaps()
+      banenorPicture = loadImage('BanenorBilde.png')
+      bottomLeftPicture = loadImage('nedrehjørne.png')
 }
 
 /**
@@ -165,7 +180,6 @@ function getLast(path) {
  * @returns {string}
  */
 String.prototype.getWord = function () {
-      console.log("wtf", this)
       if (this.match(pattern) == null) {
             return ""
       }
@@ -212,7 +226,7 @@ function getUpperTechnical(path) {
  */
 function getLowerTechnical(path) {
       let pathArray = path.split('.')
-      if (pathArray.length <= 2) return ""
+      if (pathArray.length <= 4) return ""
       // ternary operator statement which checks that the path consists of atleast two objects, 
       // and that the second to last index is of length exactly 2, e.g. KL or JE.
       return (pathArray[pathArray.length - 2].match(pattern)[0].length == 2) ?
@@ -277,8 +291,6 @@ function populateConnections() {
       return connections
 }
 
-
-
 /**
  * function draws a component based on the type of the component.
  * @param {Component} component1
@@ -287,19 +299,19 @@ function populateConnections() {
  * @param {Connection[]} connections
  */
 function drawingController(component1, component2, drawnComponents, connections) {
-      // if the technical system is KL.JE and the second component is a main line (WBC1), draw a station.
-      //console.log(drawnComponents)
+      // if the second component has already been drawn, return
       if (findComponentState(component2.ID, drawnComponents) != null) {
             return
       }
       const component2Last = getLast(component2.Path)
+
+      // if the technical system is KL.JE and the second component is a main line (WBC1), draw a station.
       if (context.Main.getWord() == "KL" &&
             context.Sub.getWord() == "JE" &&
             component2.Type == "WBC1") {
-            //console.log("Drawing station")
             drawStation(component1, component2, drawnComponents, connections)
       }
-      // enter into the switch function
+      // enter into the switch function or transformer function if the second component is a switch or transformer
       else if (component2Last.getWord() == "QBA") {
             drawSwitch(component1, component2, drawnComponents, connections)
       } else if (component2Last.getWord() == "XBA") {
@@ -309,20 +321,13 @@ function drawingController(component1, component2, drawnComponents, connections)
       // the rest of components are drawn here
       else {
             let keyword = component2Last.getWord()
-            if (component2.Type)
-            if (component2.Type == "") {
-                  //console.log("Component2 type is empty")
-            } else {
+            if (component2.Type != "") {
                   keyword = component2.Type
             }
             let component1State = findComponentState(component1.ID, drawnComponents)
-
-            //console.log("Drawing: ", keyword, component2.ID)
-            const component2Object = new componentToPath[keyword]
-                  (component1State.x, component1State.y);
+            const component2Object = new componentToPath[keyword](component1State.x, component1State.y);
 
             drawnComponents.push(component2Object.makeComponentState(component2.ID));
-
             component2Object.draw()
       }
 
@@ -334,14 +339,12 @@ function drawingController(component1, component2, drawnComponents, connections)
  * @param {Connection[]} connections 
  * @param {ComponentState[]} drawnComponents
  */
-function mainLoop(connections, drawnComponents) {
-      let firstConnection = connections[0]
-      console.log("First connection: ", firstConnection)
-      //connections = [connections[0], connections[1]]
+function mainLoop(connections) {
+      // starting coordinates
+      drawnComponents = []
+      let x = 0
+      let y = 350
 
-      /** @type {number} */
-      let x = 50
-      let y = 300
       // main loop
       for (let connection of connections) {
             const component1 = connection.Component1
@@ -350,13 +353,12 @@ function mainLoop(connections, drawnComponents) {
             context.Main = getUpperTechnical(component2.Path)
             context.Sub = getLowerTechnical(component2.Path)
 
-
             const component1Last = getLast(component1.Path)
 
             // if this is a new branch, so we need to start the entire drawing here
             if (findComponentState(component1.ID, drawnComponents) == null) {
-                  console.log("New branch", component1.ID, component1.Path, component1Last.getWord())
-                  // first comp should always be a line
+                  //console.log("New branch", component1.ID, component1.Path, component1Last.getWord())
+                  // first component should always be a line
                   const component1Object = new WBC1(x, y)
                   drawnComponents.push(component1Object.makeComponentState(component1.ID))
                   component1Object.draw()
@@ -367,43 +369,121 @@ function mainLoop(connections, drawnComponents) {
             }
       }
 }
+/**
+ * 
+ * @param {ComponentState[]} drawnComponents 
+ */
+function drawBoxes(drawnComponents) {
+      let firstPath = idToPath.get(drawnComponents[0].id.toString())
+      let currentTechnicalSystem = getUpperTechnical(firstPath)
+     
+      let firstX = 10
+
+      drawnComponents.forEach(component => {
+            let path = idToPath.get(component.id.toString())
+            let technical = getUpperTechnical(path)
+            
+
+            if (technical == currentTechnicalSystem) {
+                  return
+            }
+            strokeWeight(2)
+            stroke('red')
+            noFill()
+            rect(firstX, 180, component.x - firstX - 75, 270)
+
+            strokeWeight(1)
+            text(currentTechnicalSystem, firstX + 10, 205)
+            firstX = component.x - 70
+            currentTechnicalSystem = technical
+            //lastComponent = component
+            stroke('black')
 
 
+      })
+
+      
+      let lowerComponents = drawnComponents.filter(component => getLowerTechnical(idToPath.get(component.id.toString())) != "")
+      lowerComponents = lowerComponents.filter(component => component.type.getWord() != "QBA")
+      let currentLowerTechnicalSystem = ""
+      let firstLowerX = 0
+
+      /** @type {ComponentState} */
+      let lastComponent = {x: 90, y: 0, id: 0} 
+      let lastID = lowerComponents[lowerComponents.length - 1].id
+      lowerComponents.forEach(component => {  
+            
+
+            let path = idToPath.get(component.id.toString())
+            let lowerTechnical = getLowerTechnical(path)
+            if (lowerTechnical == currentLowerTechnicalSystem) {
+                  lastComponent = component
+            } else {
+                  if (currentLowerTechnicalSystem == "") {
+                        firstLowerX = component.x - 60
+                        currentLowerTechnicalSystem = lowerTechnical
+                  }
+                  else {
+                        strokeWeight(1)
+                        stroke('blue')
+                        noFill()
+                        if (lastComponent.type.getWord() == "UAA") {
+                              rect(firstLowerX - 5, 215, lastComponent.x - firstLowerX  + 10, 185)
+                        } else {
+                              rect(firstLowerX, 215, lastComponent.x - firstLowerX  - 10 , 185)
+                        }
+                        if (component.id == lastID) {
+                              console.log("IM HERE")
+                              rect(lastComponent.x - 5, 215, component.x - lastComponent.x + 10, 185)
+                              stroke('black')
+                              text(lowerTechnical ,lastComponent.x , 235)
+                        }
+                       
+
+                        stroke('black')
+                        strokeWeight(1)
+                        text(currentLowerTechnicalSystem, firstLowerX + 5, 235)
+                        firstLowerX = component.x - 50
+                        currentLowerTechnicalSystem = lowerTechnical
+
+                        
+
+                  }
+                  lastComponent = component
+            }
+      })
+      //globcount++
+}
+/** @type {HTMLCanvasElement} */
+let cnv;
 function setup() {
-      createCanvas(2000, 725);
+      cnv = createCanvas(2000, 725);
       background(255); // white background
 
+      connections = populateConnections()
+      banenorPicture.resize(400, 0)
+      bottomLeftPicture.resize(0, 200)
 
-      console.log("techs", getUpperTechnical("RDS.KL1.JE1.WBC1"), getLowerTechnical("RDS.KL1.JE1.WBC1"))
 
-      // connection array
-      const connections = populateConnections();
+      let button = createButton('Toggle Technical System Boxes')
+      button.position(850, 75)
+      button.mousePressed(() => {
+            boxesBoolean = !boxesBoolean
+      })
 
-      console.log("Tuned connections: ", connections)
-
-      /**
-       * @type {ComponentState[]}
-       */
-      let drawnComponents = []; // components that have been drawn
-
-      //drawnComponents.push(new ComponentState(50, 150, 1, "QBA1")) // example of a drawn component
-
-      mainLoop(connections, drawnComponents)
-
-      /* drawStation({
-                  ID: 1,
-                  Path: "RDS.J1.QBA1",
-                  Type: "QBA1"
-            }, {
-                  ID: 2,
-                  Path: "RDS.J1.WBC2",
-                  Type: "WBC1"
-            },
-            drawnComponents, connections) */
-
-      console.log("Drawn components: ", drawnComponents)
+      frameRate(1)
 }
 
 function draw() {
-      noLoop()
+      background(255)
+
+      image(banenorPicture, 0, 0)
+
+      image(bottomLeftPicture, 0, 525)
+
+      mainLoop(connections, drawnComponents)
+
+      if (boxesBoolean) {
+            drawBoxes(drawnComponents)
+      }
 }

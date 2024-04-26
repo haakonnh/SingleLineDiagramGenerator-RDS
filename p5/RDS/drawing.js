@@ -31,7 +31,7 @@ function getParallellLines(node, connections) {
  * @param {Component[]} stationLines 
  */
 function drawTripleTrackStation(lastComponentCoords, length, drawnComponents, stationLines) {
-      const x1 = lastComponentCoords.x;
+      const x1 = lastComponentCoords.x + 10;
       const y1 = lastComponentCoords.y;
 
       const x2 = x1 + length;
@@ -49,7 +49,7 @@ function drawTripleTrackStation(lastComponentCoords, length, drawnComponents, st
       // create three new components for the middle, upper and lower connections and add them to the drawnComponents array
       const connUpperX = x1 + length / 2;
       const connUpperY = y3;
-      console.log("Station 3 lines: ", stationLines)
+
       upperComponent = new ComponentState(connUpperX, connUpperY, stationLines[0].ID, "WBC")
       drawnComponents.push(upperComponent)
 
@@ -59,13 +59,13 @@ function drawTripleTrackStation(lastComponentCoords, length, drawnComponents, st
       drawnComponents.push(lowerComponent)
 
       // main line
-      const connMiddleX = x1 + length;
+      const connMiddleX = x1 + length + 10;
       const connMiddleY = y1;
       middleComponent = new ComponentState(connMiddleX, connMiddleY, stationLines[2].ID, "WBC")
       drawnComponents.push(middleComponent)
 
       // straight middle line
-      line(x1, y1, x2, y2);
+      line(x1 - 10, y1, x2 + 10, y2);
 
       // upper line
       line(x3, y1, x5, y3);
@@ -76,6 +76,12 @@ function drawTripleTrackStation(lastComponentCoords, length, drawnComponents, st
       line(x3, y1, x5, y4);
       line(x4, y1, x6, y4);
       line(x5, y4, x6, y4);
+
+      fill('black');
+      text(getLast(stationLines[0].Path), connUpperX - 15, connUpperY + 14);
+      text(getLast(stationLines[2].Path), connMiddleX - length / 2 - 25, connMiddleY + 14);
+      text(getLast(stationLines[1].Path), connLowerX - 15, connLowerY + 14);
+      noFill()
 }
 
 /**
@@ -87,7 +93,7 @@ function drawTripleTrackStation(lastComponentCoords, length, drawnComponents, st
  * @param {Component[]} stationLines
  */
 function drawDoubleTrackStation(lastComponentCoords, length, drawnComponents, stationLines) {
-      const x1 = lastComponentCoords.x;
+      const x1 = lastComponentCoords.x + 10;
       const y1 = lastComponentCoords.y;
 
       const x2 = x1 + length;
@@ -103,11 +109,11 @@ function drawDoubleTrackStation(lastComponentCoords, length, drawnComponents, st
       // create two new components for the two lines and add them to the drawnComponents array
       const connUpperX = x1 + length / 2;
       const connUpperY = y3;
-      console.log("Station lines: ", stationLines)
+
       upperComponent = new ComponentState(connUpperX, connUpperY, stationLines[0].ID, "WBC")
       drawnComponents.push(upperComponent)
 
-      const connLowerX = x1 + length;
+      const connLowerX = x1 + length + 10;
       const connLowerY = y1;
       lowerComponent = new ComponentState(connLowerX, connLowerY, stationLines[1].ID, "WBC")
       drawnComponents.push(lowerComponent)
@@ -115,10 +121,15 @@ function drawDoubleTrackStation(lastComponentCoords, length, drawnComponents, st
       // TODO FIX THE INDEX THING HER
 
       // middle line
-      line(x1, y1, x2, y2);
+      line(x1 - 10, y1, x2 + 10, y2);
       line(x3, y1, x5, y3);
       line(x4, y1, x6, y3);
       line(x5, y3, x6, y3);
+
+      fill('black');
+      text(getLast(stationLines[0].Path), connUpperX - 15, connUpperY + 14);
+      text(getLast(stationLines[1].Path), connLowerX - length / 2 - 25, connLowerY + 14);
+      noFill()
 }
 
 
@@ -146,7 +157,6 @@ function drawStation(fromComponent, mainLine, drawnComponents, connections) {
       const fromComponentState = findComponentState(fromComponent.ID, drawnComponents)
 
       const length = 100
-      console.log("Stationliensss: ", neighbours)
 
       /** @type {Coordinates} */
       let coords = {
@@ -200,6 +210,9 @@ function drawSwitchForSection(lastComponentCoords, length, drawnComponents, swit
       circle((cricleGap + gapForSwitch2) / 2, topPointY, 5);
 
       stroke('black');
+      fill('black');
+      text(getLast(switchComponent.Path), cricleGap - 20, topPointY - 10);
+      noFill();
 }
 
 /**
@@ -226,7 +239,11 @@ function drawSwitchForTransformer(lastComponentCoords, length, drawnComponents, 
       strokeWeight(2);
       line(x1, startOfSwitch, x1, y2);
       line(x1 + switchWidth, y2, x1 - switchWidth, y2);
+
       strokeWeight(1);
+      fill('black');
+      stroke('black')
+      text(getLast(switchComponent.Path), x1 + 8, y2 + 7.5);
 }
 
 /**
@@ -254,6 +271,10 @@ function drawSwitchForTransformerOnMainLine(lastComponentCoords, length, drawnCo
       line(x1, startOfSwitch, x1, y2);
       line(x1 + switchWidth, y2, x1 - switchWidth, y2);
       strokeWeight(1);
+      fill('black');
+      stroke('black')
+      text(getLast(switchComponent.Path), x1 + 8, y2 + 7.5);
+      noFill()
 }
 
 /**
@@ -306,11 +327,23 @@ function drawTransformer(fromComponent, transformerComponent, drawnComponents, c
             line(fromComponentState.x - myDistX / 2, yBottomCircleMid + 6, fromComponentState.x - myDistX / 2, fromComponentState.y);
             circle(fromComponentState.x - myDistX / 2, yBottomCircleMid, d);
             circle(fromComponentState.x - myDistX / 2, yTopCircleMid, d);
+            stroke('black')
+            fill('black')
+            strokeWeight(1)
+            text(getLast(transformerComponent.Path), fromComponentState.x - myDistX / 2 + 10 ,yTopCircleMid + d - 3)
+            noFill()
+            stroke
+            
       } else {
             line(fromComponentState.x, yBottomCircleMid + 6, fromComponentState.x, fromComponentState.y);
             circle(fromComponentState.x, yBottomCircleMid, d);
             circle(fromComponentState.x, yTopCircleMid, d);
+            stroke('black')
+            fill('black')
+            strokeWeight(1)
+            text(getLast(transformerComponent.Path), fromComponentState.x + 10 ,yTopCircleMid + d - 3)
       }
+
       strokeWeight(1)
 
 }
