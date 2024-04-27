@@ -325,6 +325,7 @@ function drawingController(component1, component2, drawnComponents, connections)
                   keyword = component2.Type
             }
             let component1State = findComponentState(component1.ID, drawnComponents)
+            console.log(keyword, component2.ID)
             const component2Object = new componentToPath[keyword](component1State.x, component1State.y);
 
             drawnComponents.push(component2Object.makeComponentState(component2.ID));
@@ -452,12 +453,14 @@ function drawBoxes(drawnComponents) {
                   lastComponent = component
             }
       })
-      //globcount++
 }
+
 /** @type {HTMLCanvasElement} */
 let cnv;
+
 function setup() {
       cnv = createCanvas(2000, 725);
+      stroke(1)
       background(255); // white background
 
       connections = populateConnections()
@@ -471,7 +474,7 @@ function setup() {
             boxesBoolean = !boxesBoolean
       })
 
-      frameRate(1)
+      frameRate(500)
 }
 
 function draw() {
@@ -486,4 +489,5 @@ function draw() {
       if (boxesBoolean) {
             drawBoxes(drawnComponents)
       }
+      saveCanvas()
 }

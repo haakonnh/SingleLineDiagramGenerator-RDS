@@ -92,7 +92,7 @@ function drawTripleTrackStation(lastComponentCoords, length, drawnComponents, st
  * @param {ComponentState[]} drawnComponents
  * @param {Component[]} stationLines
  */
-function drawDoubleTrackStation(lastComponentCoords, length, drawnComponents, stationLines) {
+function drawDoubleTrackStation(lastComponentCoords, length, drawnComponents, stationLines, stationType) {
       const x1 = lastComponentCoords.x + 10;
       const y1 = lastComponentCoords.y;
 
@@ -110,25 +110,38 @@ function drawDoubleTrackStation(lastComponentCoords, length, drawnComponents, st
       const connUpperX = x1 + length / 2;
       const connUpperY = y3;
 
-      upperComponent = new ComponentState(connUpperX, connUpperY, stationLines[0].ID, "WBC")
-      drawnComponents.push(upperComponent)
+      if (stationType == "KL1") {
+            upperComponent = new ComponentState(connUpperX, connUpperY, stationLines[0].ID, "WBC")
+            drawnComponents.push(upperComponent)
+            text(getLast(stationLines[0].Path), connUpperX - 15, connUpperY + 14);
 
-      const connLowerX = x1 + length + 10;
-      const connLowerY = y1;
-      lowerComponent = new ComponentState(connLowerX, connLowerY, stationLines[1].ID, "WBC")
+            line(x3, y1, x5, y3);
+            line(x4, y1, x6, y3);
+            line(x5, y3, x6, y3);
+      } else if (stationType == "KL2") {
+            let lowerY = y1 + 20
+            lowerComponent = new ComponentState(connUpperX, lowerY, stationLines[0].ID, "WBC")
+            drawnComponents.push(lowerComponent)
+            text(getLast(stationLines[0].Path), connUpperX - 15, connUpperY + 14);
+            line(x3, y1, x5, lowerY);
+            line(x4, y1, x6, lowerY);
+            line(x5, lowerY, x6, lowerY);
+      }
+
+      const connMiddleX = x1 + length + 10;
+      const connMiddleY = y1;
+      lowerComponent = new ComponentState(connMiddleX, connMiddleY, stationLines[1].ID, "WBC")
       drawnComponents.push(lowerComponent)
 
       // TODO FIX THE INDEX THING HER
 
       // middle line
       line(x1 - 10, y1, x2 + 10, y2);
-      line(x3, y1, x5, y3);
-      line(x4, y1, x6, y3);
-      line(x5, y3, x6, y3);
+
+
 
       fill('black');
-      text(getLast(stationLines[0].Path), connUpperX - 15, connUpperY + 14);
-      text(getLast(stationLines[1].Path), connLowerX - length / 2 - 25, connLowerY + 14);
+      text(getLast(stationLines[1].Path), connMiddleX - length / 2 - 25, connMiddleY + 14);
       noFill()
 }
 
@@ -165,7 +178,21 @@ function drawStation(fromComponent, mainLine, drawnComponents, connections) {
       }
 
       if (neighbours.length == 2) { // two tracks
-            drawDoubleTrackStation(coords, length, drawnComponents, neighbours)
+            const splitArray = neighbours[0].Path.split('.')
+            let higherTechnicalPath = ""
+            for (let i = 0; i < splitArray.length - 2; i++) {
+                  higherTechnicalPath += splitArray[i] + "."
+            }
+            /** @type {Component} */
+            let higherTechnicalObject;
+            higherTechnicalPath = higherTechnicalPath.substring(0, higherTechnicalPath.length - 1)
+            Object.entries(fetchedData).forEach(([key, value]) => {
+                  if (value.Path == higherTechnicalPath) {
+                        higherTechnicalObject = value
+                  }
+            });
+
+            drawDoubleTrackStation(coords, length, drawnComponents, neighbours, higherTechnicalObject.Type)
       }
 
       if (neighbours.length == 3) { // three tracks
@@ -296,8 +323,7 @@ function drawSwitch(fromComponent, switchComponent, drawnComponents, connections
             drawSwitchForSection(coords, 100, drawnComponents, switchComponent)
       } else if (fromComponent.Type == "WBC1") {
             drawSwitchForTransformerOnMainLine(coords, 100, drawnComponents, switchComponent)
-      }
-      else if (getLast(fromComponent.Path).getWord() == "WBC" || getLast(fromComponent.Path).getWord() == "XBA") {
+      } else if (getLast(fromComponent.Path).getWord() == "WBC" || getLast(fromComponent.Path).getWord() == "XBA") {
             drawSwitchForTransformer(coords, 100, drawnComponents, switchComponent)
       }
 }
@@ -330,10 +356,10 @@ function drawTransformer(fromComponent, transformerComponent, drawnComponents, c
             stroke('black')
             fill('black')
             strokeWeight(1)
-            text(getLast(transformerComponent.Path), fromComponentState.x - myDistX / 2 + 10 ,yTopCircleMid + d - 3)
+            text(getLast(transformerComponent.Path), fromComponentState.x - myDistX / 2 + 10, yTopCircleMid + d - 3)
             noFill()
             stroke
-            
+
       } else {
             line(fromComponentState.x, yBottomCircleMid + 6, fromComponentState.x, fromComponentState.y);
             circle(fromComponentState.x, yBottomCircleMid, d);
@@ -341,7 +367,7 @@ function drawTransformer(fromComponent, transformerComponent, drawnComponents, c
             stroke('black')
             fill('black')
             strokeWeight(1)
-            text(getLast(transformerComponent.Path), fromComponentState.x + 10 ,yTopCircleMid + d - 3)
+            text(getLast(transformerComponent.Path), fromComponentState.x + 10, yTopCircleMid + d - 3)
       }
 
       strokeWeight(1)
