@@ -219,6 +219,8 @@ function drawSwitchForSection(lastComponentCoords, length, drawnComponents, swit
       const gapForSwitch1 = x1 - 15;
       const gapForSwitch2 = x2 + 35;
 
+      const motorLineTopPoint = topPointY - 15;
+
       const cricleGap = x1 - 20;
 
       line(x1, bottomPointY, x1, topPointY);
@@ -228,18 +230,54 @@ function drawSwitchForSection(lastComponentCoords, length, drawnComponents, swit
       line(cricleGap, topPointY, x2, topPointY);
 
 
-
       strokeWeight(2);
       line(gapForSwitch2, topPointY + 5, gapForSwitch2, topPointY - 5);
       line(gapForSwitch1 - 20, topPointY, gapForSwitch2, topPointY);
       strokeWeight(1);
-      fill('white');
-      circle((cricleGap + gapForSwitch2) / 2, topPointY, 5);
+      if(switchComponent.Type == "QBA2") {
+        fill('white');
+        circle((cricleGap + gapForSwitch2) / 2, topPointY, 5);
+      }
+      else if(switchComponent.Type == "QBA3") {
+        fill('white');
+        line(
+            gapForSwitch1 - 5,
+            topPointY,
+            gapForSwitch1 - 5,
+            motorLineTopPoint
+      );
+      circle(gapForSwitch1 - 5, motorLineTopPoint -5, 10);
+      
+      fill('black');
+      textSize(8);
+      text("M", gapForSwitch1 - 8, motorLineTopPoint - 3);
+
+      }
+      else if(switchComponent.Type == "QBA4") {
+        fill('white');
+        circle((cricleGap + gapForSwitch2) / 2, topPointY, 5);
+
+        
+        line(
+            gapForSwitch1 - 5,
+            topPointY,
+            gapForSwitch1 - 5,
+            motorLineTopPoint
+      );
+      circle(gapForSwitch1 - 5, motorLineTopPoint -5, 10);
+      fill('black');
+      textSize(8);
+      text("M", gapForSwitch1 - 8, motorLineTopPoint - 3);
+      }
+
 
       stroke('black');
       fill('black');
       text(getLast(switchComponent.Path), cricleGap - 20, topPointY - 10);
       noFill();
+
+
+
 }
 
 /**

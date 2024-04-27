@@ -474,7 +474,7 @@ function setup() {
             boxesBoolean = !boxesBoolean
       })
 
-      frameRate(500)
+      frameRate(1)
 }
 
 function draw() {
@@ -489,5 +489,4 @@ function draw() {
       if (boxesBoolean) {
             drawBoxes(drawnComponents)
       }
-      saveCanvas()
 }
