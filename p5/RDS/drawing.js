@@ -219,7 +219,7 @@ function drawSwitchForSection(lastComponentCoords, length, drawnComponents, swit
       const gapForSwitch1 = x1 - 15;
       const gapForSwitch2 = x2 + 35;
 
-      const motorLineTopPoint = topPointY - 15;
+      const motorLineTopPoint = topPointY - 25;
 
       const cricleGap = x1 - 20;
 
@@ -269,12 +269,14 @@ function drawSwitchForSection(lastComponentCoords, length, drawnComponents, swit
       textSize(8);
       text("M", gapForSwitch1 - 8, motorLineTopPoint - 3);
       }
+      textSize(12)
 
 
       stroke('black');
       fill('black');
       text(getLast(switchComponent.Path), cricleGap - 20, topPointY - 10);
       noFill();
+      
 
 
 
