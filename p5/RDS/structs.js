@@ -159,6 +159,24 @@ class FCA{
   }
 }
 
+class XBA{ 
+    constructor(x, y) {
+            this.x = x;
+            this.y = y;
+    }
+
+    draw() {
+            line (this.x , this.y, this.x, this.y - 5);
+            triangle(this.x - 2, this.y-5 , this.x +2, this.y-5 , this.x, this.y -10);
+            text('XBA1', this.x + 9, this.y)
+    }
+
+    makeComponentState(id) {
+            return new ComponentState(this.x, this.y, id, "XBA");
+    }
+}
+
+
 
 /** Trafo */
 class TAA {
@@ -186,9 +204,55 @@ class TAA {
       }
 
       makeComponentState(id) {
-            return new ComponentState(this.x, this.y, id, "TAA");
+            return new ComponentState(this.x, this.yTopCircleMid - this.d/2, id, "TAA");
       }
 }
+
+class QAB {
+    constructor(x1, y1) {
+        this.x1 = x1;
+        this.x2 = x1 + 50;
+
+        this.bottomPointY = y1;
+        this.topPointY = y1 - 25;
+
+        this.gapForSwitch1 = x1 + 15;
+        this.gapForSwitch2 = x1 + 35;
+
+        this.connectionX1 = this.x1 + 30;
+        this.connectionY1 = this.y1;
+        this.connectionX2 = this.x1;
+        this.connectionY2 = this.y1;
+  }
+
+  draw() {
+        // to paralelle linjer oppover
+        line(this.x1, this.bottomPointY, this.x1, this.topPointY);
+        line(this.x2, this.bottomPointY, this.x2, this.topPointY);
+
+        // en honisontal linje øverst
+        line(this.x1, this.topPointY, this.gapForSwitch1, this.topPointY);
+        line(this.gapForSwitch2, this.topPointY, this.x2, this.topPointY);
+
+        // Bryteren
+        line(
+              this.gapForSwitch2,
+              this.topPointY + 5,
+              this.gapForSwitch2,
+              this.topPointY - 5
+        );
+        strokeWeight(2);
+        line(
+              this.gapForSwitch1,
+              this.topPointY,
+              this.gapForSwitch2,
+              this.topPointY
+        );
+        strokeWeight(1);
+  }
+}
+
+
 
 
 const componentToPath = {
@@ -199,9 +263,12 @@ const componentToPath = {
        QBA3: QBA3, */
       FCA: FCA,
       TAA: TAA,
-      WBC1: WBC1
+      XBA: XBA,
+      WBC1: WBC1,
+      QAB: QAB
       // TODO: MAKE THESE CLASSES
 };
+
 
 /**
  * a class for storing the state of a component
