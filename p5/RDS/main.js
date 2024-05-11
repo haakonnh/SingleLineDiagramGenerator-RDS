@@ -91,7 +91,7 @@ let boxesBoolean = true;
 let globcount = 0
 
 let w = 2200
-let h = 2200 * 0.5
+let h = 2200 * 0.4
 
 /**
  * Fetches the components from the API
@@ -353,7 +353,7 @@ function drawingController(component1, component2, drawnComponents, connections)
 }
 
 let x = 25
-let y = 500
+let y = h / 2
 
 /**
  * This is the main loop of the program which loops through all connections and draws the
@@ -480,8 +480,9 @@ function drawBoxes(drawnComponents) {
                               rect(firstLowerX, y - 135, lastComponent.x - firstLowerX - 10, 185)
                         }
                         if (component.id == lastID) {
+                              stroke('black')   
                               rect(lastComponent.x - 5, y - 135, component.x - lastComponent.x + 10, 185)
-
+                              
                               text(lowerTechnical, lastComponent.x, y - 115)
                               return
                         }
