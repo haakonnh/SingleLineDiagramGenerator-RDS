@@ -90,6 +90,9 @@ let bottomLeftPicture;
 let boxesBoolean = true;
 let globcount = 0
 
+let w = 2200
+let h = 2200 * 0.5
+
 /**
  * Fetches the components from the API
  */
@@ -189,7 +192,14 @@ String.prototype.getWord = function () {
 function getWord(path) {
       return path.match(pattern)[0]
 }
-
+/**
+ * 
+ * @param {string} path 
+ * @returns {string}
+ */
+function getMainSystem(path) {
+      return path.split('.')[1]
+}
 
 /**
  * Takes a full path and returns the upper technical system label.
@@ -288,6 +298,10 @@ function populateConnections() {
             })
       });
 
+      for (let i = 0; i < 0; i++) {
+            connections.pop()
+      }
+
       return connections
 }
 
@@ -324,8 +338,9 @@ function drawingController(component1, component2, drawnComponents, connections)
             if (component2.Type != "") {
                   keyword = component2.Type
             }
+
             let component1State = findComponentState(component1.ID, drawnComponents)
-            console.log(keyword, component2.ID)
+            console.log(keyword)
             const component2Object = new componentToPath[keyword](component1State.x, component1State.y);
 
             drawnComponents.push(component2Object.makeComponentState(component2.ID));
@@ -333,6 +348,9 @@ function drawingController(component1, component2, drawnComponents, connections)
       }
 
 }
+
+let x = 25
+let y = 500
 
 /**
  * This is the main loop of the program which loops through all connections and draws the
@@ -343,8 +361,7 @@ function drawingController(component1, component2, drawnComponents, connections)
 function mainLoop(connections) {
       // starting coordinates
       drawnComponents = []
-      let x = 0
-      let y = 350
+
 
       // main loop
       for (let connection of connections) {
@@ -357,6 +374,7 @@ function mainLoop(connections) {
             const component1Last = getLast(component1.Path)
 
             // if this is a new branch, so we need to start the entire drawing here
+
             if (findComponentState(component1.ID, drawnComponents) == null) {
                   //console.log("New branch", component1.ID, component1.Path, component1Last.getWord())
                   // first component should always be a line
@@ -366,6 +384,7 @@ function mainLoop(connections) {
 
                   drawingController(component1, component2, drawnComponents, connections)
             } else {
+                  console.log(connection)
                   drawingController(component1, component2, drawnComponents, connections)
             }
       }
@@ -377,43 +396,66 @@ function mainLoop(connections) {
 function drawBoxes(drawnComponents) {
       let firstPath = idToPath.get(drawnComponents[0].id.toString())
       let currentTechnicalSystem = getUpperTechnical(firstPath)
-     
-      let firstX = 10
+      let currentMainSystem = getMainSystem(firstPath)
+      let firstMainX = 25
+      let firstX = 40
 
+      let lastUpperID = drawnComponents[drawnComponents.length - 1].id
       drawnComponents.forEach(component => {
             let path = idToPath.get(component.id.toString())
             let technical = getUpperTechnical(path)
-            
+            let main = getMainSystem(path)
+            if (component.id == lastUpperID || main != currentMainSystem) {
+                  stroke('purple')
+                  rect(firstMainX, y - 200, component.x - firstMainX, 330)
+                  text("=" + main, firstMainX + 10, y - 180)
+            }
 
             if (technical == currentTechnicalSystem) {
                   return
             }
+
             strokeWeight(2)
             stroke('red')
             noFill()
-            rect(firstX, 180, component.x - firstX - 75, 270)
+            rect(firstX, y - 170, component.x - firstX - 75, 270)
 
             strokeWeight(1)
-            text(currentTechnicalSystem, firstX + 10, 205)
-            firstX = component.x - 70
-            currentTechnicalSystem = technical
-            //lastComponent = component
-            stroke('black')
+            text(currentTechnicalSystem, firstX + 10, y - 145)
 
+            firstX = component.x - 70
+
+            if (component.id == lastUpperID) {
+                  stroke('red')
+                  strokeWeight(2)
+                  console.log("IM HERE")
+                  rect(firstX, y - 170, component.x - firstX - 15, 270)
+                  strokeWeight(1)
+                  text(technical, firstX + 10, y - 145)
+                  return
+            }
+            currentTechnicalSystem = technical
+
+
+            stroke('black')
 
       })
 
-      
+
       let lowerComponents = drawnComponents.filter(component => getLowerTechnical(idToPath.get(component.id.toString())) != "")
       lowerComponents = lowerComponents.filter(component => component.type.getWord() != "QBA")
       let currentLowerTechnicalSystem = ""
       let firstLowerX = 0
 
       /** @type {ComponentState} */
-      let lastComponent = {x: 90, y: 0, id: 0} 
+      let lastComponent = {
+            x: 90,
+            y: 0,
+            id: 0
+      }
       let lastID = lowerComponents[lowerComponents.length - 1].id
-      lowerComponents.forEach(component => {  
-            
+      lowerComponents.forEach(component => {
+
 
             let path = idToPath.get(component.id.toString())
             let lowerTechnical = getLowerTechnical(path)
@@ -423,32 +465,28 @@ function drawBoxes(drawnComponents) {
                   if (currentLowerTechnicalSystem == "") {
                         firstLowerX = component.x - 60
                         currentLowerTechnicalSystem = lowerTechnical
-                  }
-                  else {
+                  } else {
                         strokeWeight(1)
                         stroke('blue')
                         noFill()
                         if (lastComponent.type.getWord() == "UAA") {
-                              rect(firstLowerX - 5, 215, lastComponent.x - firstLowerX  + 10, 185)
+                              rect(firstLowerX - 5, y - 135, lastComponent.x - firstLowerX + 10, 185)
                         } else {
-                              rect(firstLowerX, 215, lastComponent.x - firstLowerX  - 10 , 185)
+                              rect(firstLowerX, y - 135, lastComponent.x - firstLowerX - 10, 185)
                         }
                         if (component.id == lastID) {
-                              console.log("IM HERE")
-                              rect(lastComponent.x - 5, 215, component.x - lastComponent.x + 10, 185)
+                              rect(lastComponent.x - 5, y - 135, component.x - lastComponent.x + 10, 185)
                               stroke('black')
-                              text(lowerTechnical ,lastComponent.x , 235)
+                              text(lowerTechnical, lastComponent.x, y - 115)
+                              return
                         }
-                       
+
 
                         stroke('black')
                         strokeWeight(1)
-                        text(currentLowerTechnicalSystem, firstLowerX + 5, 235)
+                        text(currentLowerTechnicalSystem, firstLowerX + 5, y - 115)
                         firstLowerX = component.x - 50
                         currentLowerTechnicalSystem = lowerTechnical
-
-                        
-
                   }
                   lastComponent = component
             }
@@ -459,7 +497,8 @@ function drawBoxes(drawnComponents) {
 let cnv;
 
 function setup() {
-      cnv = createCanvas(2000, 725);
+
+      cnv = createCanvas(w, h);
       stroke(1)
       background(255); // white background
 
@@ -474,7 +513,7 @@ function setup() {
             boxesBoolean = !boxesBoolean
       })
 
-      frameRate(1)
+      frameRate(60)
 }
 
 function draw() {
@@ -482,11 +521,13 @@ function draw() {
 
       image(banenorPicture, 0, 0)
 
-      image(bottomLeftPicture, 0, 525)
+      image(bottomLeftPicture, 2.5, h - bottomLeftPicture.height - 2.5)
 
       mainLoop(connections, drawnComponents)
 
       if (boxesBoolean) {
             drawBoxes(drawnComponents)
       }
+
+      console.log(drawnComponents)
 }

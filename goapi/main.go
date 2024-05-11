@@ -20,7 +20,7 @@ type Node struct {
 	Type string
 }
 
-// The structure of the returned relation json object
+// The structure of the returned relation JSON object
 type Relation struct {
 	Node1 int64
 	Node2 int64
@@ -259,7 +259,7 @@ func queryHandler(w http.ResponseWriter, r *http.Request) {
 	rows.Close()
 
 	// Query the to node
-	selectQuery = fmt.Sprintf("SELECT path FROM tree3 WHERE path = '%s'", to)
+	selectQuery = fmt.Sprintf("SELECT path FROM alternativ4 WHERE path = '%s'", to)
 	rows, err = conn.Query(context.Background(), selectQuery)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
@@ -312,7 +312,7 @@ func queryHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Construct update query, using aliases to update the path of the source nodes
-	queryString := fmt.Sprintf("UPDATE tree3 AS t SET\n path = t2.path\n FROM (VALUES %s) AS t2(id, path)\n WHERE t2.id = t.id", values)
+	queryString := fmt.Sprintf("UPDATE alternativ4 AS t SET\n path = t2.path\n FROM (VALUES %s) AS t2(id, path)\n WHERE t2.id = t.id", values)
 	_, err = conn.Exec(context.Background(), queryString)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "exec failed: %v\n", err)

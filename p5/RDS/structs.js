@@ -1,5 +1,5 @@
 
-let canvasHeight = 725;
+let canvasHeight = 1425 * 0.70707;
 let canvasWidth = 1425;
 let myDistX = 100
 let myDistY = canvasHeight / 20;
@@ -104,6 +104,7 @@ class UAA2 {
             );
             //line from second section to right
             line(this.line2StartX, this.lineY, this.line2EndX, this.lineY);
+            text('UAA1', this.line1EndX - 10, this.sectionBottomY + 12);      
       }
 
       /**
