@@ -340,6 +340,7 @@ function drawingController(component1, component2, drawnComponents, connections)
             }
 
             let component1State = findComponentState(component1.ID, drawnComponents)
+            console.log(keyword)
             const component2Object = new componentToPath[keyword](component1State.x, component1State.y);
 
             drawnComponents.push(component2Object.makeComponentState(component2.ID));
