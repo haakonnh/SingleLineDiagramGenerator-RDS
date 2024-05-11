@@ -141,9 +141,26 @@ class WBC1 {
       }
 }
 
+class FCA{
+    constructor(x1, y1){
+        this.x1 = x1;
+        this.y1 = y1;
+        this.endPointY = y1 + 10;
+    }
+
+    draw(){
+        line(this.x1, this.y1, this.x1, this.endPointY);
+        rect(this.x1 +2, this.y1, this.x1 - 2, this.endPointY);
+    }
+
+    makeComponentState(id) {
+        return new ComponentState(this.x, this.y, id, "FCA");
+  }
+}
+
 
 /** Trafo */
-class XBA {
+class TAA {
       /**
        * 
        * @param {number} x 
@@ -178,7 +195,7 @@ const componentToPath = {
       /*  QBA1: QBA1,
        QBA2: QBA2,
        QBA3: QBA3, */
-      XBA: XBA,
+      TAA: TAA,
       WBC1: WBC1
       // TODO: MAKE THESE CLASSES
 };
