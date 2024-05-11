@@ -318,6 +318,7 @@ function drawingController(component1, component2, drawnComponents, connections)
             return
       }
       const component2Last = getLast(component2.Path)
+      
 
       // if the technical system is KL.JE and the second component is a main line (WBC1), draw a station.
       if (context.Main.getWord() == "KL" &&
