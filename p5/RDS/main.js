@@ -398,7 +398,7 @@ function mainLoop(connections) {
  */
 function drawBoxes(drawnComponents) {
       stroke('black')
-      let newDrawnComponents = drawnComponents.filter(component => (component.type != "FCA" && component.type != "TAA")) 
+      let newDrawnComponents = drawnComponents.filter(component => (component.type != "FCA" && component.type != "TAA" && component.type != "XBA")) 
       let firstPath = idToPath.get(newDrawnComponents[0].id.toString())
       let currentTechnicalSystem = getUpperTechnical(firstPath)
       let currentMainSystem = getMainSystem(firstPath)
