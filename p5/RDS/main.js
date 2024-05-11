@@ -328,8 +328,8 @@ function drawingController(component1, component2, drawnComponents, connections)
       // enter into the switch function or transformer function if the second component is a switch or transformer
       else if (component2Last.getWord() == "QBA") {
             drawSwitch(component1, component2, drawnComponents, connections)
-      } else if (component2Last.getWord() == "XBA") {
-            drawTransformer(component1, component2, drawnComponents, connections)
+      } else if (component2Last.getWord() == "FCA") {
+            drawFuse(component1, component2, drawnComponents, connections)
       }
 
       // the rest of components are drawn here
@@ -338,12 +338,15 @@ function drawingController(component1, component2, drawnComponents, connections)
             if (component2.Type != "") {
                   keyword = component2.Type
             }
+            if (component2Last == "WBC4") {return}
 
             let component1State = findComponentState(component1.ID, drawnComponents)
-            console.log(keyword)
+            console.log(component2Last)
             const component2Object = new componentToPath[keyword](component1State.x, component1State.y);
-
-            drawnComponents.push(component2Object.makeComponentState(component2.ID));
+            const component2State = component2Object.makeComponentState(component2.ID)
+            if (component2State != null) {
+                  drawnComponents.push(component2State);
+            }
             component2Object.draw()
       }
 
@@ -394,17 +397,20 @@ function mainLoop(connections) {
  * @param {ComponentState[]} drawnComponents 
  */
 function drawBoxes(drawnComponents) {
-      let firstPath = idToPath.get(drawnComponents[0].id.toString())
+      stroke('black')
+      let newDrawnComponents = drawnComponents.filter(component => (component.type != "FCA" && component.type != "TAA")) 
+      let firstPath = idToPath.get(newDrawnComponents[0].id.toString())
       let currentTechnicalSystem = getUpperTechnical(firstPath)
       let currentMainSystem = getMainSystem(firstPath)
       let firstMainX = 25
       let firstX = 40
 
-      let lastUpperID = drawnComponents[drawnComponents.length - 1].id
-      drawnComponents.forEach(component => {
+      let lastUpperID = newDrawnComponents[newDrawnComponents.length - 1].id
+      newDrawnComponents.forEach(component => {
             let path = idToPath.get(component.id.toString())
             let technical = getUpperTechnical(path)
             let main = getMainSystem(path)
+            console.log("Curr tech:", technical, "Comp: ", path)
             if (component.id == lastUpperID || main != currentMainSystem) {
                   stroke('purple')
                   rect(firstMainX, y - 200, component.x - firstMainX, 330)
@@ -428,7 +434,6 @@ function drawBoxes(drawnComponents) {
             if (component.id == lastUpperID) {
                   stroke('red')
                   strokeWeight(2)
-                  console.log("IM HERE")
                   rect(firstX, y - 170, component.x - firstX - 15, 270)
                   strokeWeight(1)
                   text(technical, firstX + 10, y - 145)
@@ -442,7 +447,7 @@ function drawBoxes(drawnComponents) {
       })
 
 
-      let lowerComponents = drawnComponents.filter(component => getLowerTechnical(idToPath.get(component.id.toString())) != "")
+      let lowerComponents = newDrawnComponents.filter(component => getLowerTechnical(idToPath.get(component.id.toString())) != "")
       lowerComponents = lowerComponents.filter(component => component.type.getWord() != "QBA")
       let currentLowerTechnicalSystem = ""
       let firstLowerX = 0
@@ -476,15 +481,16 @@ function drawBoxes(drawnComponents) {
                         }
                         if (component.id == lastID) {
                               rect(lastComponent.x - 5, y - 135, component.x - lastComponent.x + 10, 185)
-                              stroke('black')
+
                               text(lowerTechnical, lastComponent.x, y - 115)
                               return
                         }
 
 
-                        stroke('black')
+                        
                         strokeWeight(1)
                         text(currentLowerTechnicalSystem, firstLowerX + 5, y - 115)
+                        stroke('black')
                         firstLowerX = component.x - 50
                         currentLowerTechnicalSystem = lowerTechnical
                   }
@@ -513,7 +519,7 @@ function setup() {
             boxesBoolean = !boxesBoolean
       })
 
-      frameRate(60)
+      frameRate(1)
 }
 
 function draw() {

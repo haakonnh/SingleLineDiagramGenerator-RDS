@@ -234,40 +234,38 @@ function drawSwitchForSection(lastComponentCoords, length, drawnComponents, swit
       line(gapForSwitch2, topPointY + 5, gapForSwitch2, topPointY - 5);
       line(gapForSwitch1 - 20, topPointY, gapForSwitch2, topPointY);
       strokeWeight(1);
-      if(switchComponent.Type == "QBA2") {
-        fill('white');
-        circle((cricleGap + gapForSwitch2) / 2, topPointY, 5);
-      }
-      else if(switchComponent.Type == "QBA3") {
-        fill('white');
-        line(
-            gapForSwitch1 - 5,
-            topPointY,
-            gapForSwitch1 - 5,
-            motorLineTopPoint
-      );
-      circle(gapForSwitch1 - 5, motorLineTopPoint -5, 10);
-      
-      fill('black');
-      textSize(8);
-      text("M", gapForSwitch1 - 8, motorLineTopPoint - 3);
+      if (switchComponent.Type == "QBA2") {
+            fill('white');
+            circle((cricleGap + gapForSwitch2) / 2, topPointY, 5);
+      } else if (switchComponent.Type == "QBA3") {
+            fill('white');
+            line(
+                  gapForSwitch1 - 5,
+                  topPointY,
+                  gapForSwitch1 - 5,
+                  motorLineTopPoint
+            );
+            circle(gapForSwitch1 - 5, motorLineTopPoint - 5, 10);
 
-      }
-      else if(switchComponent.Type == "QBA4") {
-        fill('white');
-        circle((cricleGap + gapForSwitch2) / 2, topPointY, 5);
+            fill('black');
+            textSize(8);
+            text("M", gapForSwitch1 - 8, motorLineTopPoint - 3);
 
-        
-        line(
-            gapForSwitch1 - 5,
-            topPointY,
-            gapForSwitch1 - 5,
-            motorLineTopPoint
-      );
-      circle(gapForSwitch1 - 5, motorLineTopPoint -5, 10);
-      fill('black');
-      textSize(8);
-      text("M", gapForSwitch1 - 8, motorLineTopPoint - 3);
+      } else if (switchComponent.Type == "QBA4") {
+            fill('white');
+            circle((cricleGap + gapForSwitch2) / 2, topPointY, 5);
+
+
+            line(
+                  gapForSwitch1 - 5,
+                  topPointY,
+                  gapForSwitch1 - 5,
+                  motorLineTopPoint
+            );
+            circle(gapForSwitch1 - 5, motorLineTopPoint - 5, 10);
+            fill('black');
+            textSize(8);
+            text("M", gapForSwitch1 - 8, motorLineTopPoint - 3);
       }
       textSize(12)
 
@@ -276,7 +274,7 @@ function drawSwitchForSection(lastComponentCoords, length, drawnComponents, swit
       fill('black');
       text(getLast(switchComponent.Path), cricleGap - 20, topPointY - 10);
       noFill();
-      
+
 
 
 
@@ -358,7 +356,7 @@ function drawSwitch(fromComponent, switchComponent, drawnComponents, connections
             x: fromComponentState.x,
             y: fromComponentState.y
       }
-      strokeWeight(0.6)
+      
       if (getLast(fromComponent.Path).getWord() == "UAA") {
             drawSwitchForSection(coords, 100, drawnComponents, switchComponent)
       } else if (fromComponent.Type == "WBC1") {
@@ -375,7 +373,7 @@ function drawSwitch(fromComponent, switchComponent, drawnComponents, connections
  * @param {ComponentState[]} drawnComponents
  * @param {Connection[]} connections
  */
-function drawTransformer(fromComponent, transformerComponent, drawnComponents, connections) {
+function drawTransformer(fromComponent, transformerComponent, drawnComponents) {
       const fromComponentState = findComponentState(fromComponent.ID, drawnComponents)
       /** @type {Coordinates} */
       let coords = {
@@ -388,7 +386,7 @@ function drawTransformer(fromComponent, transformerComponent, drawnComponents, c
 
       const d = 12;
 
-      strokeWeight(0.6)
+      
       if (fromComponent.Type == "WBC1") {
             line(fromComponentState.x - myDistX / 2, yBottomCircleMid + 6, fromComponentState.x - myDistX / 2, fromComponentState.y);
             circle(fromComponentState.x - myDistX / 2, yBottomCircleMid, d);
@@ -398,7 +396,6 @@ function drawTransformer(fromComponent, transformerComponent, drawnComponents, c
             strokeWeight(1)
             text(getLast(transformerComponent.Path), fromComponentState.x - myDistX / 2 + 10, yTopCircleMid + d - 3)
             noFill()
-            stroke
 
       } else {
             line(fromComponentState.x, yBottomCircleMid + 6, fromComponentState.x, fromComponentState.y);
@@ -410,6 +407,57 @@ function drawTransformer(fromComponent, transformerComponent, drawnComponents, c
             text(getLast(transformerComponent.Path), fromComponentState.x + 10, yTopCircleMid + d - 3)
       }
 
+
       strokeWeight(1)
+
+}
+
+/**
+ * 
+ * @param {Component} fromComponent
+ * @param {Component} fuseComponent
+ * @param {ComponentState[]} drawnComponents
+ * @param {Connection[]} connections
+ */
+function drawFuse(fromComponent, fuseComponent, drawnComponents) {
+      const fromComponentState = findComponentState(fromComponent.ID, drawnComponents)
+      /** @type {Coordinates} */
+      let coords = {
+            x: fromComponentState.x,
+            y: fromComponentState.y
+      }
+
+      
+      if (fromComponent.Type == "WBC1") {
+            line(coords.x - myDistX / 2, coords.y, coords.x - myDistX / 2, coords.y - 30);
+
+
+            line(coords.x - myDistX / 2, coords.y - 30, coords.x - myDistX / 2, coords.y - 40);
+            rect(coords.x - myDistX / 2 - 2.5, coords.y - 40, 5, 10);
+            stroke('black')
+            fill('black')
+            strokeWeight(1)
+            text(getLast(fuseComponent.Path), coords.x - myDistX / 2 + 8.5, coords.y - 31)
+            noFill()
+
+            const state = new ComponentState(coords.x - myDistX / 2, coords.y - 40, fuseComponent.ID, "FCA")
+            drawnComponents.push(state)
+
+      } else {
+            line(coords.x, coords.y, coords.x, coords.y - 15);
+
+            line(coords.x, coords.y - 15, coords.x, coords.y - 25);
+            rect(coords.x - 2.5, coords.y - 25, 5, 10);
+            stroke('black')
+            fill('black')
+            strokeWeight(1)
+            text(getLast(fuseComponent.Path), coords.x + 8.5, coords.y - 16)
+
+            const state = new ComponentState(coords.x, coords.y - 25, fuseComponent.ID, "FCA")
+            drawnComponents.push(state)
+      }
+
+
+
 
 }

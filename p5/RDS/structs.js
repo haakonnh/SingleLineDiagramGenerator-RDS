@@ -151,7 +151,7 @@ class FCA{
 
     draw(){
         line(this.x1, this.y1, this.x1, this.endPointY);
-        rect(this.x1 +2, this.y1, this.x1 - 2, this.endPointY);
+        rect(this.x1 +2, this.y1, 4, 10);
     }
 
     makeComponentState(id) {
@@ -182,10 +182,11 @@ class TAA {
             circle(this.x, this.yBottomCircleMid, this.d);
             circle(this.x, this.yTopCircleMid, this.d);
             line(this.x, this.yBottomCircleMid + 6, this.x, this.y);
+            text('TAA1', this.x + 9, this.yBottomCircleMid )
       }
 
       makeComponentState(id) {
-            return new ComponentState(this.x, this.y, id, "XBA");
+            return new ComponentState(this.x, this.y, id, "TAA");
       }
 }
 
