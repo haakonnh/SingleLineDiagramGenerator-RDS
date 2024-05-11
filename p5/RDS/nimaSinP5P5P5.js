@@ -450,6 +450,8 @@ function setup() {
 
       console.log("Tuned connections: ", connections)
 
+      let newInstanc = new QAB(50, 150, 50, 150).draw()
+
       /**
        * @type {ComponentState[]}
        */

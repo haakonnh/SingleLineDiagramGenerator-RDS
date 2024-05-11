@@ -211,45 +211,27 @@ class TAA {
 class QAB {
     constructor(x1, y1) {
         this.x1 = x1;
-        this.x2 = x1 + 50;
-
-        this.bottomPointY = y1;
-        this.topPointY = y1 - 25;
-
-        this.gapForSwitch1 = x1 + 15;
-        this.gapForSwitch2 = x1 + 35;
-
-        this.connectionX1 = this.x1 + 30;
-        this.connectionY1 = this.y1;
-        this.connectionX2 = this.x1;
-        this.connectionY2 = this.y1;
-  }
+        this.x2 = x1 + 30;
+        this.y1 = y1;
+    }
 
   draw() {
-        // to paralelle linjer oppover
-        line(this.x1, this.bottomPointY, this.x1, this.topPointY);
-        line(this.x2, this.bottomPointY, this.x2, this.topPointY);
-
-        // en honisontal linje øverst
-        line(this.x1, this.topPointY, this.gapForSwitch1, this.topPointY);
-        line(this.gapForSwitch2, this.topPointY, this.x2, this.topPointY);
-
+    
         // Bryteren
-        line(
-              this.gapForSwitch2,
-              this.topPointY + 5,
-              this.gapForSwitch2,
-              this.topPointY - 5
-        );
         strokeWeight(2);
-        line(
-              this.gapForSwitch1,
-              this.topPointY,
-              this.gapForSwitch2,
-              this.topPointY
-        );
+        line(this.x1, this.y1, this.x1 + 10, this.y1);
+        line(this.x1+ 7 , this.y1 - 3, this.x1 + 13, this.y1 + 3);
+        line(this.x1+ 7 , this.y1 + 3, this.x1 + 13, this.y1 - 3);
         strokeWeight(1);
+
+        line(this.x1 + 10, this.y1, this.x2, this.y1);
+
+        text('QAB', this.x1 + 5, this.y1 + 15)
   }
+
+  makeComponentState(id) {
+    return new ComponentState(this.x2, this.y1 , id, "QAB");
+}
 }
 
 
