@@ -318,7 +318,7 @@ function drawingController(component1, component2, drawnComponents, connections)
             return
       }
       const component2Last = getLast(component2.Path)
-      
+
 
       // if the technical system is KL.JE and the second component is a main line (WBC1), draw a station.
       if (context.Main.getWord() == "KL" &&
@@ -339,10 +339,12 @@ function drawingController(component1, component2, drawnComponents, connections)
             if (component2.Type != "") {
                   keyword = component2.Type
             }
-            if (component2Last == "WBC4") {return}
+            if (component2Last == "WBC4") {
+                  return
+            }
 
             let component1State = findComponentState(component1.ID, drawnComponents)
-            console.log(component2Last)
+            
             const component2Object = new componentToPath[keyword](component1State.x, component1State.y);
             const component2State = component2Object.makeComponentState(component2.ID)
             if (component2State != null) {
@@ -366,7 +368,7 @@ function mainLoop(connections) {
       // starting coordinates
       drawnComponents = []
 
-
+      connections = [connections[0]]
       // main loop
       for (let connection of connections) {
             const component1 = connection.Component1
@@ -382,13 +384,19 @@ function mainLoop(connections) {
             if (findComponentState(component1.ID, drawnComponents) == null) {
                   //console.log("New branch", component1.ID, component1.Path, component1Last.getWord())
                   // first component should always be a line
-                  const component1Object = new WBC1(x, y)
-                  drawnComponents.push(component1Object.makeComponentState(component1.ID))
-                  component1Object.draw()
+                  if (getMainSystem(component1.Path).getWord() == "B") {
+                        const BObject = new B(x, y)
+                        drawnComponents.push(BObject.makeComponentState(component1.ID))
+                        BObject.draw()
+                  } else {
+                        const component1Object = new WBC1(x, y)
+                        drawnComponents.push(component1Object.makeComponentState(component1.ID))
+                        component1Object.draw()
+                  }
+
 
                   drawingController(component1, component2, drawnComponents, connections)
             } else {
-                  console.log(connection)
                   drawingController(component1, component2, drawnComponents, connections)
             }
       }
@@ -399,7 +407,7 @@ function mainLoop(connections) {
  */
 function drawBoxes(drawnComponents) {
       stroke('black')
-      let newDrawnComponents = drawnComponents.filter(component => (component.type != "FCA" && component.type != "TAA" && component.type != "XBA")) 
+      let newDrawnComponents = drawnComponents.filter(component => (component.type != "FCA" && component.type != "TAA" && component.type != "XBA"))
       let firstPath = idToPath.get(newDrawnComponents[0].id.toString())
       let currentTechnicalSystem = getUpperTechnical(firstPath)
       let currentMainSystem = getMainSystem(firstPath)
@@ -411,12 +419,17 @@ function drawBoxes(drawnComponents) {
             let path = idToPath.get(component.id.toString())
             let technical = getUpperTechnical(path)
             let main = getMainSystem(path)
-            console.log("Curr tech:", technical, "Comp: ", path)
+            //console.log("Curr tech:", technical, "Comp: ", path)
+            console.log("Main: ", main, "Comp: ", path)
+            // Draw main system box if its left
             if (component.id == lastUpperID || main != currentMainSystem) {
                   stroke('purple')
                   rect(firstMainX, y - 200, component.x - firstMainX, 330)
-                  text("=" + main, firstMainX + 10, y - 180)
+                  text("=" + currentMainSystem, firstMainX + 10, y - 180)
+                  firstMainX = component.x + 5
+                  currentMainSystem = main
             }
+            
 
             if (technical == currentTechnicalSystem) {
                   return
@@ -438,6 +451,7 @@ function drawBoxes(drawnComponents) {
                   rect(firstX, y - 170, component.x - firstX - 15, 270)
                   strokeWeight(1)
                   text(technical, firstX + 10, y - 145)
+                  stroke('black')
                   return
             }
             currentTechnicalSystem = technical
@@ -448,6 +462,8 @@ function drawBoxes(drawnComponents) {
       })
 
 
+
+      // DRAWING LOWER TECHNICAL SYSTEMS  
       let lowerComponents = newDrawnComponents.filter(component => getLowerTechnical(idToPath.get(component.id.toString())) != "")
       lowerComponents = lowerComponents.filter(component => component.type.getWord() != "QBA")
       let currentLowerTechnicalSystem = ""
@@ -458,6 +474,10 @@ function drawBoxes(drawnComponents) {
             x: 90,
             y: 0,
             id: 0
+      }
+      console.log(lowerComponents)
+      if (lowerComponents.length == 0) {
+            return
       }
       let lastID = lowerComponents[lowerComponents.length - 1].id
       lowerComponents.forEach(component => {
@@ -481,15 +501,15 @@ function drawBoxes(drawnComponents) {
                               rect(firstLowerX, y - 135, lastComponent.x - firstLowerX - 10, 185)
                         }
                         if (component.id == lastID) {
-                              stroke('black')   
+                              stroke('black')
                               rect(lastComponent.x - 5, y - 135, component.x - lastComponent.x + 10, 185)
-                              
+
                               text(lowerTechnical, lastComponent.x, y - 115)
                               return
                         }
 
 
-                        
+
                         strokeWeight(1)
                         text(currentLowerTechnicalSystem, firstLowerX + 5, y - 115)
                         stroke('black')

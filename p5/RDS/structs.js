@@ -177,6 +177,30 @@ class XBA{
 }
 
 
+class B {
+      constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.d = 30;
+      }
+
+      draw() {
+            line(this.x, this.y, this.x + this.d, this.y);
+            line(this.x + this.d, this.y, this.x + this.d, this.y - 30);
+            strokeWeight(2);
+            line(this.x + this.d - 5, this.y - 30, this.x + 2*this.d + 5, this.y - 30);
+            strokeWeight(1);
+            line(this.x + 2 * this.d, this.y - 30, this.x + 2 * this.d, this.y);
+            line(this.x + 2 * this.d, this.y, this.x + 3 * this.d, this.y);
+            text('WBC1', this.x + 15, this.y - 35)
+
+      }
+      makeComponentState(id) {
+            return new ComponentState(this.x + 3 * this.d, this.y, id, "WBC");
+      }
+
+}
+
 
 /** Trafo */
 class TAA {
