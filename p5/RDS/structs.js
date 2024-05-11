@@ -155,7 +155,7 @@ class FCA{
     }
 
     makeComponentState(id) {
-        return new ComponentState(this.x, this.y, id, "FCA");
+        return new ComponentState(this.x1, this.y1, id, "FCA");
   }
 }
 
@@ -196,6 +196,7 @@ const componentToPath = {
       /*  QBA1: QBA1,
        QBA2: QBA2,
        QBA3: QBA3, */
+      FCA: FCA,
       TAA: TAA,
       WBC1: WBC1
       // TODO: MAKE THESE CLASSES
