@@ -90,7 +90,7 @@ let bottomLeftPicture;
 let boxesBoolean = true;
 let globcount = 0
 
-let w = 2200
+let w = 2500
 let h = 2200 * 0.4
 
 /**
@@ -344,7 +344,7 @@ function drawingController(component1, component2, drawnComponents, connections)
             }
 
             let component1State = findComponentState(component1.ID, drawnComponents)
-            
+
             const component2Object = new componentToPath[keyword](component1State.x, component1State.y);
             const component2State = component2Object.makeComponentState(component2.ID)
             if (component2State != null) {
@@ -368,7 +368,7 @@ function mainLoop(connections) {
       // starting coordinates
       drawnComponents = []
 
-      connections = [connections[0]]
+      //connections = [connections[0]]
       // main loop
       for (let connection of connections) {
             const component1 = connection.Component1
@@ -419,21 +419,37 @@ function drawBoxes(drawnComponents) {
             let path = idToPath.get(component.id.toString())
             let technical = getUpperTechnical(path)
             let main = getMainSystem(path)
+            let tempLastMain = currentMainSystem
             //console.log("Curr tech:", technical, "Comp: ", path)
             console.log("Main: ", main, "Comp: ", path)
-            // Draw main system box if its left
-            if (component.id == lastUpperID || main != currentMainSystem) {
+            // Specific code for the last one
+            if (component.id == lastUpperID) {
                   stroke('purple')
                   rect(firstMainX, y - 200, component.x - firstMainX, 330)
                   text("=" + currentMainSystem, firstMainX + 10, y - 180)
                   firstMainX = component.x + 5
                   currentMainSystem = main
-            }
-            
 
+            } else if (main != currentMainSystem) {
+                  stroke('purple')
+                  rect(firstMainX, y - 200, component.x - firstMainX - 55, 330)
+                  text("=" + currentMainSystem, firstMainX + 10, y - 180)
+                  firstMainX = component.x - 50
+                  currentMainSystem = main
+
+                  strokeWeight(2)
+                  stroke('red')
+                  noFill()
+
+
+            }
+
+            // If the algorithm is still in the same technical system, skip to next system
             if (technical == currentTechnicalSystem) {
                   return
             }
+
+            // This code draws the technical system boxes
 
             strokeWeight(2)
             stroke('red')
@@ -443,7 +459,11 @@ function drawBoxes(drawnComponents) {
             strokeWeight(1)
             text(currentTechnicalSystem, firstX + 10, y - 145)
 
-            firstX = component.x - 70
+            if (main != tempLastMain) {
+                  firstX = component.x - 40
+            } else {
+                  firstX = component.x - 70
+            }
 
             if (component.id == lastUpperID) {
                   stroke('red')
@@ -557,5 +577,5 @@ function draw() {
             drawBoxes(drawnComponents)
       }
 
-      console.log(drawnComponents)
+      saveCanvas(cnv, 'RDS', 'png')
 }

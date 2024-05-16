@@ -274,10 +274,6 @@ function drawSwitchForSection(lastComponentCoords, length, drawnComponents, swit
       fill('black');
       text(getLast(switchComponent.Path), cricleGap - 20, topPointY - 10);
       noFill();
-
-
-
-
 }
 
 /**
@@ -344,6 +340,39 @@ function drawSwitchForTransformerOnMainLine(lastComponentCoords, length, drawnCo
 
 /**
  * 
+ * @param {Coordinates} lastComponentCoords
+ * @param {number} length
+ * @param {ComponentState[]} drawnComponents
+ * @param {Component} switchComponent
+ */
+function drawSwitchForPowerSwitch(lastComponentCoords, length, drawnComponents, switchComponent) {
+      const x1 = lastComponentCoords.x
+      const switchWidth = 4;
+      const x2 = x1 + 25
+      const y1 = lastComponentCoords.y;
+      const y2 = y1;
+
+
+      const state = new ComponentState(x2 + 30, y2, switchComponent.ID, "QBA")
+      drawnComponents.push(state)
+
+      line(x1, y1, x2, y2);
+
+      strokeWeight(2);
+      line(x2, y1, x2 + 20, y2);
+      line(x2 + 20, y2 + switchWidth, x2 + 20, y2 - switchWidth);
+      strokeWeight(1);
+      line(x2 + 20, y2, x2 + 30, y2);
+      
+      stroke('black')
+      text(getLast(switchComponent.Path), x2 - 3, y2 + 15);
+      noFill()
+}
+
+
+
+/**
+ * 
  * @param {Component} fromComponent 
  * @param {Component} switchComponent 
  * @param {ComponentState[]} drawnComponents 
@@ -363,6 +392,8 @@ function drawSwitch(fromComponent, switchComponent, drawnComponents, connections
             drawSwitchForTransformerOnMainLine(coords, 100, drawnComponents, switchComponent)
       } else if (getLast(fromComponent.Path).getWord() == "WBC" || getLast(fromComponent.Path).getWord() == "XBA") {
             drawSwitchForTransformer(coords, 100, drawnComponents, switchComponent)
+      } else if (getLast(fromComponent.Path).getWord() == "QAB") {
+            drawSwitchForPowerSwitch(coords, 100, drawnComponents, switchComponent)
       }
 }
 
