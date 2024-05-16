@@ -457,7 +457,4 @@ function drawFuse(fromComponent, fuseComponent, drawnComponents) {
             drawnComponents.push(state)
       }
 
-
-
-
 }
