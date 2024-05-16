@@ -122,7 +122,7 @@ function drawDoubleTrackStation(lastComponentCoords, length, drawnComponents, st
             let lowerY = y1 + 20
             lowerComponent = new ComponentState(connUpperX, lowerY, stationLines[0].ID, "WBC")
             drawnComponents.push(lowerComponent)
-            
+
             text(getLast(stationLines[0].Path), connUpperX - 15, lowerY + 14);
             line(x3, y1, x5, lowerY);
             line(x4, y1, x6, lowerY);
@@ -463,7 +463,7 @@ function drawFuse(fromComponent, fuseComponent, drawnComponents) {
       if (fromComponent.Type == "WBC1") {
             line(coords.x - myDistX / 2, coords.y, coords.x - myDistX / 2, coords.y - 30);
 
-
+            noFill()
             line(coords.x - myDistX / 2, coords.y - 30, coords.x - myDistX / 2, coords.y - 40);
             rect(coords.x - myDistX / 2 - 2.5, coords.y - 40, 5, 10);
             stroke('black')
@@ -477,7 +477,7 @@ function drawFuse(fromComponent, fuseComponent, drawnComponents) {
 
       } else {
             line(coords.x, coords.y, coords.x, coords.y - 15);
-
+            noFill()
             line(coords.x, coords.y - 15, coords.x, coords.y - 25);
             rect(coords.x - 2.5, coords.y - 25, 5, 10);
             stroke('black')

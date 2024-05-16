@@ -69,6 +69,11 @@ let dataArray = [];
 let components = [];
 
 /**
+ * @type {Connection[]}
+ */
+let connections = []
+
+/**
  * @type {ComponentState[]}
  */
 let drawnComponents = [];
@@ -279,6 +284,10 @@ function populateConnections() {
       // populate connections array with the fetched relationships from the python api
       idToPath = new Map(Object.entries(fetchedMap))
       idToType = new Map(Object.entries(fetchedTypeMap))
+
+      /**
+       * @type {Connection[]}
+       */
       let connections = []
       Object.entries(fetchedRelationships).forEach(([key, value]) => {
             let comp1 = {
@@ -409,7 +418,26 @@ function mainLoop(connections) {
  */
 function drawBoxes(drawnComponents) {
       stroke('black')
-      let newDrawnComponents = drawnComponents.filter(component => (component.type != "FCA" && component.type != "TAA" && component.type != "XBA"))
+      let newDrawnComponents = []
+
+      // This loop removes QBA on stations from drawncomponents 
+      for (let i = 0; i < drawnComponents.length; i++) {
+            let ok = true
+            if (drawnComponents[i].type == "QBA")  {
+                  connections.forEach(connection => {
+                        if ((connection.Component1.ID == drawnComponents[i].id) && getComponent(connection.Component2.Path).getWord() == "FCA") {
+                              ok = false
+                        } 
+                  })
+            }
+
+            if (ok) {
+                  newDrawnComponents.push(drawnComponents[i])
+            }
+            
+      }
+
+      newDrawnComponents = newDrawnComponents.filter(component => (component.type != "FCA" && component.type != "TAA" && component.type != "XBA"))
       let firstPath = idToPath.get(newDrawnComponents[0].id.toString())
       let currentTechnicalSystem = getUpperTechnical(firstPath)
       let currentMainSystem = getMainSystem(firstPath)
@@ -574,8 +602,6 @@ function draw() {
       image(bottomLeftPicture, 2.5, h - bottomLeftPicture.height - 2.5)
 
       mainLoop(connections, drawnComponents)
-
-
 
       if (boxesBoolean) {
             drawBoxes(drawnComponents)
