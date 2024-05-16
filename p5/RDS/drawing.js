@@ -122,7 +122,8 @@ function drawDoubleTrackStation(lastComponentCoords, length, drawnComponents, st
             let lowerY = y1 + 20
             lowerComponent = new ComponentState(connUpperX, lowerY, stationLines[0].ID, "WBC")
             drawnComponents.push(lowerComponent)
-            text(getLast(stationLines[0].Path), connUpperX - 15, connUpperY + 14);
+            
+            text(getLast(stationLines[0].Path), connUpperX - 15, lowerY + 14);
             line(x3, y1, x5, lowerY);
             line(x4, y1, x6, lowerY);
             line(x5, lowerY, x6, lowerY);
@@ -130,8 +131,8 @@ function drawDoubleTrackStation(lastComponentCoords, length, drawnComponents, st
 
       const connMiddleX = x1 + length + 10;
       const connMiddleY = y1;
-      lowerComponent = new ComponentState(connMiddleX, connMiddleY, stationLines[1].ID, "WBC")
-      drawnComponents.push(lowerComponent)
+      const middleComponent = new ComponentState(connMiddleX, connMiddleY, stationLines[1].ID, "WBC")
+      drawnComponents.push(middleComponent)
 
       // TODO FIX THE INDEX THING HER
 

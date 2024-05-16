@@ -400,6 +400,8 @@ function mainLoop(connections) {
                   drawingController(component1, component2, drawnComponents, connections)
             }
       }
+
+      console.log(drawnComponents)
 }
 /**
  * 
@@ -495,7 +497,6 @@ function drawBoxes(drawnComponents) {
             y: 0,
             id: 0
       }
-      console.log(lowerComponents)
       if (lowerComponents.length == 0) {
             return
       }
@@ -521,10 +522,11 @@ function drawBoxes(drawnComponents) {
                               rect(firstLowerX, y - 135, lastComponent.x - firstLowerX - 10, 185)
                         }
                         if (component.id == lastID) {
-                              stroke('black')
+                              
                               rect(lastComponent.x - 5, y - 135, component.x - lastComponent.x + 10, 185)
 
                               text(lowerTechnical, lastComponent.x, y - 115)
+                              stroke('black')
                               return
                         }
 
@@ -573,9 +575,11 @@ function draw() {
 
       mainLoop(connections, drawnComponents)
 
+
+
       if (boxesBoolean) {
             drawBoxes(drawnComponents)
       }
 
-      saveCanvas(cnv, 'RDS', 'png')
+      //saveCanvas(cnv, 'RDS', 'png')
 }

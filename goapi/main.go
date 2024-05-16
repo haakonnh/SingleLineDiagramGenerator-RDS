@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+
 	"github.com/jackc/pgx/v5"
 	"github.com/joho/godotenv"
 )
@@ -95,7 +96,7 @@ func connectToDB() (*pgx.Conn, error) {
 // fetchNodes fetches the nodes from the database and returns them
 func fetchNodes(conn *pgx.Conn) ([]Node, error) {
 	// Query for nodes from the tree table
-	rows, err := conn.Query(context.Background(), "select id, path, type from alternativ4")
+	rows, err := conn.Query(context.Background(), "select id, rd, type from object_table_2")
 	if err != nil { // if query failed
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
 		os.Exit(1)
@@ -167,7 +168,7 @@ func relationHandler(w http.ResponseWriter, r *http.Request) {
 	relations := []Relation{} // initialize the relations array
 
 	// Query for relations from the tree table
-	rows, err := conn.Query(context.Background(), "select node1, node2 from connections4") //newtree
+	rows, err := conn.Query(context.Background(), "select object1, object2 from connections_2") //newtree
 	//rows, err := conn.Query(context.Background(), "select node1_id, node2_id from connections")
 	if err != nil { // if query failed
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
