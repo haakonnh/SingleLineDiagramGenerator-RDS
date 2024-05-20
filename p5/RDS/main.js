@@ -9,6 +9,13 @@
  */
 
 /**
+ * @typedef {object} Node
+ * @property {number} id
+ * @property {string} path
+ */
+
+/**
+ * A component from the database. ID is the ID of the component, and path is the multi-level RD of the component. Type is type.
  * @typedef {object} Component
  * @property {number} ID
  * @property {string} Path
@@ -16,18 +23,14 @@
  */
 
 /**
- * @typedef {object} Node
- * @property {number} id
- * @property {string} path
- */
-
-/**
+ * Connections from the database. Component1 and Component2 are IDs of the components.
  * @typedef {object} Connection
  * @property {Component} Component1
  * @property {Component} Component2 
  */
 
 /**
+ * Context object which contains the main and sub technical systems, and the main and sub types.
  * @typedef {object} Context
  * @property {string} Main
  * @property {string} Sub
@@ -43,13 +46,13 @@ let data = {};
 let fetchedData = {};
 
 /**
- * @typedef {object} FetchRelationship
- * @property {number} Node1
- * @property {number} Node2
+ * @typedef {object} FetchConnections
+ * @property {number} Object1
+ * @property {number} Object2
  */
 
-/** @type {FetchRelationship[]} */
-let fetchedRelationships = {};
+/** @type {FetchConnections[]} */
+let fetchedConnections = {};
 
 let fetchedMap = {};
 
@@ -102,7 +105,7 @@ let h = 2200 * 0.4
  * Fetches the components from the API
  */
 async function fetchAndProcessComponents() {
-      const apiUrl = 'http://localhost:9090/nodes' // Replace with your endpoint
+      const apiUrl = 'http://localhost:9090/objects' // Replace with your endpoint
       //const apiUrl = 'http://localhost:8000/diagram_data' // Replace with your endpoint
       try {
             const response = loadJSON(apiUrl)
@@ -117,17 +120,17 @@ async function fetchAndProcessComponents() {
 }
 
 /**
- * Fetches the relationships from the API
+ * Fetches the connectionships from the API
  */
-async function fetchAndProcessRelationships() {
-      const apiUrl = 'http://localhost:9090/relations' // Replace with your endpoint
+async function fetchAndProcessConnections() {
+      const apiUrl = 'http://localhost:9090/connections' // Replace with your endpoint
       try {
             const response = loadJSON(apiUrl)
 
             const data = response
-            console.log('Relations from API:', data)
+            console.log('Connections from API:', data)
 
-            fetchedRelationships = data
+            fetchedConnections = data
       } catch (error) {
             console.error('Error fetching data:', error)
       }
@@ -166,14 +169,14 @@ async function fetchAndProcessMaps() {
 
 async function preload() {
       await fetchAndProcessComponents()
-      await fetchAndProcessRelationships()
+      await fetchAndProcessConnections()
       await fetchAndProcessMaps()
       banenorPicture = loadImage('BanenorBilde.png')
       bottomLeftPicture = loadImage('nedrehjørne.png')
 }
 
 /**
- * Takes a full path and returns the last object in the path
+ * Takes a full RD and returns the last object in the path
  * @example "RDS.J1.WBC1" -> "WBC1"
  * @param {string} path 
  * @returns {string}
@@ -194,9 +197,15 @@ String.prototype.getWord = function () {
       return this.match(pattern)[0]
 }
 
+/**
+ * Get the first word in a string
+ * @param {string} path 
+ * @returns 
+ */
 function getWord(path) {
       return path.match(pattern)[0]
 }
+
 /**
  * 
  * @param {string} path 
@@ -276,12 +285,12 @@ function findComponentState(id, drawnComponents) {
 
 /**
  * This function creates a JS map of the fetched "map" structure from the API, and populates the connections array with the
- * fetched relationships from the API. It uses the map to get the path of the components from the component id. 
+ * fetched connectionships from the API. It uses the map to get the path of the components from the component id. 
  * 
  * @returns {Connection[]}
  */
 function populateConnections() {
-      // populate connections array with the fetched relationships from the python api
+      // populate connections array with the fetched connectionships from the python api
       idToPath = new Map(Object.entries(fetchedMap))
       idToType = new Map(Object.entries(fetchedTypeMap))
 
@@ -289,17 +298,17 @@ function populateConnections() {
        * @type {Connection[]}
        */
       let connections = []
-      Object.entries(fetchedRelationships).forEach(([key, value]) => {
+      Object.entries(fetchedConnections).forEach(([key, value]) => {
             let comp1 = {
-                  ID: value.Node1,
-                  Path: idToPath.get(value.Node1.toString()),
-                  Type: idToType.get(value.Node1.toString()),
+                  ID: value.Object1,
+                  Path: idToPath.get(value.Object1.toString()),
+                  Type: idToType.get(value.Object1.toString()),
 
             }
             let comp2 = {
-                  ID: value.Node2,
-                  Path: idToPath.get(value.Node2.toString()),
-                  Type: idToType.get(value.Node2.toString()),
+                  ID: value.Object2,
+                  Path: idToPath.get(value.Object2.toString()),
+                  Type: idToType.get(value.Object2.toString()),
             }
             connections.push({
                   Component1: comp1,
@@ -328,13 +337,13 @@ function drawingController(component1, component2, drawnComponents, connections)
       }
       const component2Last = getLast(component2.Path)
 
-
       // if the technical system is KL.JE and the second component is a main line (WBC1), draw a station.
       if (context.Main.getWord() == "KL" &&
             context.Sub.getWord() == "JE" &&
             component2.Type == "WBC1") {
             drawStation(component1, component2, drawnComponents, connections)
       }
+
       // enter into the switch function or transformer function if the second component is a switch or transformer
       else if (component2Last.getWord() == "QBA") {
             drawSwitch(component1, component2, drawnComponents, connections)
@@ -371,13 +380,11 @@ let y = h / 2
  * This is the main loop of the program which loops through all connections and draws the
  * components accordingly.
  * @param {Connection[]} connections 
- * @param {ComponentState[]} drawnComponents
  */
 function mainLoop(connections) {
-      // starting coordinates
+      // Initialize drawnComponents array
       drawnComponents = []
 
-      //connections = [connections[0]]
       // main loop
       for (let connection of connections) {
             const component1 = connection.Component1
@@ -391,7 +398,6 @@ function mainLoop(connections) {
             // if this is a new branch, so we need to start the entire drawing here
 
             if (findComponentState(component1.ID, drawnComponents) == null) {
-                  //console.log("New branch", component1.ID, component1.Path, component1Last.getWord())
                   // first component should always be a line
                   if (getMainSystem(component1.Path).getWord() == "B") {
                         const BObject = new B(x, y)
@@ -418,6 +424,9 @@ function mainLoop(connections) {
  */
 function drawBoxes(drawnComponents) {
       stroke('black')
+
+      // Elements which greatly deviate from the main spine of the sytsems must be removed to allow for efficient
+      // box drawing.
       let newDrawnComponents = []
 
       // This loop removes QBA on stations from drawncomponents 
@@ -430,29 +439,35 @@ function drawBoxes(drawnComponents) {
                         } 
                   })
             }
-
             if (ok) {
                   newDrawnComponents.push(drawnComponents[i])
             }
             
       }
 
+      // Filter out FCA, TAA, and XBA as they cause trouble with the boxes.
       newDrawnComponents = newDrawnComponents.filter(component => (component.type != "FCA" && component.type != "TAA" && component.type != "XBA"))
+      
+      // Context variables
       let firstPath = idToPath.get(newDrawnComponents[0].id.toString())
       let currentTechnicalSystem = getUpperTechnical(firstPath)
       let currentMainSystem = getMainSystem(firstPath)
+
+      // Starting coordinates for boxes.
       let firstMainX = 25
       let firstX = 40
 
       let lastUpperID = newDrawnComponents[newDrawnComponents.length - 1].id
+
+      // Loop through drawn components and draw power supply and technical system boxes.
       newDrawnComponents.forEach(component => {
             let path = idToPath.get(component.id.toString())
             let technical = getUpperTechnical(path)
             let main = getMainSystem(path)
             let tempLastMain = currentMainSystem
-            //console.log("Curr tech:", technical, "Comp: ", path)
             console.log("Main: ", main, "Comp: ", path)
-            // Specific code for the last one
+
+            // Special case when we are at the last component
             if (component.id == lastUpperID) {
                   stroke('purple')
                   rect(firstMainX, y - 200, component.x - firstMainX, 330)
@@ -460,18 +475,18 @@ function drawBoxes(drawnComponents) {
                   firstMainX = component.x + 5
                   currentMainSystem = main
 
-            } else if (main != currentMainSystem) {
+            } else if (main != currentMainSystem) { // Purple boxes are drawn when we leave power supply systems.
                   stroke('purple')
                   rect(firstMainX, y - 200, component.x - firstMainX - 55, 330)
                   text("=" + currentMainSystem, firstMainX + 10, y - 180)
+
+                  // New coordinates for next box.
                   firstMainX = component.x - 50
                   currentMainSystem = main
 
                   strokeWeight(2)
                   stroke('red')
                   noFill()
-
-
             }
 
             // If the algorithm is still in the same technical system, skip to next system
@@ -480,7 +495,6 @@ function drawBoxes(drawnComponents) {
             }
 
             // This code draws the technical system boxes
-
             strokeWeight(2)
             stroke('red')
             noFill()
@@ -489,12 +503,14 @@ function drawBoxes(drawnComponents) {
             strokeWeight(1)
             text(currentTechnicalSystem, firstX + 10, y - 145)
 
+            // Specific implementation if we are in the last one.
             if (main != tempLastMain) {
                   firstX = component.x - 40
             } else {
                   firstX = component.x - 70
             }
 
+            // Specific logic for last upper technical component
             if (component.id == lastUpperID) {
                   stroke('red')
                   strokeWeight(2)
@@ -504,16 +520,15 @@ function drawBoxes(drawnComponents) {
                   stroke('black')
                   return
             }
+
+            // Set the current technical system to the technical system in this iteration
             currentTechnicalSystem = technical
 
 
             stroke('black')
-
       })
 
-
-
-      // DRAWING LOWER TECHNICAL SYSTEMS  
+      // DRAWING LOWER TECHNICAL SYSTEMS. Filtering out components which make it difficult to draw lower boxes.
       let lowerComponents = newDrawnComponents.filter(component => getLowerTechnical(idToPath.get(component.id.toString())) != "")
       lowerComponents = lowerComponents.filter(component => component.type.getWord() != "QBA")
       let currentLowerTechnicalSystem = ""
@@ -525,12 +540,17 @@ function drawBoxes(drawnComponents) {
             y: 0,
             id: 0
       }
+
+      // Return if there is no lower techncial systems.
       if (lowerComponents.length == 0) {
             return
       }
-      let lastID = lowerComponents[lowerComponents.length - 1].id
-      lowerComponents.forEach(component => {
 
+      // Get the last component id
+      let lastID = lowerComponents[lowerComponents.length - 1].id
+
+      // Lower technical systems loop
+      lowerComponents.forEach(component => {
 
             let path = idToPath.get(component.id.toString())
             let lowerTechnical = getLowerTechnical(path)
@@ -571,41 +591,54 @@ function drawBoxes(drawnComponents) {
       })
 }
 
-/** @type {HTMLCanvasElement} */
+/** 
+ * Canvas to draw on. Globally declared.
+ * @type {HTMLCanvasElement} 
+ */
 let cnv;
 
 function setup() {
-
+      // Create canvas
       cnv = createCanvas(w, h);
+
+      // Stroke sets the color of the elements on the canvas
       stroke(1)
       background(255); // white background
 
+      // Populate connections array
       connections = populateConnections()
+
+      // Resize images
       banenorPicture.resize(400, 0)
       bottomLeftPicture.resize(0, 200)
 
-
+      // Create button to toggle boxes
       let button = createButton('Toggle Technical System Boxes')
       button.position(850, 75)
+
+      // Event listener for button
       button.mousePressed(() => {
             boxesBoolean = !boxesBoolean
       })
 
+      // Set frame rate
       frameRate(1)
 }
 
 function draw() {
       background(255)
 
+      // Draw images
       image(banenorPicture, 0, 0)
-
       image(bottomLeftPicture, 2.5, h - bottomLeftPicture.height - 2.5)
 
+      // Enter main algorithm loop
       mainLoop(connections, drawnComponents)
 
+      // Draw boxes if the button is clicked
       if (boxesBoolean) {
             drawBoxes(drawnComponents)
       }
 
-      //saveCanvas(cnv, 'RDS', 'png')
+      saveCanvas(cnv, 'RDS', 'png')
 }

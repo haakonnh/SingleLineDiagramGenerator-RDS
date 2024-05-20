@@ -188,7 +188,7 @@
             const dataGetter = async () => {
                   let newlinks = []
                   var nodes = {};
-                  const relationsData = await fetch("http://localhost:9090/relations").then(response => response.json());
+                  const relationsData = await fetch("http://localhost:9090/connections").then(response => response.json());
 
                   const idPathData = await fetch("http://localhost:9090/idpath").then(response => response.json());
                   
@@ -198,13 +198,13 @@
                   });
 
                   for (const conn of formattedData) {
-                        //console.log("ID1:", conn.Node1, "PATH1:", idPathData[conn.Node1], "ID2", conn.Node2,"PATH2:", idPathData[conn.Node2])
-                        conn.Node1 = idPathData[conn.Node1].slice(-12)
-                        conn.Node2 = idPathData[conn.Node2].slice(-12)
+                        //console.log("ID1:", conn.Object1, "PATH1:", idPathData[conn.Object1], "ID2", conn.Object2,"PATH2:", idPathData[conn.Object2])
+                        conn.Object1 = idPathData[conn.Object1].slice(-12)
+                        conn.Object2 = idPathData[conn.Object2].slice(-12)
                   }
                   
                   for (const link of formattedData) {
-                        newlinks.push({source: link.Node1.toString(), target: link.Node2.toString(), type: "suit"})
+                        newlinks.push({source: link.Object1.toString(), target: link.Object2.toString(), type: "suit"})
                   }
                   
 
@@ -215,7 +215,6 @@
             dataGetter().then((links) => {
                   
                   links.forEach(function (link) {
-                        //console.log("linky", link)
                         link.source = nodes[link.source] || (nodes[link.source] = {
                               name: link.source
                         });

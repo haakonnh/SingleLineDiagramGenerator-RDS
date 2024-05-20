@@ -14,56 +14,56 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// The structure of the returned node json object
-type Node struct {
+// The structure of the returned object json object
+type Object struct {
 	ID   int64
-	Path string
+	RD   string
 	Type string
 }
 
-// The structure of the returned relation JSON object
-type Relation struct {
-	Node1 int64
-	Node2 int64
+// The structure of the returned connection JSON object
+type Connection struct {
+	Object1 int64
+	Object2 int64
 }
 
-// topologicalSort sorts the relations topologically and returns the sorted relations
-func topologicalSort(relations []Relation) []Relation {
+// topologicalSort sorts the connections topologically and returns the sorted connections
+func topologicalSort(connections []Connection) []Connection {
 	// Create a graph and inDegree map
-	graph := make(map[int64][]int64) // map from node id to list of neighbor ids
-	inDegree := make(map[int64]int)  // map from node id to in-degree
+	graph := make(map[int64][]int64) // map from object id to list of neighbor ids
+	inDegree := make(map[int64]int)  // map from object id to in-degree
 
-	// Iterate over the relations, adding them to the graph and inDegree map
-	for _, relation := range relations {
-		if _, ok := graph[relation.Node1]; !ok {
-			graph[relation.Node1] = []int64{}
+	// Iterate over the connections, adding them to the graph and inDegree map
+	for _, connection := range connections {
+		if _, ok := graph[connection.Object1]; !ok {
+			graph[connection.Object1] = []int64{}
 		}
-		graph[relation.Node1] = append(graph[relation.Node1], relation.Node2)
+		graph[connection.Object1] = append(graph[connection.Object1], connection.Object2)
 
-		if _, ok := inDegree[relation.Node2]; !ok {
-			inDegree[relation.Node2] = 0
+		if _, ok := inDegree[connection.Object2]; !ok {
+			inDegree[connection.Object2] = 0
 		}
-		inDegree[relation.Node2]++
+		inDegree[connection.Object2]++
 	}
 
-	queue := []int64{} // queue of nodes with in-degree 0
+	queue := []int64{} // queue of objects with in-degree 0
 
-	// Add nodes with in-degree 0 to the queue
-	for node := range graph {
-		if _, ok := inDegree[node]; !ok {
-			queue = append(queue, node)
+	// Add objects with in-degree 0 to the queue
+	for object := range graph {
+		if _, ok := inDegree[object]; !ok {
+			queue = append(queue, object)
 		}
 	}
 
 	// Initialize the sorted slice
-	sorted := []Relation{}
+	sorted := []Connection{}
 
 	// Iterate over the queue, adding the neighbors to the sorted slice and updating the in-degree
 	for len(queue) > 0 {
-		node := queue[0]
+		object := queue[0]
 		queue = queue[1:]
-		for _, neighbor := range graph[node] {
-			edge := Relation{node, neighbor}
+		for _, neighbor := range graph[object] {
+			edge := Connection{object, neighbor}
 			sorted = append(sorted, edge)
 			inDegree[neighbor]--
 			if inDegree[neighbor] == 0 {
@@ -93,37 +93,37 @@ func connectToDB() (*pgx.Conn, error) {
 	return conn, nil
 }
 
-// fetchNodes fetches the nodes from the database and returns them
-func fetchNodes(conn *pgx.Conn) ([]Node, error) {
-	// Query for nodes from the tree table
+// fetchObjects fetches the objects from the database and returns them
+func fetchObjects(conn *pgx.Conn) ([]Object, error) {
+	// Query for objects from the tree table
 	rows, err := conn.Query(context.Background(), "select id, rd, type from object_table_2")
 	if err != nil { // if query failed
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
 		os.Exit(1)
 	}
 
-	nodes := []Node{} // initialize the nodes array
+	objects := []Object{} // initialize the objects array
 
 	defer rows.Close() // close the rows
 
-	// Iterate over the rows, adding them to the nodes array
+	// Iterate over the rows, adding them to the objects array
 	for rows.Next() {
 		var id int64
-		var path string
+		var rd string
 		var componentType sql.NullString
-		err = rows.Scan(&id, &path, &componentType)
+		err = rows.Scan(&id, &rd, &componentType)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Scan failed: %v\n", err)
 			os.Exit(1)
 		}
-		nodes = append(nodes, Node{id, path, componentType.String})
+		objects = append(objects, Object{id, rd, componentType.String})
 	}
 
-	// Return the nodes array and the error
-	return nodes, rows.Err()
+	// Return the objects array and the error
+	return objects, rows.Err()
 }
 
-func nodeHandler(w http.ResponseWriter, r *http.Request) {
+func objectHandler(w http.ResponseWriter, r *http.Request) {
 	// Connect to the database
 	conn, err := connectToDB()
 
@@ -132,16 +132,16 @@ func nodeHandler(w http.ResponseWriter, r *http.Request) {
 		os.Exit(1)
 	}
 
-	// Fetch the nodes from the database
-	nodes, err := fetchNodes(conn)
+	// Fetch the objects from the database
+	objects, err := fetchObjects(conn)
 
-	if err != nil { // if row iteration failed in fetchNodes
+	if err != nil { // if row iteration failed in fetchObjects
 		fmt.Fprintf(os.Stderr, "Row iteration failed: %v\n", err)
 		os.Exit(1)
 	}
 
-	// Marshal the nodes array to json
-	b, err := json.Marshal(nodes)
+	// Marshal the objects array to json
+	b, err := json.Marshal(objects)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Marshal failed: %v\n", err)
 		os.Exit(1)
@@ -153,7 +153,8 @@ func nodeHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
-func relationHandler(w http.ResponseWriter, r *http.Request) {
+// connectionHandler handles a connection request which returns the connections in topological order
+func connectionHandler(w http.ResponseWriter, r *http.Request) {
 	// Connect to the database
 	conn, err := connectToDB()
 
@@ -165,27 +166,26 @@ func relationHandler(w http.ResponseWriter, r *http.Request) {
 	// Close the connection pool
 	defer conn.Close(context.Background())
 
-	relations := []Relation{} // initialize the relations array
+	connections := []Connection{} // initialize the connections array
 
-	// Query for relations from the tree table
-	rows, err := conn.Query(context.Background(), "select object1, object2 from connections_2") //newtree
-	//rows, err := conn.Query(context.Background(), "select node1_id, node2_id from connections")
+	// Query for connections from the tree table
+	rows, err := conn.Query(context.Background(), "select object1, object2 from connections_2")
 	if err != nil { // if query failed
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
 		os.Exit(1)
 	}
 	defer rows.Close() // close the rows
 
-	// Iterate over the rows, adding them to the relations array
+	// Iterate over the rows, adding them to the connections array
 	for rows.Next() {
-		var node1 int64
-		var node2 int64
-		err = rows.Scan(&node1, &node2)
+		var object1 int64
+		var object2 int64
+		err = rows.Scan(&object1, &object2)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Scan failed: %v\n", err)
 			os.Exit(1)
 		}
-		relations = append(relations, Relation{node1, node2})
+		connections = append(connections, Connection{object1, object2})
 	}
 
 	if rows.Err() != nil { // if row iteration failed
@@ -193,10 +193,11 @@ func relationHandler(w http.ResponseWriter, r *http.Request) {
 		os.Exit(1)
 	}
 
-	relations = topologicalSort(relations)
+	// Sort the connections topologically
+	connections = topologicalSort(connections)
 
-	// Marshal the relations array to json
-	b, err := json.Marshal(relations)
+	// Marshal the connections array to json
+	b, err := json.Marshal(connections)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Marshal failed: %v\n", err)
 		os.Exit(1)
@@ -209,7 +210,7 @@ func relationHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// queryHandler handles a query request which moves one tree node and its children to another tree node; e.g. http://localhost:9090/query?from=J1.JE2&to=J2
+// queryHandler handles a query request which moves one tree object and its children to another tree object; e.g. http://localhost:9090/query?from=J1.JE2&to=J2
 func queryHandler(w http.ResponseWriter, r *http.Request) {
 	conn, err := connectToDB()
 	if err != nil {
@@ -221,99 +222,110 @@ func queryHandler(w http.ResponseWriter, r *http.Request) {
 	// Parse the query parameter:
 	query := r.URL.Query()
 
-	// Get the "from" and "to" node id from the query
+	// Get the "from" and "to" object id from the query
 	from := query.Get("from")
 	to := query.Get("to")
 
-	// Query for the children of the "from" node
-	selectQuery := fmt.Sprintf("SELECT id, path FROM alternativ4 WHERE path <@ '%s'", from)
+	// Query for the children of the "from" object
+	selectQuery := fmt.Sprintf("SELECT id, rd FROM alternativ4 WHERE rd <@ '%s'", from)
 	rows, err := conn.Query(context.Background(), selectQuery)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
 		os.Exit(1)
 	}
 
-	sourcePaths := []string{}
+	// Initialize the sourceRDs and sourceIDs arrays
+	sourceRDs := []string{}
 	sourceIDs := []int64{}
 	rowsProcessed := 0
 
-	// Iterate over the rows, updating the path of each node
+	// Iterate over the rows, updating the RD of each object
 	for rows.Next() {
-		var path string
+		var rd string
 		var id int64
-		err = rows.Scan(&id, &path)
+		err = rows.Scan(&id, &rd)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Scan failed: %v\n", err)
 			os.Exit(1)
 		}
 
-		// Update the path of the node
-		sourcePaths = append(sourcePaths, path)
+		// Update the RD of the object
+		sourceRDs = append(sourceRDs, rd)
 		sourceIDs = append(sourceIDs, id)
 		rowsProcessed++
 	}
 
+	// If no rows were processed, return an error
 	if rowsProcessed == 0 {
-		w.Write([]byte("Query failed: from node not found"))
+		w.Write([]byte("Query failed: from object not found"))
 		return
 	}
+
+	// Close the rows
 	rows.Close()
 
-	// Query the to node
-	selectQuery = fmt.Sprintf("SELECT path FROM alternativ4 WHERE path = '%s'", to)
+	// Query the to object
+	selectQuery = fmt.Sprintf("SELECT rd FROM alternativ4 WHERE rd = '%s'", to)
 	rows, err = conn.Query(context.Background(), selectQuery)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
 		os.Exit(1)
 	}
 
-	var destinationPath string
+	// Initialize the destinationRD
+	var destinationRD string
+
+	// Iterate over the rows, updating the RD of the destination object
 	for rows.Next() {
-		rows.Scan(&destinationPath)
+		rows.Scan(&destinationRD)
 	}
 
+	// Close the rows
 	rows.Close()
 
-	if destinationPath == "" {
-		w.Write([]byte(destinationPath))
-		w.Write([]byte("Query failed: to node not found"))
+	// If the destination object was not found, return an error
+	if destinationRD == "" {
+		w.Write([]byte(destinationRD))
+		w.Write([]byte("Query failed: to object not found"))
 		return
 	}
-	// Cut the source nodes such that they can be appended to the destination node
+
+	// Cut the source objects such that they can be appended to the destination object
 	substrings := strings.Split(from, ".")
 	var cutPart string
-	for i, path := range substrings {
+	for i, rd := range substrings {
 		if i == len(substrings)-1 {
 			break
 		}
-		cutPart += path + "."
+		cutPart += rd + "."
 	}
 
+	// Append the cut parts to the destination RD
 	appendages := []string{}
-	for _, path := range sourcePaths {
-		// Update the path of the node
-		newPath := strings.Replace(path, cutPart, "", 1)
-		appendages = append(appendages, newPath)
+	for _, rd := range sourceRDs {
+		// Update the RD of the object
+		newRD := strings.Replace(rd, cutPart, "", 1)
+		appendages = append(appendages, newRD)
 	}
 
-	// Actually append the cut parts to the destination path
-	transformedPaths := []string{}
+	// Actually append the cut parts to the destination RD
+	transformedRDs := []string{}
 	for _, appendage := range appendages {
-		transformedPaths = append(transformedPaths, destinationPath+"."+appendage)
+		transformedRDs = append(transformedRDs, destinationRD+"."+appendage)
 	}
 
 	// Create update query
 	var values string
 	for i, id := range sourceIDs {
 		if i == len(sourceIDs)-1 {
-			values += fmt.Sprintf("(%d, '%s'::ltree)\n", id, transformedPaths[i])
+			values += fmt.Sprintf("(%d, '%s'::ltree)\n", id, transformedRDs[i])
 			break
 		}
-		values += fmt.Sprintf("(%d, '%s'::ltree),\n", id, transformedPaths[i])
+		values += fmt.Sprintf("(%d, '%s'::ltree),\n", id, transformedRDs[i])
 	}
 
-	// Construct update query, using aliases to update the path of the source nodes
-	queryString := fmt.Sprintf("UPDATE alternativ4 AS t SET\n path = t2.path\n FROM (VALUES %s) AS t2(id, path)\n WHERE t2.id = t.id", values)
+	// Construct update query, using aliases to update the RD of the source objects
+	queryString := fmt.Sprintf("UPDATE alternativ4 AS t SET\n rd = t2.rd\n FROM (VALUES %s) AS t2(id, rd)\n WHERE t2.id = t.id", values)
 	_, err = conn.Exec(context.Background(), queryString)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "exec failed: %v\n", err)
@@ -321,19 +333,22 @@ func queryHandler(w http.ResponseWriter, r *http.Request) {
 		os.Exit(1)
 	}
 
+	// Set headers
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*") // allow cross-origin requests
-	w.Write([]byte("Source nodes:\n"))
-	json.NewEncoder(w).Encode(sourcePaths)
 
-	w.Write([]byte("\nDestination node:\n"))
-	json.NewEncoder(w).Encode(destinationPath)
+	// Write response in a structured format
+	w.Write([]byte("Source objects:\n"))
+	json.NewEncoder(w).Encode(sourceRDs)
+
+	w.Write([]byte("\nDestination object:\n"))
+	json.NewEncoder(w).Encode(destinationRD)
 
 	w.Write([]byte("Cut parts: " + cutPart + "\n"))
 	json.NewEncoder(w).Encode(appendages)
 
-	w.Write([]byte("\nTransformed paths:\n"))
-	json.NewEncoder(w).Encode(transformedPaths)
+	w.Write([]byte("\nTransformed RDs:\n"))
+	json.NewEncoder(w).Encode(transformedRDs)
 
 	w.Write([]byte("\nQuery string:\n"))
 	json.NewEncoder(w).Encode(queryString)
@@ -341,28 +356,29 @@ func queryHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("\nQuery successful"))
 }
 
-func IDtoPathHandler(w http.ResponseWriter, r *http.Request) {
+// IDtoRDHandler handles a request for a map from object id to RD
+func IDtoRDHandler(w http.ResponseWriter, r *http.Request) {
 	conn, err := connectToDB()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)
 	}
 
-	nodes, err := fetchNodes(conn)
+	objects, err := fetchObjects(conn)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Row iteration failed: %v\n", err)
 		os.Exit(1)
 	}
 
-	// Create a map from node id to path
-	idToPath := make(map[int64]string)
-	for _, node := range nodes {
-		idToPath[node.ID] = node.Path
+	// Create a map from object id to rd
+	idToRD := make(map[int64]string)
+	for _, object := range objects {
+		idToRD[object.ID] = object.RD
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*") // allow cross-origin requests
-	json.NewEncoder(w).Encode(idToPath)
+	json.NewEncoder(w).Encode(idToRD)
 }
 
 func IDtoTypeHandler(w http.ResponseWriter, r *http.Request) {
@@ -372,16 +388,16 @@ func IDtoTypeHandler(w http.ResponseWriter, r *http.Request) {
 		os.Exit(1)
 	}
 
-	nodes, err := fetchNodes(conn)
+	objects, err := fetchObjects(conn)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Row iteration failed: %v\n", err)
 		os.Exit(1)
 	}
 
-	// Create a map from node id to path
+	// Create a map from object id to RD
 	idToType := make(map[int64]string)
-	for _, node := range nodes {
-		idToType[node.ID] = node.Type
+	for _, object := range objects {
+		idToType[object.ID] = object.Type
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -390,9 +406,9 @@ func IDtoTypeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/nodes", nodeHandler)
-	http.HandleFunc("/relations", relationHandler)
-	http.HandleFunc("/idpath", IDtoPathHandler)
+	http.HandleFunc("/objects", objectHandler)
+	http.HandleFunc("/connections", connectionHandler)
+	http.HandleFunc("/idRD", IDtoRDHandler)
 	http.HandleFunc("/idtype", IDtoTypeHandler)
 	http.HandleFunc("/query", queryHandler)
 	fmt.Println("Server is running on port 9090")

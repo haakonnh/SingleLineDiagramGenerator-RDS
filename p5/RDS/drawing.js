@@ -8,14 +8,14 @@ This file contains the functions that are used to draw the components on the scr
 
 
 /**
- * @param {Component} node 
+ * @param {Component} object 
  * @param {Connection[]} connections 
  * @returns {Component[]}
  */
-function getParallellLines(node, connections) {
+function getParallellLines(object, connections) {
       let neighbours = []
       for (let connection of connections) {
-            if (connection.Component1.ID == node.ID && connection.Component2.Type.getWord() == "WBC") {
+            if (connection.Component1.ID == object.ID && connection.Component2.Type.getWord() == "WBC") {
                   neighbours.push(connection.Component2)
             }
       }
@@ -134,29 +134,24 @@ function drawDoubleTrackStation(lastComponentCoords, length, drawnComponents, st
       const middleComponent = new ComponentState(connMiddleX, connMiddleY, stationLines[1].ID, "WBC")
       drawnComponents.push(middleComponent)
 
-      // TODO FIX THE INDEX THING HER
-
       // middle line
       line(x1 - 10, y1, x2 + 10, y2);
-
-
 
       fill('black');
       text(getLast(stationLines[1].Path), connMiddleX - length / 2 - 25, connMiddleY + 14);
       noFill()
 }
 
-
 /**
  * draws a station dependent on the number of tracks on the station
  * @param {Component} fromComponent the component which the station is connected to
- * @param {Component} mainLine the node which the station is connected to
+ * @param {Component} mainLine the object which the station is connected to
  * @param {ComponentState[]} drawnComponents  this is wrong, drawn components is a ComponentState[]
  * @param {Connection[]} connections list of connections
  */
 function drawStation(fromComponent, mainLine, drawnComponents, connections) {
       /**
-       * list of neighbor nodes
+       * list of neighbor objects
        * @type {Component[]}
        */
       let neighbours = getParallellLines(mainLine, connections)
