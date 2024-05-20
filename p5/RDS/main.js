@@ -69,6 +69,11 @@ let dataArray = [];
 let components = [];
 
 /**
+ * @type {Connection[]}
+ */
+let connections = []
+
+/**
  * @type {ComponentState[]}
  */
 let drawnComponents = [];
@@ -90,7 +95,7 @@ let bottomLeftPicture;
 let boxesBoolean = true;
 let globcount = 0
 
-let w = 2200
+let w = 2500
 let h = 2200 * 0.4
 
 /**
@@ -279,6 +284,10 @@ function populateConnections() {
       // populate connections array with the fetched relationships from the python api
       idToPath = new Map(Object.entries(fetchedMap))
       idToType = new Map(Object.entries(fetchedTypeMap))
+
+      /**
+       * @type {Connection[]}
+       */
       let connections = []
       Object.entries(fetchedRelationships).forEach(([key, value]) => {
             let comp1 = {
@@ -344,7 +353,7 @@ function drawingController(component1, component2, drawnComponents, connections)
             }
 
             let component1State = findComponentState(component1.ID, drawnComponents)
-            
+
             const component2Object = new componentToPath[keyword](component1State.x, component1State.y);
             const component2State = component2Object.makeComponentState(component2.ID)
             if (component2State != null) {
@@ -368,7 +377,7 @@ function mainLoop(connections) {
       // starting coordinates
       drawnComponents = []
 
-      connections = [connections[0]]
+      //connections = [connections[0]]
       // main loop
       for (let connection of connections) {
             const component1 = connection.Component1
@@ -400,6 +409,8 @@ function mainLoop(connections) {
                   drawingController(component1, component2, drawnComponents, connections)
             }
       }
+
+      console.log(drawnComponents)
 }
 /**
  * 
@@ -407,7 +418,26 @@ function mainLoop(connections) {
  */
 function drawBoxes(drawnComponents) {
       stroke('black')
-      let newDrawnComponents = drawnComponents.filter(component => (component.type != "FCA" && component.type != "TAA" && component.type != "XBA"))
+      let newDrawnComponents = []
+
+      // This loop removes QBA on stations from drawncomponents 
+      for (let i = 0; i < drawnComponents.length; i++) {
+            let ok = true
+            if (drawnComponents[i].type == "QBA")  {
+                  connections.forEach(connection => {
+                        if ((connection.Component1.ID == drawnComponents[i].id) && getComponent(connection.Component2.Path).getWord() == "FCA") {
+                              ok = false
+                        } 
+                  })
+            }
+
+            if (ok) {
+                  newDrawnComponents.push(drawnComponents[i])
+            }
+            
+      }
+
+      newDrawnComponents = newDrawnComponents.filter(component => (component.type != "FCA" && component.type != "TAA" && component.type != "XBA"))
       let firstPath = idToPath.get(newDrawnComponents[0].id.toString())
       let currentTechnicalSystem = getUpperTechnical(firstPath)
       let currentMainSystem = getMainSystem(firstPath)
@@ -419,21 +449,37 @@ function drawBoxes(drawnComponents) {
             let path = idToPath.get(component.id.toString())
             let technical = getUpperTechnical(path)
             let main = getMainSystem(path)
+            let tempLastMain = currentMainSystem
             //console.log("Curr tech:", technical, "Comp: ", path)
             console.log("Main: ", main, "Comp: ", path)
-            // Draw main system box if its left
-            if (component.id == lastUpperID || main != currentMainSystem) {
+            // Specific code for the last one
+            if (component.id == lastUpperID) {
                   stroke('purple')
                   rect(firstMainX, y - 200, component.x - firstMainX, 330)
                   text("=" + currentMainSystem, firstMainX + 10, y - 180)
                   firstMainX = component.x + 5
                   currentMainSystem = main
-            }
-            
 
+            } else if (main != currentMainSystem) {
+                  stroke('purple')
+                  rect(firstMainX, y - 200, component.x - firstMainX - 55, 330)
+                  text("=" + currentMainSystem, firstMainX + 10, y - 180)
+                  firstMainX = component.x - 50
+                  currentMainSystem = main
+
+                  strokeWeight(2)
+                  stroke('red')
+                  noFill()
+
+
+            }
+
+            // If the algorithm is still in the same technical system, skip to next system
             if (technical == currentTechnicalSystem) {
                   return
             }
+
+            // This code draws the technical system boxes
 
             strokeWeight(2)
             stroke('red')
@@ -443,7 +489,11 @@ function drawBoxes(drawnComponents) {
             strokeWeight(1)
             text(currentTechnicalSystem, firstX + 10, y - 145)
 
-            firstX = component.x - 70
+            if (main != tempLastMain) {
+                  firstX = component.x - 40
+            } else {
+                  firstX = component.x - 70
+            }
 
             if (component.id == lastUpperID) {
                   stroke('red')
@@ -475,7 +525,6 @@ function drawBoxes(drawnComponents) {
             y: 0,
             id: 0
       }
-      console.log(lowerComponents)
       if (lowerComponents.length == 0) {
             return
       }
@@ -501,10 +550,11 @@ function drawBoxes(drawnComponents) {
                               rect(firstLowerX, y - 135, lastComponent.x - firstLowerX - 10, 185)
                         }
                         if (component.id == lastID) {
-                              stroke('black')
+                              
                               rect(lastComponent.x - 5, y - 135, component.x - lastComponent.x + 10, 185)
 
                               text(lowerTechnical, lastComponent.x, y - 115)
+                              stroke('black')
                               return
                         }
 
@@ -557,5 +607,5 @@ function draw() {
             drawBoxes(drawnComponents)
       }
 
-      console.log(drawnComponents)
+      //saveCanvas(cnv, 'RDS', 'png')
 }

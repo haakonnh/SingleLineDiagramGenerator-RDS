@@ -181,7 +181,7 @@ class B {
       constructor(x, y) {
             this.x = x;
             this.y = y;
-            this.d = 30;
+            this.d = 33.3;
       }
 
       draw() {
@@ -192,7 +192,7 @@ class B {
             strokeWeight(1);
             line(this.x + 2 * this.d, this.y - 30, this.x + 2 * this.d, this.y);
             line(this.x + 2 * this.d, this.y, this.x + 3 * this.d, this.y);
-            text('WBC1', this.x + 15, this.y - 35)
+            text('WBA1', this.x + this.d - 2    , this.y - 35)
 
       }
       makeComponentState(id) {
@@ -234,14 +234,15 @@ class TAA {
 
 class QAB {
     constructor(x1, y1) {
-        this.x1 = x1;
-        this.x2 = x1 + 30;
+        this.x1 = x1 + 25;
+        this.x2 = x1 + 50;
         this.y1 = y1;
     }
 
   draw() {
     
         // Bryteren
+        line(this.x1 - 25, this.y1, this.x1, this.y1);
         strokeWeight(2);
         line(this.x1, this.y1, this.x1 + 10, this.y1);
         line(this.x1+ 7 , this.y1 - 3, this.x1 + 13, this.y1 + 3);
@@ -250,7 +251,7 @@ class QAB {
 
         line(this.x1 + 10, this.y1, this.x2, this.y1);
 
-        text('QAB', this.x1 + 5, this.y1 + 15)
+        text('QAB1', this.x1 - 4, this.y1 + 15)
   }
 
   makeComponentState(id) {
