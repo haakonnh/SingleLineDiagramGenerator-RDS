@@ -140,7 +140,7 @@ async function fetchAndProcessConnections() {
  * Fetches the idToPath from the API
  */
 async function fetchAndProcessMaps() {
-      const apiUrl = 'http://localhost:9090/idpath'
+      const apiUrl = 'http://localhost:9090/idRD'
       try {
             const response = loadJSON(apiUrl)
 

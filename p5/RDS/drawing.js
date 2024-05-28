@@ -180,14 +180,14 @@ function drawStation(fromComponent, mainLine, drawnComponents, connections) {
                   higherTechnicalPath += splitArray[i] + "."
             }
             /** @type {Component} */
-            let higherTechnicalObject;
+            let higherTechnicalObject = ""
             higherTechnicalPath = higherTechnicalPath.substring(0, higherTechnicalPath.length - 1)
             Object.entries(fetchedData).forEach(([key, value]) => {
                   if (value.Path == higherTechnicalPath) {
                         higherTechnicalObject = value
                   }
             });
-
+            console.log(higherTechnicalObject)
             drawDoubleTrackStation(coords, length, drawnComponents, neighbours, higherTechnicalObject.Type)
       }
 
