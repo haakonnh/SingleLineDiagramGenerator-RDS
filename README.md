@@ -5,3 +5,7 @@ The algorithm generates single-line diagrams effectively if the railway system i
 
 ## Developers
 The algorithm development was spearheaded Haakon Hellebust, with Nima Salihzada and Sondre Klevan as co-developers.
+
+## Structure
+The p5 folder contains p5.js code/all front-end code.
+The goapi directory contains the API code in Go.
